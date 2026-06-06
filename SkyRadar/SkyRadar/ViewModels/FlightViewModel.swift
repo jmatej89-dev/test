@@ -6,69 +6,57 @@ import MapKit
 @MainActor
 final class FlightViewModel: ObservableObject {
 
-    // MARK: - Published State
+    // MARK: - Published
     @Published var aircraft: [Aircraft] = []
     @Published var filteredAircraft: [Aircraft] = []
     @Published var selectedAircraft: Aircraft?
-    @Published var isLoading = false
-    @Published var isRefreshing = false
+    @Published var isLoading     = false
+    @Published var isRefreshing  = false
     @Published var errorMessage: String?
     @Published var lastUpdate: Date?
 
     // Filters
-    @Published var searchQuery = ""
-    @Published var showOnGround = false
+    @Published var searchQuery    = ""
+    @Published var showOnGround   = false
+    @Published var showMilitary   = true
+    @Published var onlyMilitary   = false
     @Published var altitudeFilter: AltitudeFilter = .all
-    @Published var countryFilter: String = ""
+    @Published var countryFilter  = ""
 
-    // Map state
+    // Map
     @Published var mapRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 48.5, longitude: 12.0),
-        span: MKCoordinateSpan(latitudeDelta: 18, longitudeDelta: 22)
-    )
-    @Published var followUserLocation = false
+        span: MKCoordinateSpan(latitudeDelta: 18, longitudeDelta: 22))
 
-    // MARK: - Computed Stats
-    var visibleCount: Int { filteredAircraft.count }
+    // MARK: - Stats
+    var visibleCount:        Int { filteredAircraft.count }
+    var militaryCount:       Int { filteredAircraft.filter { $0.isMilitary }.count }
+    var climbingCount:       Int { filteredAircraft.filter { $0.climbStatus == .climbing }.count }
+    var descendingCount:     Int { filteredAircraft.filter { $0.climbStatus == .descending }.count }
 
     var averageAltitudeFt: Int {
-        let alts = filteredAircraft.compactMap { $0.altitudeFeet }
-        guard !alts.isEmpty else { return 0 }
-        return alts.reduce(0, +) / alts.count
+        let a = filteredAircraft.compactMap { $0.altitudeFeet }
+        return a.isEmpty ? 0 : a.reduce(0, +) / a.count
     }
-
     var averageSpeedKts: Int {
-        let spds = filteredAircraft.compactMap { $0.speedKnots }
-        guard !spds.isEmpty else { return 0 }
-        return spds.reduce(0, +) / spds.count
-    }
-
-    var climbingCount: Int {
-        filteredAircraft.filter { $0.climbStatus == .climbing }.count
-    }
-
-    var descendingCount: Int {
-        filteredAircraft.filter { $0.climbStatus == .descending }.count
+        let s = filteredAircraft.compactMap { $0.speedKnots }
+        return s.isEmpty ? 0 : s.reduce(0, +) / s.count
     }
 
     var countries: [String] {
-        let all = aircraft.map { $0.originCountry }
-        return Array(Set(all)).sorted()
+        Array(Set(aircraft.map { $0.originCountry })).sorted()
     }
 
     // MARK: - Private
     private var refreshTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
-    private let refreshInterval: TimeInterval = 12
 
-    init() {
-        setupFilterPipeline()
-    }
+    init() { setupFilterPipeline() }
 
-    // MARK: - Lifecycle
+    // MARK: - Tracking
     func startTracking() {
         Task { await fetchFlights() }
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: refreshInterval, repeats: true) { [weak self] _ in
+        refreshTimer = Timer.scheduledTimer(withTimeInterval: 12, repeats: true) { [weak self] _ in
             Task { await self?.fetchFlights() }
         }
     }
@@ -84,9 +72,9 @@ final class FlightViewModel: ObservableObject {
         isRefreshing = false
     }
 
-    // MARK: - Selection
+    // MARK: - Selection & navigation
     func select(_ aircraft: Aircraft?) {
-        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+        withAnimation(.spring(response: 0.38, dampingFraction: 0.82)) {
             selectedAircraft = aircraft
         }
     }
@@ -96,8 +84,7 @@ final class FlightViewModel: ObservableObject {
         withAnimation(.easeInOut(duration: 0.6)) {
             mapRegion = MKCoordinateRegion(
                 center: coord,
-                span: MKCoordinateSpan(latitudeDelta: 4, longitudeDelta: 4)
-            )
+                span: MKCoordinateSpan(latitudeDelta: 4, longitudeDelta: 4))
         }
     }
 
@@ -106,31 +93,17 @@ final class FlightViewModel: ObservableObject {
         Task { await fetchFlights() }
     }
 
-    func nearbyAircraft(to location: CLLocationCoordinate2D, limit: Int = 8) -> [Aircraft] {
-        filteredAircraft
-            .compactMap { a -> (Aircraft, Double)? in
-                guard let c = a.coordinate else { return nil }
-                let d = CLLocation(latitude: c.latitude, longitude: c.longitude)
-                    .distance(from: CLLocation(latitude: location.latitude, longitude: location.longitude))
-                return (a, d)
-            }
-            .sorted { $0.1 < $1.1 }
-            .prefix(limit)
-            .map { $0.0 }
-    }
-
     // MARK: - Private
     private func fetchFlights() async {
         guard !isLoading else { return }
-        isLoading = true
-        errorMessage = nil
+        isLoading     = true
+        errorMessage  = nil
 
         do {
             let box = BoundingBox(
-                center: mapRegion.center,
-                latSpan: mapRegion.span.latitudeDelta * 0.6,
-                lonSpan: mapRegion.span.longitudeDelta * 0.6
-            )
+                center:  mapRegion.center,
+                latSpan: mapRegion.span.latitudeDelta  * 0.6,
+                lonSpan: mapRegion.span.longitudeDelta * 0.6)
             let fetched = try await OpenSkyService.shared.fetchAircraft(in: box)
             aircraft = fetched
             applyFilters()
@@ -143,23 +116,30 @@ final class FlightViewModel: ObservableObject {
     }
 
     private func setupFilterPipeline() {
-        Publishers.CombineLatest4($searchQuery, $showOnGround, $altitudeFilter, $countryFilter)
-            .debounce(for: .milliseconds(200), scheduler: RunLoop.main)
-            .sink { [weak self] _, _, _, _ in self?.applyFilters() }
-            .store(in: &cancellables)
+        Publishers.MergeMany(
+            $searchQuery.map { _ in () }.eraseToAnyPublisher(),
+            $showOnGround.map { _ in () }.eraseToAnyPublisher(),
+            $showMilitary.map { _ in () }.eraseToAnyPublisher(),
+            $onlyMilitary.map { _ in () }.eraseToAnyPublisher(),
+            $altitudeFilter.map { _ in () }.eraseToAnyPublisher(),
+            $countryFilter.map { _ in () }.eraseToAnyPublisher()
+        )
+        .debounce(for: .milliseconds(150), scheduler: RunLoop.main)
+        .sink { [weak self] in self?.applyFilters() }
+        .store(in: &cancellables)
     }
 
-    private func applyFilters() {
+    func applyFilters() {
         var result = aircraft
 
-        if !showOnGround {
-            result = result.filter { !$0.onGround }
-        }
+        if !showOnGround  { result = result.filter { !$0.onGround } }
+        if !showMilitary  { result = result.filter { !$0.isMilitary } }
+        if  onlyMilitary  { result = result.filter {  $0.isMilitary } }
 
         switch altitudeFilter {
-        case .all: break
+        case .all:    break
         case .low:    result = result.filter { ($0.altitudeFeet ?? 0) < 10_000 }
-        case .medium: result = result.filter { let a = ($0.altitudeFeet ?? 0); return a >= 10_000 && a < 35_000 }
+        case .medium: result = result.filter { let a = $0.altitudeFeet ?? 0; return a >= 10_000 && a < 35_000 }
         case .high:   result = result.filter { ($0.altitudeFeet ?? 0) >= 35_000 }
         }
 
@@ -171,8 +151,9 @@ final class FlightViewModel: ObservableObject {
             let q = searchQuery.lowercased()
             result = result.filter {
                 $0.displayCallsign.lowercased().contains(q) ||
-                $0.id.lowercased().contains(q) ||
-                $0.originCountry.lowercased().contains(q)
+                $0.id.lowercased().contains(q)              ||
+                $0.originCountry.lowercased().contains(q)   ||
+                ($0.aircraftClass.militaryInfo?.branch.lowercased().contains(q) ?? false)
             }
         }
 

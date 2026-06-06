@@ -2,664 +2,675 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SkyRadar — Preview</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SkyRadar — Live Preview</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    background: #111827;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
-    gap: 48px;
-    padding: 40px 20px;
-    flex-wrap: wrap;
-  }
+:root {
+  --bg:        #050A14;
+  --card:      #0D1626;
+  --card2:     #132030;
+  --border:    #1A2D48;
+  --accent:    #00C8F0;
+  --green:     #00E676;
+  --orange:    #FF7043;
+  --yellow:    #FFD600;
+  --amber:     #FFB300;
+  --text:      #DCE9FA;
+  --text2:     #6E8DAD;
+  --textdim:   #384D68;
+  --radar:     #00FF88;
+}
 
-  /* ── iPhone shell ── */
-  .phone {
-    width: 390px;
-    height: 844px;
-    background: #0A0E1A;
-    border-radius: 54px;
-    border: 3px solid #2a3a55;
-    box-shadow:
-      0 0 0 1px #0d1929,
-      0 40px 120px rgba(0,0,0,0.9),
-      inset 0 0 0 1px rgba(255,255,255,0.04);
-    overflow: hidden;
-    position: relative;
-    flex-shrink: 0;
-  }
+body {
+  background: #03060F;
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 40px;
+  padding: 48px 24px;
+  flex-wrap: wrap;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', sans-serif;
+}
 
-  /* Notch */
-  .phone::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 50%;
-    transform: translateX(-50%);
-    width: 126px; height: 36px;
-    background: #000;
-    border-radius: 0 0 24px 24px;
-    z-index: 100;
-  }
+/* ── iPhone shell ─────────────────────────────────── */
+.phone {
+  width: 393px;
+  height: 852px;
+  background: var(--bg);
+  border-radius: 52px;
+  border: 2px solid #1e3050;
+  box-shadow:
+    0 0 0 1px #080f1e,
+    0 60px 140px rgba(0,0,0,0.95),
+    0 0 80px rgba(0,180,255,0.04),
+    inset 0 0 0 1px rgba(255,255,255,0.03);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
 
-  /* Map background */
-  .map-bg {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 60% 40%, rgba(0,60,100,0.4) 0%, transparent 60%),
-      radial-gradient(ellipse at 20% 70%, rgba(0,40,80,0.3) 0%, transparent 50%),
-      linear-gradient(160deg, #0c1a2e 0%, #0a1220 40%, #080f1c 100%);
-    overflow: hidden;
-  }
+/* Dynamic Island */
+.island {
+  position: absolute;
+  top: 13px; left: 50%;
+  transform: translateX(-50%);
+  width: 120px; height: 34px;
+  background: #000;
+  border-radius: 20px;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+}
+.island-dot { width: 12px; height: 12px; background: #1a1a1a; border-radius: 50%; }
+.island-cam { width: 10px; height: 10px; background: #111; border-radius: 50%; border: 1.5px solid #222; }
 
-  /* Fake map grid lines */
-  .map-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-    background-size: 38px 38px;
-  }
+/* ── MAP ─────────────────────────────────────────── */
+.map {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 55% 38%, rgba(0,50,90,0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 18% 65%, rgba(0,35,65,0.35) 0%, transparent 50%),
+    radial-gradient(ellipse at 85% 75%, rgba(0,25,50,0.3) 0%, transparent 45%),
+    linear-gradient(170deg, #0b1828 0%, #090f1c 50%, #060b16 100%);
+}
+.map::before {
+  content:'';
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+  background-size: 42px 42px;
+}
 
-  /* Fake map terrain patches */
-  .terrain {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(40px);
-  }
-  .t1 { width: 200px; height: 120px; background: rgba(20,60,30,0.35); top: 200px; left: 40px; border-radius: 40%; }
-  .t2 { width: 160px; height: 100px; background: rgba(20,55,25,0.3);  top: 400px; left: 200px; }
-  .t3 { width: 120px; height: 80px;  background: rgba(15,45,20,0.25); top: 300px; right: 20px; }
-  .t4 { width: 180px; height: 60px;  background: rgba(10,35,50,0.4);  bottom: 200px; left: 60px; border-radius: 30%; }
+/* terrain */
+.terrain {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  pointer-events: none;
+}
+.t1{width:220px;height:130px;background:rgba(18,58,28,0.38);top:195px;left:30px;border-radius:44%}
+.t2{width:160px;height:95px; background:rgba(16,52,22,0.32);top:390px;left:195px}
+.t3{width:130px;height:80px; background:rgba(13,44,18,0.28);top:290px;right:15px}
+.t4{width:190px;height:55px; background:rgba(10,36,58,0.42);bottom:195px;left:55px;border-radius:32%}
+.t5{width:100px;height:100px;background:rgba(8,28,50,0.3); top:490px;left:70px}
 
-  /* ── Radar sweep ── */
-  .radar-sweep {
-    position: absolute;
-    width: 600px; height: 600px;
-    top: 50%; left: 50%;
-    margin-left: -300px; margin-top: -300px;
-    border-radius: 50%;
-    pointer-events: none;
-    animation: sweep 8s linear infinite;
-    z-index: 2;
-  }
-  .radar-sweep::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(
-      from -5deg,
-      transparent 0deg,
-      transparent 30deg,
-      rgba(0,255,136,0.0) 30deg,
-      rgba(0,255,136,0.14) 70deg,
-      rgba(0,255,136,0.0) 80deg,
-      transparent 80deg,
-      transparent 360deg
-    );
-  }
-  /* Radar leading edge */
-  .radar-sweep::after {
-    content: '';
-    position: absolute;
-    width: 50%; height: 1.5px;
-    background: linear-gradient(to right, transparent, rgba(0,255,136,0.55));
-    top: 50%; left: 50%;
-    transform-origin: left center;
-    transform: translateY(-50%) rotate(0deg);
-  }
-  @keyframes sweep { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+/* ── RADAR SWEEP ─────────────────────────────────── */
+.radar-wrap {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.radar-sweep {
+  position: absolute;
+  width: 700px; height: 700px;
+  top: 50%; left: 50%;
+  margin: -350px 0 0 -350px;
+  border-radius: 50%;
+  animation: rsweep 8s linear infinite;
+}
+.radar-sweep::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(
+    from -3deg,
+    transparent 0deg,
+    transparent 25deg,
+    rgba(0,255,136,0.0) 25deg,
+    rgba(0,255,136,0.16) 68deg,
+    rgba(0,255,136,0.0) 78deg,
+    transparent 78deg,
+    transparent 360deg
+  );
+}
+.radar-sweep::after {
+  content:'';
+  position: absolute;
+  height: 1.5px; width: 50%;
+  background: linear-gradient(to right, transparent, rgba(0,255,136,0.6));
+  top: 50%; left: 50%;
+  transform: translateY(-50%);
+  transform-origin: left center;
+}
+@keyframes rsweep { to { transform: rotate(360deg); } }
 
-  /* ── Status bar ── */
-  .status-bar {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 52px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: 0 28px 6px;
-    z-index: 50;
-    font-size: 12px;
-    font-weight: 600;
-    color: rgba(255,255,255,0.85);
-  }
-  .status-time { font-size: 15px; font-weight: 700; }
-  .status-icons { display: flex; gap: 6px; align-items: center; }
+/* ── STATUS BAR ──────────────────────────────────── */
+.sbar {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 55px;
+  display: flex; align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 26px 8px;
+  z-index: 50;
+}
+.sbar-time { font-size: 15px; font-weight: 700; color: rgba(255,255,255,.88); }
+.sbar-icons { font-size: 12px; color: rgba(255,255,255,.75); display: flex; gap: 5px; align-items: center; }
 
-  /* ── Top bar ── */
-  .top-bar {
-    position: absolute;
-    top: 58px; left: 14px; right: 14px;
-    background: rgba(15,24,38,0.85);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(28,45,74,0.8);
-    border-radius: 18px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 50;
-  }
-  .logo {
-    display: flex; align-items: center; gap: 7px;
-  }
-  .logo-icon {
-    font-size: 18px;
-    background: linear-gradient(135deg, #00D4FF, #0066FF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  .logo-text {
-    font-size: 19px; font-weight: 800;
-    color: #E8F0FE;
-    letter-spacing: -0.5px;
-  }
-  .live-pill {
-    display: flex; align-items: center; gap: 5px;
-    background: rgba(0,230,118,0.12);
-    border: 1px solid rgba(0,230,118,0.25);
-    border-radius: 20px;
-    padding: 4px 10px;
-    margin: 0 auto;
-  }
-  .live-dot {
-    width: 7px; height: 7px;
-    background: #00E676;
-    border-radius: 50%;
-    position: relative;
-    animation: pulse-dot 1.6s ease-out infinite;
-  }
-  @keyframes pulse-dot {
-    0%   { box-shadow: 0 0 0 0 rgba(0,230,118,0.6); }
-    70%  { box-shadow: 0 0 0 6px rgba(0,230,118,0); }
-    100% { box-shadow: 0 0 0 0 rgba(0,230,118,0); }
-  }
-  .live-text {
-    font-size: 11px; font-weight: 800;
-    color: #00E676; letter-spacing: 1.5px;
-  }
-  .count-text {
-    font-size: 12px; font-weight: 600;
-    color: #E8F0FE;
-  }
-  .icon-btns { display: flex; gap: 5px; }
-  .icon-btn {
-    width: 32px; height: 32px;
-    background: rgba(22,32,51,0.9);
-    border: 1px solid rgba(28,45,74,0.8);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 12px; color: #7B93B8; cursor: pointer;
-  }
+/* ── TOP BAR ──────────────────────────────────────── */
+.topbar {
+  position: absolute;
+  top: 60px; left: 12px; right: 12px;
+  background: rgba(13,22,38,0.82);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(26,45,72,0.75);
+  border-radius: 20px;
+  padding: 10px 13px;
+  display: flex; align-items: center; gap: 9px;
+  z-index: 50;
+}
+.logo { display: flex; align-items: center; gap: 6px; }
+.logo-icon {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg,#00C8F0,#0055CC);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.logo-name { font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; }
 
-  /* ── Aircraft dots / icons ── */
-  .aircraft {
-    position: absolute;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    cursor: pointer;
-    transition: transform 0.2s;
-  }
-  .aircraft:hover { transform: translate(-50%,-50%) scale(1.3); }
-  .aircraft-icon {
-    width: 36px; height: 36px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px;
-    position: relative;
-  }
-  .aircraft-pulse {
-    position: absolute;
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    top: 0; left: 0;
-    animation: ac-pulse 2.5s ease-out infinite;
-    opacity: 0;
-  }
-  .aircraft.selected .aircraft-pulse { animation: ac-pulse-sel 1.8s ease-out infinite; opacity: 1; }
-  @keyframes ac-pulse {
-    0%   { transform: scale(0.6); opacity: 0.5; }
-    100% { transform: scale(2.2); opacity: 0; }
-  }
-  @keyframes ac-pulse-sel {
-    0%   { transform: scale(0.8); opacity: 0.7; }
-    100% { transform: scale(2.4); opacity: 0; }
-  }
-  .aircraft-label {
-    position: absolute;
-    top: 34px; left: 50%;
-    transform: translateX(-50%);
-    text-align: center;
-    white-space: nowrap;
-  }
-  .aircraft-label .cs {
-    font-size: 8px; font-weight: 700;
-    color: #fff;
-    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
-    display: block;
-  }
-  .aircraft-label .fl {
-    font-size: 7px; font-family: monospace;
-    display: block;
-  }
+.live-chip {
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(0,230,118,0.1);
+  border: 1px solid rgba(0,230,118,0.22);
+  border-radius: 20px; padding: 4px 10px;
+  margin: 0 auto;
+}
+.ldot {
+  width: 7px; height: 7px;
+  background: var(--green); border-radius: 50%;
+  animation: ldot 1.5s ease-out infinite;
+}
+@keyframes ldot {
+  0%{box-shadow:0 0 0 0 rgba(0,230,118,.7)}
+  70%{box-shadow:0 0 0 7px rgba(0,230,118,0)}
+  100%{box-shadow:0 0 0 0 rgba(0,230,118,0)}
+}
+.live-label { font-size: 11px; font-weight: 800; color: var(--green); letter-spacing: 1.4px; }
+.live-count { font-size: 12px; font-weight: 600; color: var(--text); }
 
-  /* Altitude colours */
-  .alt-high   { color: #00D4FF; }
-  .alt-medium { color: #FFD600; }
-  .alt-low    { color: #FF7043; }
-  .alt-ground { color: #90A4AE; }
+.tbtn {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: rgba(19,32,48,0.9);
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text2); cursor: pointer;
+  flex-shrink: 0;
+}
 
-  /* ── Stats bar ── */
-  .stats-bar {
-    position: absolute;
-    bottom: 30px; left: 14px; right: 14px;
-    background: rgba(15,24,38,0.88);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(28,45,74,0.8);
-    border-radius: 16px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    overflow: hidden;
-    z-index: 50;
-  }
-  .stat-chip {
-    display: flex; align-items: center; gap: 6px;
-    flex-shrink: 0;
-  }
-  .stat-chip-icon { font-size: 11px; }
-  .stat-vals { display: flex; flex-direction: column; }
-  .stat-val { font-size: 13px; font-weight: 700; color: #E8F0FE; line-height: 1.2; }
-  .stat-lbl { font-size: 9px; font-weight: 500; color: #4A6080; }
-  .stats-divider { width: 1px; height: 28px; background: rgba(28,45,74,0.8); flex-shrink: 0; }
+/* ── AIRCRAFT ────────────────────────────────────── */
+.ac {
+  position: absolute;
+  transform: translate(-50%,-50%);
+  z-index: 15; cursor: pointer;
+  transition: transform .2s ease;
+}
+.ac:hover { transform: translate(-50%,-50%) scale(1.4); }
+.ac-icon { position: relative; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; }
+.ac-plane { font-size: 18px; display: block; line-height: 1; }
+.ac-ring {
+  position: absolute; inset: -2px;
+  border-radius: 50%;
+  border: 1.5px solid;
+  opacity: 0;
+  animation: acring 2.4s ease-out infinite;
+}
+@keyframes acring { 0%{transform:scale(.7);opacity:.6} 100%{transform:scale(2.2);opacity:0} }
+.ac-badge {
+  position: absolute; top: -2px; right: -2px;
+  width: 8px; height: 8px;
+  background: var(--amber);
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
+}
+.ac-lbl {
+  position: absolute; top: 40px; left: 50%;
+  transform: translateX(-50%);
+  text-align: center; white-space: nowrap;
+}
+.ac-cs  { display: block; font-size: 8px; font-weight: 700; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,.9); }
+.ac-fl  { display: block; font-size: 7px; font-family: 'SF Mono', monospace; margin-top: 1px; }
 
-  /* ── Detail sheet ── */
-  .detail-sheet {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    background: rgba(13,20,34,0.96);
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
-    border-top: 1px solid rgba(28,45,74,0.9);
-    border-radius: 24px 24px 0 0;
-    padding: 0 0 24px;
-    z-index: 60;
-    transform: translateY(0);
-    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-  }
-  .detail-sheet.hidden { transform: translateY(100%); }
-  .sheet-handle {
-    width: 36px; height: 4px;
-    background: rgba(28,45,74,1);
-    border-radius: 2px;
-    margin: 10px auto 6px;
-  }
-  .sheet-header {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 16px 12px;
-  }
-  .sheet-plane-icon {
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    background: rgba(0,212,255,0.12);
-    border: 1px solid rgba(0,212,255,0.25);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px; color: #00D4FF;
-    flex-shrink: 0;
-  }
-  .sheet-title { flex: 1; }
-  .sheet-callsign {
-    font-size: 22px; font-weight: 800;
-    color: #E8F0FE; letter-spacing: -0.5px;
-    font-family: 'SF Mono', monospace;
-  }
-  .sheet-sub {
-    font-size: 13px; color: #7B93B8;
-    display: flex; gap: 6px; align-items: center; margin-top: 3px;
-  }
-  .climb-badge {
-    display: inline-flex; align-items: center; gap: 3px;
-    padding: 2px 8px; border-radius: 20px;
-    font-size: 10px; font-weight: 700;
-  }
-  .climb-up   { background: rgba(0,230,118,0.15); color: #00E676; }
-  .climb-down { background: rgba(255,112,67,0.15); color: #FF7043; }
-  .climb-lvl  { background: rgba(123,147,184,0.15); color: #7B93B8; }
-  .sheet-close {
-    width: 32px; height: 32px;
-    border-radius: 50%; background: rgba(22,32,51,0.9);
-    border: 1px solid rgba(28,45,74,0.8);
-    display: flex; align-items: center; justify-content: center;
-    color: #7B93B8; font-size: 13px; cursor: pointer;
-  }
-  .sheet-divider { height: 1px; background: rgba(28,45,74,0.8); margin: 0 16px 14px; }
+/* colour classes */
+.high   { color: #00C8F0; }
+.medium { color: #FFD600; }
+.low    { color: #FF7043; }
+.ground { color: #8EAABF; }
+.mil    { color: #FFB300; }
 
-  /* Status row */
-  .status-row {
-    display: flex; justify-content: space-around;
-    padding: 0 12px 14px;
-  }
-  .status-pill {
-    display: flex; align-items: center; gap: 4px;
-    padding: 5px 10px; border-radius: 20px;
-    font-size: 12px; font-weight: 600;
-  }
-  .sp-green  { background: rgba(0,230,118,0.12); color: #00E676; }
-  .sp-orange { background: rgba(255,112,67,0.12); color: #FF7043; }
-  .sp-gray   { background: rgba(123,147,184,0.1); color: #7B93B8; }
+/* selected ring */
+.ac.selected .ac-icon::before {
+  content:'';
+  position: absolute; inset: -6px;
+  border-radius: 50%;
+  background: rgba(0,200,240,0.1);
+  border: 1px solid rgba(0,200,240,0.4);
+}
 
-  /* Metrics grid */
-  .metrics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    padding: 0 14px 14px;
-  }
-  .metric-card {
-    background: rgba(15,24,38,0.9);
-    border: 1px solid rgba(28,45,74,0.8);
-    border-radius: 12px;
-    padding: 10px 10px 8px;
-  }
-  .metric-header {
-    display: flex; align-items: center; gap: 4px;
-    font-size: 9px; font-weight: 500; color: #4A6080;
-    margin-bottom: 5px;
-  }
-  .metric-value {
-    font-size: 16px; font-weight: 700; color: #E8F0FE;
-    line-height: 1;
-  }
-  .metric-unit {
-    font-size: 9px; font-weight: 500; color: #7B93B8;
-    margin-left: 2px;
-  }
+/* ── STATS BAR ───────────────────────────────────── */
+.statsbar {
+  position: absolute;
+  bottom: 28px; left: 12px; right: 12px;
+  background: rgba(13,22,38,0.88);
+  backdrop-filter: blur(24px) saturate(160%);
+  -webkit-backdrop-filter: blur(24px) saturate(160%);
+  border: 1px solid rgba(26,45,72,0.8);
+  border-radius: 17px;
+  overflow: hidden;
+}
+.statsbar-inner {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  overflow-x: auto;
+}
+.statsbar-inner::-webkit-scrollbar { display: none; }
+.sdiv { width: 1px; height: 26px; background: var(--border); flex-shrink: 0; }
+.schip { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+.schip-icon { font-size: 11px; }
+.schip-info { display: flex; flex-direction: column; }
+.schip-val { font-size: 13px; font-weight: 700; color: var(--text); line-height: 1.2; }
+.schip-lbl { font-size: 9px; font-weight: 500; color: var(--textdim); }
 
-  /* Action buttons */
-  .action-row {
-    display: flex; gap: 10px; padding: 0 14px;
-  }
-  .action-btn {
-    flex: 1; padding: 11px;
-    background: rgba(0,212,255,0.1);
-    border: 1px solid rgba(0,212,255,0.3);
-    border-radius: 12px;
-    color: #00D4FF;
-    font-size: 13px; font-weight: 600;
-    display: flex; align-items: center; justify-content: center;
-    gap: 6px; cursor: pointer;
-  }
+/* ── DETAIL SHEET ────────────────────────────────── */
+.sheet {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  border-radius: 26px 26px 0 0;
+  background: rgba(10,18,30,0.97);
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border-top: 1px solid rgba(26,45,72,.9);
+  z-index: 60;
+  transition: transform .45s cubic-bezier(.32,.72,0,1);
+}
+.sheet.hidden { transform: translateY(100%); }
+.sheet-handle {
+  width: 40px; height: 5px;
+  background: var(--border);
+  border-radius: 3px;
+  margin: 11px auto 0;
+}
 
-  /* ── Screen label ── */
-  .screen-label {
-    color: #7B93B8;
-    font-size: 13px;
-    font-weight: 600;
-    text-align: center;
-    margin-top: 16px;
-    letter-spacing: 0.3px;
-  }
+/* Photo */
+.sheet-photo {
+  height: 160px;
+  overflow: hidden;
+  position: relative;
+  background: var(--card);
+}
+.sheet-photo img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.sheet-photo .credit {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 6px 12px;
+  background: linear-gradient(transparent, rgba(0,0,0,.75));
+  font-size: 10px; color: rgba(255,255,255,.8);
+  display: flex; align-items: center; gap: 4px;
+}
+.photo-loading {
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, var(--card) 25%, var(--card2) 50%, var(--card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
 
-  /* ── Legend ── */
-  .legend {
-    background: rgba(15,24,38,0.7);
-    border: 1px solid rgba(28,45,74,0.6);
-    border-radius: 16px;
-    padding: 20px 24px;
-    width: 260px;
-    align-self: flex-start;
-    margin-top: 60px;
-  }
-  .legend h3 {
-    color: #E8F0FE; font-size: 15px; font-weight: 700;
-    margin-bottom: 16px; letter-spacing: -0.3px;
-  }
-  .legend-item {
-    display: flex; align-items: center; gap: 10px;
-    margin-bottom: 12px;
-  }
-  .legend-dot {
-    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
-  }
-  .legend-text { font-size: 13px; color: #7B93B8; }
-  .legend-text strong { color: #E8F0FE; }
+/* Header */
+.sheet-head {
+  display: flex; align-items: center; gap: 11px;
+  padding: 11px 14px 8px;
+}
+.sh-icon {
+  width: 50px; height: 50px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+  border: 1px solid;
+}
+.sh-icon.civilian { background: rgba(0,200,240,.1); border-color: rgba(0,200,240,.25); color: var(--accent); }
+.sh-icon.military { background: rgba(255,179,0,.1);  border-color: rgba(255,179,0,.25); color: var(--amber); }
+.sh-title { flex: 1; }
+.sh-callsign { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; font-family: 'SF Mono', monospace; }
+.sh-sub { font-size: 12px; color: var(--text2); display: flex; gap: 7px; align-items: center; margin-top: 4px; flex-wrap: wrap; }
+.badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 3px 8px; border-radius: 20px;
+  font-size: 10px; font-weight: 700;
+}
+.badge-up   { background: rgba(0,230,118,.14); color: var(--green); }
+.badge-mil  { background: rgba(255,179,0,.14);  color: var(--amber); }
+.sh-close {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--card2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text2); font-size: 13px; cursor: pointer;
+  flex-shrink: 0;
+}
 
-  .legend-section { margin-top: 20px; }
-  .legend-section h4 {
-    font-size: 10px; font-weight: 700;
-    color: #4A6080; letter-spacing: 1.5px;
-    margin-bottom: 10px;
-  }
-  .feature-item {
-    display: flex; align-items: flex-start; gap: 8px;
-    margin-bottom: 10px;
-  }
-  .feature-icon { font-size: 15px; flex-shrink: 0; width: 22px; text-align: center; }
-  .feature-text { font-size: 12px; color: #7B93B8; line-height: 1.4; }
-  .feature-text strong { color: #E8F0FE; }
+/* Military banner */
+.mil-banner {
+  background: rgba(255,179,0,.07);
+  border-bottom: 1px solid rgba(255,179,0,.2);
+  padding: 8px 14px;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; font-weight: 700; color: var(--amber);
+}
+.mil-banner .right { margin-left: auto; font-size: 9px; font-weight: 800; letter-spacing: 1px; opacity: .7; }
 
-  /* Scrollbar hide */
-  ::-webkit-scrollbar { display: none; }
+.sdivider { height: 1px; background: var(--border); margin: 0 14px; }
+
+/* Status row */
+.status-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px;
+}
+.spill {
+  display: flex; align-items: center; gap: 4px;
+  padding: 5px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600;
+}
+.sp-green  { background: rgba(0,230,118,.1); color: var(--green); }
+.sp-orange { background: rgba(255,112,67,.1); color: var(--orange); }
+.sp-gray   { background: rgba(110,141,173,.1); color: var(--text2); margin-left: auto; }
+
+/* Metric grid */
+.mgrid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px; padding: 0 13px 13px;
+}
+.mcard {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 10px 8px;
+}
+.mcard-top { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--textdim); margin-bottom: 5px; }
+.mcard-top span { font-size: 11px; }
+.mcard-val { font-size: 16px; font-weight: 700; color: var(--text); line-height: 1; }
+.mcard-unit { font-size: 9px; font-weight: 500; color: var(--text2); margin-left: 2px; }
+
+/* Actions */
+.arow { display: flex; gap: 8px; padding: 0 13px 18px; }
+.abtn {
+  flex: 1; padding: 11px;
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  border-radius: 13px; border: 1px solid; cursor: pointer;
+  font-size: 13px; font-weight: 600;
+}
+.abtn.civ { background: rgba(0,200,240,.1); border-color: rgba(0,200,240,.28); color: var(--accent); }
+.abtn.mil-btn { background: rgba(255,179,0,.1);  border-color: rgba(255,179,0,.28); color: var(--amber); }
+
+/* ── SEARCH SCREEN ───────────────────────────────── */
+.search-screen { position: absolute; inset: 0; background: var(--bg); z-index: 70; }
+.search-nav {
+  height: 56px; background: var(--card); border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-end; padding: 0 16px 10px;
+  justify-content: space-between;
+}
+.search-nav-title { font-size: 17px; font-weight: 700; color: var(--text); }
+.search-nav-done  { font-size: 16px; font-weight: 600; color: var(--accent); cursor: pointer; }
+.search-bar {
+  margin: 12px 14px;
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 13px; padding: 10px 14px;
+  display: flex; align-items: center; gap: 9px;
+}
+.search-bar input {
+  background: none; border: none; outline: none;
+  font-size: 15px; color: var(--text); flex: 1;
+  font-family: inherit;
+}
+.search-bar input::placeholder { color: var(--text2); }
+.search-bar .si { font-size: 15px; color: var(--text2); }
+.search-section {
+  font-size: 10px; font-weight: 700; color: var(--textdim);
+  letter-spacing: 1.5px; padding: 4px 16px 8px; font-family: 'SF Mono', monospace;
+}
+.result-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 16px; border-bottom: 1px solid rgba(26,45,72,.5);
+  cursor: pointer;
+}
+.result-row:hover { background: rgba(26,45,72,.4); }
+.rr-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; flex-shrink: 0;
+}
+.rr-info { flex: 1; }
+.rr-cs { font-size: 15px; font-weight: 700; color: var(--text); font-family: 'SF Mono', monospace; }
+.rr-sub { font-size: 12px; color: var(--text2); margin-top: 2px; display: flex; gap: 8px; align-items: center; }
+.rr-right { text-align: right; }
+.rr-spd { font-size: 12px; font-weight: 600; color: var(--text); font-family: 'SF Mono', monospace; }
+
+/* ── LABELS ──────────────────────────────────────── */
+.screen-label {
+  color: var(--text2); font-size: 12px; font-weight: 600;
+  text-align: center; margin-top: 14px; letter-spacing: .3px;
+}
+
+/* ── SIDEBAR ─────────────────────────────────────── */
+.sidebar {
+  width: 270px; align-self: flex-start; margin-top: 52px;
+}
+.sb-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+.sb-logo-box {
+  width: 44px; height: 44px;
+  background: linear-gradient(135deg,#00C8F0,#0055CC);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.sb-logo-text h1 { font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.4px; }
+.sb-logo-text p  { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
+.sb-section { margin-bottom: 26px; }
+.sb-section-title {
+  font-size: 10px; font-weight: 800; color: var(--textdim);
+  letter-spacing: 1.5px; margin-bottom: 12px;
+  font-family: 'SF Mono', monospace;
+}
+.sb-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 11px; }
+.sb-item-icon { font-size: 17px; width: 24px; text-align: center; flex-shrink: 0; margin-top: 1px; }
+.sb-item-text { font-size: 13px; color: var(--text2); line-height: 1.45; }
+.sb-item-text strong { color: var(--text); font-weight: 600; }
+
+.sb-legend { display: flex; flex-direction: column; gap: 8px; }
+.sb-leg-row { display: flex; align-items: center; gap: 9px; }
+.sb-leg-icon { font-size: 13px; width: 18px; text-align: center; }
+.sb-leg-text { font-size: 12px; color: var(--text2); }
+.sb-leg-text b { color: var(--text); }
+
+.sb-divider { height: 1px; background: var(--border); margin-bottom: 26px; }
+
+.sb-data {
+  background: rgba(13,22,38,.7);
+  border: 1px solid var(--border);
+  border-radius: 14px; padding: 14px 16px;
+  font-size: 12px; color: var(--text2); line-height: 1.6;
+}
+.sb-data strong { color: var(--accent); }
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════════
-     Screen 1 — Main map with stats bar
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ SCREEN 1 — MAIN MAP ═══════════════════════ -->
 <div>
 <div class="phone" id="phone1">
-  <div class="map-bg">
+  <div class="map">
     <div class="terrain t1"></div>
     <div class="terrain t2"></div>
     <div class="terrain t3"></div>
     <div class="terrain t4"></div>
-    <div class="radar-sweep"></div>
+    <div class="terrain t5"></div>
+    <div class="radar-wrap"><div class="radar-sweep"></div></div>
 
-    <!-- Aircraft annotations -->
-    <!-- High altitude - cyan -->
-    <div class="aircraft alt-high" style="top:200px;left:200px" onclick="showDetail()">
-      <div class="aircraft-icon">
-        <div class="aircraft-pulse" style="background:rgba(0,212,255,0.3)"></div>
-        <span style="transform:rotate(35deg);display:block">✈</span>
+    <!-- ── HIGH altitude civilian ── -->
+    <div class="ac high" style="top:190px;left:215px">
+      <div class="ac-icon">
+        <div class="ac-ring" style="border-color:#00C8F0;animation-delay:0s"></div>
+        <span class="ac-plane" style="transform:rotate(38deg)">✈</span>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">DLH435</span>
-        <span class="fl alt-high">FL370</span>
-      </div>
+      <div class="ac-lbl"><span class="ac-cs">DLH435</span><span class="ac-fl high">FL370</span></div>
     </div>
 
-    <div class="aircraft alt-high selected" style="top:280px;left:290px" onclick="hideDetail()">
-      <div class="aircraft-icon">
-        <div class="aircraft-pulse" style="background:rgba(0,212,255,0.4)"></div>
-        <span style="transform:rotate(55deg);display:block">✈</span>
+    <div class="ac high" style="top:155px;left:318px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(75deg)">✈</span>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">BAW117</span>
-        <span class="fl alt-high">FL390</span>
-      </div>
+      <div class="ac-lbl"><span class="ac-cs">AFL223</span><span class="ac-fl high">FL390</span></div>
     </div>
 
-    <div class="aircraft alt-high" style="top:160px;left:310px">
-      <div class="aircraft-icon">
-        <span style="transform:rotate(80deg);display:block">✈</span>
+    <div class="ac high" style="top:245px;left:105px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(12deg)">✈</span>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">AFL123</span>
-        <span class="fl alt-high">FL350</span>
-      </div>
+      <div class="ac-lbl"><span class="ac-cs">KLM67C</span><span class="ac-fl high">FL380</span></div>
     </div>
 
-    <!-- Medium altitude - yellow -->
-    <div class="aircraft alt-medium" style="top:340px;left:160px">
-      <div class="aircraft-icon">
-        <span style="transform:rotate(-20deg);display:block">✈</span>
-      </div>
-      <div class="aircraft-label">
-        <span class="cs">CSA410</span>
-        <span class="fl alt-medium">FL240</span>
-      </div>
+    <div class="ac high" style="top:178px;left:165px;opacity:.65">
+      <div class="ac-icon"><span class="ac-plane" style="transform:rotate(55deg);font-size:13px">✈</span></div>
     </div>
 
-    <div class="aircraft alt-medium" style="top:380px;left:330px">
-      <div class="aircraft-icon">
-        <span style="transform:rotate(110deg);display:block">✈</span>
+    <!-- ── MEDIUM altitude ── -->
+    <div class="ac medium" style="top:340px;left:168px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(-22deg)">✈</span>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">EJU55</span>
-        <span class="fl alt-medium">FL200</span>
-      </div>
+      <div class="ac-lbl"><span class="ac-cs">CSA410</span><span class="ac-fl medium">FL240</span></div>
     </div>
 
-    <!-- Low altitude - orange -->
-    <div class="aircraft alt-low" style="top:470px;left:210px">
-      <div class="aircraft-icon">
-        <span style="transform:rotate(-50deg);display:block">✈</span>
+    <div class="ac medium" style="top:375px;left:305px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(105deg)">✈</span>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">TRA6F</span>
-        <span class="fl alt-low">FL080</span>
-      </div>
+      <div class="ac-lbl"><span class="ac-cs">EJU55X</span><span class="ac-fl medium">FL200</span></div>
     </div>
 
-    <div class="aircraft alt-high" style="top:240px;left:100px">
-      <div class="aircraft-icon">
-        <span style="transform:rotate(15deg);display:block">✈</span>
+    <div class="ac medium" style="top:307px;left:62px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(135deg)">✈</span>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">KLM67</span>
-        <span class="fl alt-high">FL380</span>
-      </div>
+      <div class="ac-lbl"><span class="ac-cs">CFG8S</span><span class="ac-fl medium">FL280</span></div>
     </div>
 
-    <div class="aircraft alt-medium" style="top:310px;left:60px">
-      <div class="aircraft-icon">
-        <span style="transform:rotate(140deg);display:block">✈</span>
+    <!-- ── LOW altitude ── -->
+    <div class="ac low" style="top:465px;left:212px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(-55deg)">✈</span>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">CFG8S</span>
-        <span class="fl alt-medium">FL280</span>
+      <div class="ac-lbl"><span class="ac-cs">TRA6FX</span><span class="ac-fl low">FL080</span></div>
+    </div>
+
+    <div class="ac low" style="top:505px;left:278px;opacity:.75">
+      <div class="ac-icon"><span class="ac-plane" style="transform:rotate(165deg);font-size:13px">✈</span></div>
+    </div>
+
+    <!-- ── MILITARY ── -->
+    <div class="ac mil" style="top:280px;left:258px" id="mil1">
+      <div class="ac-icon">
+        <div class="ac-ring" style="border-color:#FFB300;animation-delay:.4s"></div>
+        <span class="ac-plane" style="transform:rotate(58deg);font-size:20px">✈</span>
+        <div class="ac-badge"></div>
+      </div>
+      <div class="ac-lbl">
+        <span class="ac-cs" style="color:#FFB300">USAF117</span>
+        <span class="ac-fl mil">FL290</span>
       </div>
     </div>
 
-    <!-- Ground - grey -->
-    <div class="aircraft alt-ground" style="top:560px;left:150px">
-      <div class="aircraft-icon" style="font-size:13px">
-        <span style="transform:rotate(0deg);display:block">✈</span>
+    <div class="ac mil" style="top:420px;left:80px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(-85deg);font-size:16px">✈</span>
+        <div class="ac-badge"></div>
       </div>
-      <div class="aircraft-label">
-        <span class="cs">TK791</span>
-        <span class="fl alt-ground">GND</span>
-      </div>
-    </div>
-
-    <div class="aircraft alt-high" style="top:420px;left:80px">
-      <div class="aircraft-icon">
-        <span style="transform:rotate(-80deg);display:block">✈</span>
-      </div>
-      <div class="aircraft-label">
-        <span class="cs">SAS3K</span>
-        <span class="fl alt-high">FL410</span>
+      <div class="ac-lbl">
+        <span class="ac-cs" style="color:#FFB300">REACH42</span>
+        <span class="ac-fl mil">FL310</span>
       </div>
     </div>
 
-    <!-- More aircraft for density -->
-    <div class="aircraft alt-high" style="top:180px;left:360px;opacity:0.7">
-      <div class="aircraft-icon" style="font-size:13px">
-        <span style="transform:rotate(60deg);display:block">✈</span>
+    <div class="ac mil" style="top:200px;left:345px;opacity:.8">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(92deg);font-size:14px">✈</span>
+        <div class="ac-badge"></div>
+      </div>
+      <div class="ac-lbl">
+        <span class="ac-cs" style="color:#FFB300">GAF112</span>
+        <span class="ac-fl mil">FL250</span>
       </div>
     </div>
-    <div class="aircraft alt-medium" style="top:450px;left:310px;opacity:0.7">
-      <div class="aircraft-icon" style="font-size:13px">
-        <span style="transform:rotate(-30deg);display:block">✈</span>
+
+    <!-- ── GROUND ── -->
+    <div class="ac ground" style="top:558px;left:148px">
+      <div class="ac-icon">
+        <span class="ac-plane" style="transform:rotate(0deg);font-size:13px;opacity:.7">✈</span>
       </div>
+      <div class="ac-lbl"><span class="ac-cs" style="opacity:.6">TK791</span><span class="ac-fl ground">GND</span></div>
     </div>
-    <div class="aircraft alt-low" style="top:530px;left:280px;opacity:0.7">
-      <div class="aircraft-icon" style="font-size:13px">
-        <span style="transform:rotate(170deg);display:block">✈</span>
-      </div>
-    </div>
-  </div>
+  </div><!-- /map -->
+
+  <!-- Dynamic Island -->
+  <div class="island"><div class="island-dot"></div><div class="island-cam"></div></div>
 
   <!-- Status bar -->
-  <div class="status-bar">
-    <span class="status-time">9:41</span>
-    <div class="status-icons">
-      <span>●●●●</span>
-      <span>WiFi</span>
-      <span>🔋</span>
-    </div>
+  <div class="sbar">
+    <span class="sbar-time">9:41</span>
+    <div class="sbar-icons"><span>▐▐▐▐</span><span>WiFi</span><span>⬛</span></div>
   </div>
 
   <!-- Top bar -->
-  <div class="top-bar">
+  <div class="topbar">
     <div class="logo">
-      <span class="logo-icon">📡</span>
-      <span class="logo-text">SkyRadar</span>
+      <div class="logo-icon">📡</div>
+      <span class="logo-name">SkyRadar</span>
     </div>
-    <div class="live-pill">
-      <div class="live-dot"></div>
-      <span class="live-text">LIVE</span>
-      <span class="count-text">&nbsp;124 flights</span>
+    <div class="live-chip">
+      <div class="ldot"></div>
+      <span class="live-label">LIVE</span>
+      <span class="live-count">&nbsp;142 flights</span>
     </div>
-    <div class="icon-btns">
-      <div class="icon-btn">🔍</div>
-      <div class="icon-btn">⚡</div>
-      <div class="icon-btn">↺</div>
+    <div style="display:flex;gap:5px">
+      <div class="tbtn">🔍</div>
+      <div class="tbtn">⚙</div>
+      <div class="tbtn">↺</div>
     </div>
   </div>
 
   <!-- Stats bar -->
-  <div class="stats-bar">
-    <div class="stat-chip">
-      <span class="stat-chip-icon" style="color:#00D4FF">✈</span>
-      <div class="stat-vals">
-        <span class="stat-val">124</span>
-        <span class="stat-lbl">Airborne</span>
+  <div class="statsbar">
+    <div class="statsbar-inner">
+      <div class="schip">
+        <div class="ldot"></div>
+        <span style="font-size:10px;font-weight:800;color:var(--green);letter-spacing:1.4px">LIVE</span>
       </div>
-    </div>
-    <div class="stats-divider"></div>
-    <div class="stat-chip">
-      <span class="stat-chip-icon" style="color:#00E676">↗</span>
-      <div class="stat-vals">
-        <span class="stat-val">38</span>
-        <span class="stat-lbl">Climbing</span>
+      <div class="sdiv"></div>
+      <div class="schip">
+        <span class="schip-icon" style="color:var(--accent)">✈</span>
+        <div class="schip-info"><span class="schip-val">142</span><span class="schip-lbl">Airborne</span></div>
       </div>
-    </div>
-    <div class="stats-divider"></div>
-    <div class="stat-chip">
-      <span class="stat-chip-icon" style="color:#FF7043">↘</span>
-      <div class="stat-vals">
-        <span class="stat-val">29</span>
-        <span class="stat-lbl">Descend.</span>
+      <div class="schip">
+        <span class="schip-icon" style="color:var(--amber)">🛡</span>
+        <div class="schip-info"><span class="schip-val" style="color:var(--amber)">7</span><span class="schip-lbl">Military</span></div>
       </div>
-    </div>
-    <div class="stats-divider"></div>
-    <div class="stat-chip">
-      <span class="stat-chip-icon" style="color:#FFD600">⚡</span>
-      <div class="stat-vals">
-        <span class="stat-val">447</span>
-        <span class="stat-lbl">Avg kts</span>
+      <div class="sdiv"></div>
+      <div class="schip">
+        <span class="schip-icon" style="color:var(--green)">↗</span>
+        <div class="schip-info"><span class="schip-val">41</span><span class="schip-lbl">Climb</span></div>
       </div>
-    </div>
-    <div class="stats-divider"></div>
-    <div class="stat-chip">
-      <span class="stat-chip-icon" style="color:#7B93B8">☁</span>
-      <div class="stat-vals">
-        <span class="stat-val">34.2k</span>
-        <span class="stat-lbl">Avg ft</span>
+      <div class="schip">
+        <span class="schip-icon" style="color:var(--orange)">↘</span>
+        <div class="schip-info"><span class="schip-val">33</span><span class="schip-lbl">Descend</span></div>
+      </div>
+      <div class="sdiv"></div>
+      <div class="schip">
+        <span class="schip-icon" style="color:var(--yellow)">⚡</span>
+        <div class="schip-info"><span class="schip-val">449</span><span class="schip-lbl">Avg kts</span></div>
       </div>
     </div>
   </div>
@@ -667,236 +678,288 @@
 <div class="screen-label">Hlavní obrazovka</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     Screen 2 — Detail sheet open
-═══════════════════════════════════════════════════ -->
+<!-- ═══════════════════════════ SCREEN 2 — MILITARY DETAIL ════════════════ -->
 <div>
 <div class="phone" id="phone2">
-  <div class="map-bg">
-    <div class="terrain t1"></div>
-    <div class="terrain t2"></div>
-    <div class="radar-sweep" style="opacity:0.5"></div>
+  <div class="map">
+    <div class="terrain t1" style="opacity:.5"></div>
+    <div class="terrain t3" style="opacity:.5"></div>
+    <div class="radar-wrap" style="opacity:.4"><div class="radar-sweep"></div></div>
 
-    <!-- Dimmed aircraft in background -->
-    <div class="aircraft alt-high" style="top:160px;left:200px;opacity:0.4">
-      <div class="aircraft-icon"><span style="transform:rotate(35deg);display:block">✈</span></div>
-    </div>
-    <div class="aircraft alt-medium" style="top:220px;left:300px;opacity:0.4">
-      <div class="aircraft-icon"><span style="transform:rotate(80deg);display:block">✈</span></div>
-    </div>
-    <div class="aircraft alt-high" style="top:280px;left:130px;opacity:0.4">
-      <div class="aircraft-icon"><span style="transform:rotate(-20deg);display:block">✈</span></div>
-    </div>
+    <!-- Dimmed background traffic -->
+    <div class="ac high" style="top:175px;left:195px;opacity:.3"><div class="ac-icon"><span class="ac-plane" style="transform:rotate(40deg)">✈</span></div></div>
+    <div class="ac medium" style="top:230px;left:310px;opacity:.25"><div class="ac-icon"><span class="ac-plane" style="transform:rotate(80deg)">✈</span></div></div>
+    <div class="ac high" style="top:150px;left:300px;opacity:.2"><div class="ac-icon"><span class="ac-plane" style="transform:rotate(60deg);font-size:13px">✈</span></div></div>
+    <div class="ac medium" style="top:290px;left:85px;opacity:.2"><div class="ac-icon"><span class="ac-plane" style="transform:rotate(-15deg);font-size:13px">✈</span></div></div>
 
-    <!-- Selected aircraft highlighted -->
-    <div class="aircraft alt-high selected" style="top:200px;left:240px">
-      <div class="aircraft-icon">
-        <div class="aircraft-pulse" style="background:rgba(0,212,255,0.4)"></div>
-        <span style="transform:rotate(55deg);display:block;font-size:22px">✈</span>
+    <!-- Selected military aircraft (prominent) -->
+    <div class="ac mil selected" style="top:230px;left:220px">
+      <div class="ac-icon">
+        <div class="ac-ring" style="border-color:#FFB300;animation-delay:0s"></div>
+        <div class="ac-ring" style="border-color:#FFB300;animation-delay:.7s"></div>
+        <span class="ac-plane" style="transform:rotate(58deg);font-size:24px">✈</span>
+        <div class="ac-badge" style="width:10px;height:10px;border-radius:50%"></div>
       </div>
-      <div class="aircraft-label">
-        <span class="cs" style="font-size:10px">BAW117</span>
-        <span class="fl alt-high" style="font-size:9px">FL390</span>
+      <div class="ac-lbl">
+        <span class="ac-cs" style="color:#FFB300;font-size:10px">USAF117</span>
+        <span class="ac-fl mil" style="font-size:9px">FL290 · USAF</span>
       </div>
     </div>
   </div>
 
-  <!-- Status bar -->
-  <div class="status-bar">
-    <span class="status-time">9:41</span>
-    <div class="status-icons">
-      <span>●●●●</span><span>WiFi</span><span>🔋</span>
-    </div>
-  </div>
+  <div class="island"><div class="island-dot"></div><div class="island-cam"></div></div>
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"><span>▐▐▐▐</span><span>WiFi</span><span>⬛</span></div></div>
 
-  <!-- Top bar (compact) -->
-  <div class="top-bar">
+  <div class="topbar">
     <div class="logo">
-      <span class="logo-icon">📡</span>
-      <span class="logo-text">SkyRadar</span>
+      <div class="logo-icon">📡</div>
+      <span class="logo-name">SkyRadar</span>
     </div>
-    <div class="live-pill">
-      <div class="live-dot"></div>
-      <span class="live-text">LIVE</span>
-      <span class="count-text">&nbsp;124 flights</span>
-    </div>
-    <div class="icon-btns">
-      <div class="icon-btn">🔍</div>
-      <div class="icon-btn">⚡</div>
-    </div>
+    <div class="live-chip"><div class="ldot"></div><span class="live-label">LIVE</span></div>
+    <div class="tbtn" style="margin-left:auto">✕</div>
   </div>
 
   <!-- Detail sheet -->
-  <div class="detail-sheet">
+  <div class="sheet" style="bottom:0">
     <div class="sheet-handle"></div>
 
+    <!-- Photo of a C-17 / military transport (Wikimedia Commons, public domain) -->
+    <div class="sheet-photo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/C-17_Globemaster_III_RAF_Brize_Norton.jpg/640px-C-17_Globemaster_III_RAF_Brize_Norton.jpg"
+           alt="C-17 Globemaster III"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="photo-loading" style="display:none"></div>
+      <div class="credit">📷 Wikimedia Commons — C-17 Globemaster III · Public Domain</div>
+    </div>
+
     <!-- Header -->
-    <div class="sheet-header">
-      <div class="sheet-plane-icon">✈</div>
-      <div class="sheet-title">
-        <div class="sheet-callsign">BAW117</div>
-        <div class="sheet-sub">
-          <span>🌍 United Kingdom</span>
-          <span class="climb-badge climb-up">↗ Climbing</span>
+    <div class="sheet-head">
+      <div class="sh-icon military">✈</div>
+      <div class="sh-title">
+        <div class="sh-callsign">USAF117</div>
+        <div class="sh-sub">
+          <span>🇺🇸 United States</span>
+          <span class="badge badge-up">↗ Climbing</span>
+          <span class="badge badge-mil">🛡 Military</span>
         </div>
       </div>
-      <div class="sheet-close">✕</div>
+      <div class="sh-close">✕</div>
     </div>
 
-    <div class="sheet-divider"></div>
+    <!-- Military banner -->
+    <div class="mil-banner">
+      <span>🛡</span>
+      <span>🇺🇸 USAF / US Air Force</span>
+      <span class="right">MILITARY AIRCRAFT</span>
+    </div>
 
-    <!-- Status row -->
+    <div class="sdivider"></div>
+
+    <!-- Status -->
     <div class="status-row">
-      <div class="status-pill sp-green">✈ Airborne</div>
-      <div class="status-pill sp-orange">↗ Climbing</div>
-      <div class="status-pill sp-gray">🕐 just now</div>
+      <div class="spill sp-green">✈ Airborne</div>
+      <div class="spill sp-orange">↗ Climbing</div>
+      <div class="spill sp-gray">🕐 just now</div>
     </div>
 
-    <!-- Metrics grid -->
-    <div class="metrics-grid">
-      <div class="metric-card">
-        <div class="metric-header">
-          <span style="color:#00D4FF">☁</span> Altitude
-        </div>
-        <div>
-          <span class="metric-value" style="color:#00D4FF">39,000</span>
-          <span class="metric-unit">ft</span>
-        </div>
+    <!-- Metrics -->
+    <div class="mgrid">
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--amber)">☁</span> Altitude</div>
+        <span class="mcard-val" style="color:var(--amber)">29,000</span><span class="mcard-unit">ft</span>
       </div>
-      <div class="metric-card">
-        <div class="metric-header"><span style="color:#00D4FF">⚡</span> Speed</div>
-        <div>
-          <span class="metric-value">482</span>
-          <span class="metric-unit">kts</span>
-        </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--accent)">⚡</span> Speed</div>
+        <span class="mcard-val">462</span><span class="mcard-unit">kts</span>
       </div>
-      <div class="metric-card">
-        <div class="metric-header"><span style="color:#00E676">↕</span> Climb</div>
-        <div>
-          <span class="metric-value" style="color:#00E676">+1,840</span>
-          <span class="metric-unit">fpm</span>
-        </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--green)">↕</span> Climb</div>
+        <span class="mcard-val" style="color:var(--green)">+1,640</span><span class="mcard-unit">fpm</span>
       </div>
-      <div class="metric-card">
-        <div class="metric-header"><span style="color:#FFD600">⬆</span> Heading</div>
-        <div>
-          <span class="metric-value" style="color:#FFD600">264°</span>
-        </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--yellow)">⬆</span> Heading</div>
+        <span class="mcard-val" style="color:var(--yellow)">238°</span>
       </div>
-      <div class="metric-card">
-        <div class="metric-header"><span style="color:#E8F0FE">🏁</span> FL Level</div>
-        <div>
-          <span class="metric-value">FL390</span>
-        </div>
+      <div class="mcard">
+        <div class="mcard-top"><span>🏁</span> Flight Level</div>
+        <span class="mcard-val">FL290</span>
       </div>
-      <div class="metric-card">
-        <div class="metric-header"><span style="color:#7B93B8">📡</span> Squawk</div>
-        <div>
-          <span class="metric-value">2145</span>
-        </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--text2)">📡</span> Squawk</div>
+        <span class="mcard-val">7701</span>
       </div>
     </div>
 
-    <!-- Action buttons -->
-    <div class="action-row">
-      <div class="action-btn">📍 Centre</div>
-      <div class="action-btn">🔄 Track</div>
+    <!-- Actions -->
+    <div class="arow">
+      <div class="abtn mil-btn">📍 Centre map</div>
+      <div class="abtn mil-btn">↺ Refresh</div>
     </div>
   </div>
 </div>
-<div class="screen-label">Detail letadla</div>
+<div class="screen-label">Detail — vojenský letoun</div>
 </div>
 
-<!-- ═══════════════════════════════════════════════════
-     Legend / feature list
-═══════════════════════════════════════════════════ -->
-<div class="legend">
-  <h3>SkyRadar</h3>
-
-  <div class="legend-item">
-    <div class="legend-dot" style="background:#90A4AE"></div>
-    <span class="legend-text"><strong>Šedá</strong> — na zemi</span>
-  </div>
-  <div class="legend-item">
-    <div class="legend-dot" style="background:#FF7043"></div>
-    <span class="legend-text"><strong>Oranžová</strong> — &lt; 10 000 ft</span>
-  </div>
-  <div class="legend-item">
-    <div class="legend-dot" style="background:#FFD600"></div>
-    <span class="legend-text"><strong>Žlutá</strong> — 10–35 000 ft</span>
-  </div>
-  <div class="legend-item">
-    <div class="legend-dot" style="background:#00D4FF"></div>
-    <span class="legend-text"><strong>Cyan</strong> — &gt; 35 000 ft</span>
-  </div>
-
-  <div class="legend-section">
-    <h4>FUNKCE</h4>
-    <div class="feature-item">
-      <span class="feature-icon">📡</span>
-      <span class="feature-text"><strong>Živá data</strong> — OpenSky Network API, refresh každých 12 s</span>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">🌐</span>
-      <span class="feature-text"><strong>Apple Maps</strong> — tmavý muted styl, full-screen</span>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">✈</span>
-      <span class="feature-text"><strong>Rotující ikonky</strong> — natočení dle skutečného kurzu</span>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">🎯</span>
-      <span class="feature-text"><strong>Radar sweep</strong> — animovaný zelený oblouk</span>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">📋</span>
-      <span class="feature-text"><strong>Detail panel</strong> — výška, rychlost, V/S, kurz, squawk</span>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">🔍</span>
-      <span class="feature-text"><strong>Vyhledávání</strong> — callsign, ICAO24, země</span>
-    </div>
-    <div class="feature-item">
-      <span class="feature-icon">⚡</span>
-      <span class="feature-text"><strong>Filtry</strong> — výška, pozemní provoz, země</span>
+<!-- ═══════════════════════════ SCREEN 3 — CIVILIAN DETAIL ════════════════ -->
+<div>
+<div class="phone" id="phone3">
+  <div class="map">
+    <div class="terrain t1" style="opacity:.4"></div>
+    <div class="radar-wrap" style="opacity:.35"><div class="radar-sweep"></div></div>
+    <div class="ac high" style="top:240px;left:205px;opacity:.35"><div class="ac-icon"><span class="ac-plane" style="transform:rotate(35deg)">✈</span></div></div>
+    <div class="ac medium" style="top:175px;left:295px;opacity:.25"><div class="ac-icon"><span class="ac-plane" style="transform:rotate(70deg);font-size:13px">✈</span></div></div>
+    <!-- Selected civilian -->
+    <div class="ac high selected" style="top:215px;left:230px">
+      <div class="ac-icon">
+        <div class="ac-ring" style="border-color:#00C8F0;animation-delay:0s"></div>
+        <span class="ac-plane" style="transform:rotate(55deg);font-size:24px">✈</span>
+      </div>
+      <div class="ac-lbl">
+        <span class="ac-cs" style="font-size:10px">BAW117</span>
+        <span class="ac-fl high" style="font-size:9px">FL390</span>
+      </div>
     </div>
   </div>
 
-  <div class="legend-section">
-    <h4>TECH STACK</h4>
-    <div class="feature-item">
-      <span class="feature-icon">⚙️</span>
-      <span class="feature-text">Swift 5.9 · SwiftUI · MapKit · Combine · async/await</span>
+  <div class="island"><div class="island-dot"></div><div class="island-cam"></div></div>
+  <div class="sbar"><span class="sbar-time">9:41</span><div class="sbar-icons"><span>▐▐▐▐</span><span>WiFi</span><span>⬛</span></div></div>
+  <div class="topbar">
+    <div class="logo"><div class="logo-icon">📡</div><span class="logo-name">SkyRadar</span></div>
+    <div class="live-chip"><div class="ldot"></div><span class="live-label">LIVE</span></div>
+    <div class="tbtn" style="margin-left:auto">✕</div>
+  </div>
+
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+
+    <!-- Boeing 747 photo (Wikimedia Commons, CC) -->
+    <div class="sheet-photo">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/British_Airways_Boeing_747-436%2C_G-CIVB%2C_approaches_Heathrow_Airport_%282015%29.jpg/640px-British_Airways_Boeing_747-436%2C_G-CIVB%2C_approaches_Heathrow_Airport_%282015%29.jpg"
+           alt="British Airways 747"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <div class="photo-loading" style="display:none"></div>
+      <div class="credit">📷 Wikimedia Commons — British Airways Boeing 747 · CC BY-SA</div>
     </div>
-    <div class="feature-item">
-      <span class="feature-icon">📱</span>
-      <span class="feature-text">iOS 16+ · iPhone &amp; iPad · Dark mode</span>
+
+    <div class="sheet-head">
+      <div class="sh-icon civilian">✈</div>
+      <div class="sh-title">
+        <div class="sh-callsign">BAW117</div>
+        <div class="sh-sub">
+          <span>🇬🇧 United Kingdom</span>
+          <span class="badge badge-up">↗ Climbing</span>
+        </div>
+      </div>
+      <div class="sh-close">✕</div>
     </div>
+
+    <div class="sdivider"></div>
+    <div class="status-row">
+      <div class="spill sp-green">✈ Airborne</div>
+      <div class="spill sp-orange">↗ Climbing</div>
+      <div class="spill sp-gray">🕐 just now</div>
+    </div>
+
+    <div class="mgrid">
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--accent)">☁</span> Altitude</div>
+        <span class="mcard-val" style="color:var(--accent)">39,000</span><span class="mcard-unit">ft</span>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--accent)">⚡</span> Speed</div>
+        <span class="mcard-val">482</span><span class="mcard-unit">kts</span>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--green)">↕</span> Climb</div>
+        <span class="mcard-val" style="color:var(--green)">+1,840</span><span class="mcard-unit">fpm</span>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--yellow)">⬆</span> Heading</div>
+        <span class="mcard-val" style="color:var(--yellow)">264°</span>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span>🏁</span> Flight Level</div>
+        <span class="mcard-val">FL390</span>
+      </div>
+      <div class="mcard">
+        <div class="mcard-top"><span style="color:var(--text2)">📡</span> Squawk</div>
+        <span class="mcard-val">2145</span>
+      </div>
+    </div>
+
+    <div class="arow">
+      <div class="abtn civ">📍 Centre map</div>
+      <div class="abtn civ">↺ Refresh</div>
+    </div>
+  </div>
+</div>
+<div class="screen-label">Detail — civilní letoun</div>
+</div>
+
+<!-- ═══════════════════════════ SIDEBAR ══════════════════════════════════ -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-box">📡</div>
+    <div class="sb-logo-text">
+      <h1>SkyRadar</h1>
+      <p>Live Flight Tracker · v2.0</p>
+    </div>
+  </div>
+
+  <div class="sb-section">
+    <div class="sb-section-title">LIVE DATA SOURCES</div>
+    <div class="sb-item"><div class="sb-item-icon">🌐</div><div class="sb-item-text"><strong>OpenSky Network API</strong> — ADS-B data, refresh každých 12 s, zdarma bez klíče</div></div>
+    <div class="sb-item"><div class="sb-item-icon">📷</div><div class="sb-item-text"><strong>Planespotters.net</strong> — fotky dle ICAO24 hex kódu, actor-based cache, shimmer skeleton</div></div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <div class="sb-section-title">VOJENSKÁ DETEKCE</div>
+    <div class="sb-item"><div class="sb-item-icon">🛡</div><div class="sb-item-text"><strong>ICAO24 hex rozsahy</strong> — 21 zemí (USA AE0000–AFFFFF, UK 43C000–43FFFF, DE 3E0000–3EFFFF, NATO 44F000–44FFFF…)</div></div>
+    <div class="sb-item"><div class="sb-item-icon">📻</div><div class="sb-item-text"><strong>Callsign prefixes</strong> — REACH, SPAR, SAM, USAF, GAF, RRR, NATO, HAVOC, DUKE…</div></div>
+    <div class="sb-item"><div class="sb-item-icon">⚠️</div><div class="sb-item-text">Vojenské letouny zobrazeny <strong style="color:var(--amber)">oranžovozlatou</strong> barvou + amber štítek + military banner v detailu</div></div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-section">
+    <div class="sb-section-title">BAREVNÁ LEGENDA</div>
+    <div class="sb-legend">
+      <div class="sb-leg-row"><span class="sb-leg-icon" style="color:var(--amber)">✈</span><div class="sb-leg-text"><b>Zlatá</b> — vojenský letoun</div></div>
+      <div class="sb-leg-row"><span class="sb-leg-icon" style="color:#8EAABF">✈</span><div class="sb-leg-text"><b>Šedá</b> — na zemi</div></div>
+      <div class="sb-leg-row"><span class="sb-leg-icon" style="color:var(--orange)">✈</span><div class="sb-leg-text"><b>Oranžová</b> — &lt; 10 000 ft</div></div>
+      <div class="sb-leg-row"><span class="sb-leg-icon" style="color:var(--yellow)">✈</span><div class="sb-leg-text"><b>Žlutá</b> — 10–35 000 ft</div></div>
+      <div class="sb-leg-row"><span class="sb-leg-icon" style="color:var(--accent)">✈</span><div class="sb-leg-text"><b>Cyan</b> — &gt; 35 000 ft</div></div>
+    </div>
+  </div>
+
+  <div class="sb-divider"></div>
+
+  <div class="sb-data">
+    <div style="font-size:10px;font-weight:800;color:var(--textdim);letter-spacing:1.5px;margin-bottom:8px">TECH STACK</div>
+    Swift 5.9 · SwiftUI · <strong>MapKit</strong> · Combine · async/await<br>
+    <strong>OpenSky Network</strong> · <strong>Planespotters API</strong><br>
+    iOS 16+ · iPhone & iPad · Dark mode<br>
+    MVVM + actor-based photo cache
   </div>
 </div>
 
 <script>
-  function showDetail() {
-    // Click on aircraft shows detail on phone 1 (just for demo)
+// Subtle aircraft movement
+document.querySelectorAll('.ac').forEach((el, i) => {
+  const sx = parseFloat(el.style.left);
+  const sy = parseFloat(el.style.top);
+  const spd = 2.5 + Math.random() * 3;
+  let t = Math.random() * 100;
+  function tick() {
+    t += 0.4;
+    el.style.left = (sx + Math.sin(t * 0.01 * spd + i * 1.3) * 5) + 'px';
+    el.style.top  = (sy + Math.cos(t * 0.008 * spd + i * 0.9) * 4) + 'px';
+    requestAnimationFrame(tick);
   }
-  function hideDetail() {}
-
-  // Add subtle movement animation to aircraft
-  document.querySelectorAll('.aircraft').forEach((el, i) => {
-    const speed = 3 + Math.random() * 4;
-    const dx = (Math.random() - 0.5) * 0.3;
-    const dy = (Math.random() - 0.5) * 0.3;
-    let frame = 0;
-    const startX = parseFloat(el.style.left);
-    const startY = parseFloat(el.style.top);
-    function move() {
-      frame++;
-      el.style.left = (startX + Math.sin(frame * 0.01 * speed + i) * 4) + 'px';
-      el.style.top  = (startY + Math.cos(frame * 0.008 * speed + i) * 3) + 'px';
-      requestAnimationFrame(move);
-    }
-    move();
-  });
+  tick();
+});
 </script>
 </body>
 </html>

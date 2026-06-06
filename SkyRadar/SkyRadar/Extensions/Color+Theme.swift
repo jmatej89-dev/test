@@ -2,24 +2,28 @@ import SwiftUI
 
 extension Color {
     // Backgrounds
-    static let skyBackground      = Color(hex: "070B14")
-    static let skyCard            = Color(hex: "0F1826")
-    static let skyCardSecondary   = Color(hex: "162033")
-    static let skyBorder          = Color(hex: "1C2D4A")
+    static let skyBackground      = Color(hex: "050A14")
+    static let skyCard            = Color(hex: "0D1626")
+    static let skyCardSecondary   = Color(hex: "132030")
+    static let skyBorder          = Color(hex: "1A2D48")
 
-    // Accents
-    static let skyAccent          = Color(hex: "00D4FF")
-    static let skyAccentDim       = Color(hex: "0099BB")
+    // Civilian accents
+    static let skyAccent          = Color(hex: "00C8F0")
+    static let skyAccentDim       = Color(hex: "007FAA")
     static let skyGreen           = Color(hex: "00E676")
     static let skyOrange          = Color(hex: "FF7043")
     static let skyYellow          = Color(hex: "FFD600")
     static let skyRed             = Color(hex: "FF3B5C")
-    static let skyGray            = Color(hex: "90A4AE")
+    static let skyGray            = Color(hex: "8EAABF")
+
+    // Military
+    static let milAmber           = Color(hex: "FFB300")
+    static let milAmberDim        = Color(hex: "7A5500")
 
     // Text
-    static let skyText            = Color(hex: "E8F0FE")
-    static let skyTextSecondary   = Color(hex: "7B93B8")
-    static let skyTextDim         = Color(hex: "4A6080")
+    static let skyText            = Color(hex: "DCE9FA")
+    static let skyTextSecondary   = Color(hex: "6E8DAD")
+    static let skyTextDim         = Color(hex: "384D68")
 
     // Radar
     static let radarGreen         = Color(hex: "00FF88")
@@ -36,28 +40,27 @@ extension Color {
         default: (a, r, g, b) = (255, 0, 0, 0)
         }
         self.init(.sRGB,
-                  red: Double(r) / 255,
-                  green: Double(g) / 255,
-                  blue: Double(b) / 255,
+                  red:     Double(r) / 255,
+                  green:   Double(g) / 255,
+                  blue:    Double(b) / 255,
                   opacity: Double(a) / 255)
     }
 }
 
 extension LinearGradient {
     static let skyPrimary = LinearGradient(
-        colors: [.skyAccent, Color(hex: "0066FF")],
+        colors: [.skyAccent, Color(hex: "005FCC")],
         startPoint: .topLeading, endPoint: .bottomTrailing)
 
     static let skyCard = LinearGradient(
         colors: [Color.skyCard, Color.skyCardSecondary],
         startPoint: .top, endPoint: .bottom)
 
-    static let radarSweep = LinearGradient(
-        colors: [Color.radarGreen.opacity(0), Color.radarGreen.opacity(0.3)],
-        startPoint: .center, endPoint: .trailing)
+    static let milGradient = LinearGradient(
+        colors: [.milAmber, Color(hex: "E65100")],
+        startPoint: .topLeading, endPoint: .bottomTrailing)
 }
 
-// Altitude → color mapping
 extension AltitudeCategory {
     var color: Color {
         switch self {

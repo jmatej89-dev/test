@@ -2,79 +2,74 @@ import SwiftUI
 
 struct StatsBarView: View {
     @ObservedObject var viewModel: FlightViewModel
-    @State private var pulse = false
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                // Live badge
-                liveBadge
+            HStack(spacing: 12) {
+                LiveBadge()
 
-                Divider()
-                    .frame(height: 28)
-                    .overlay(Color.skyBorder)
+                divider
 
-                StatChip(
-                    icon: "airplane",
-                    value: "\(viewModel.visibleCount)",
-                    label: "Airborne",
-                    color: .skyAccent)
+                StatChip(icon: "airplane",      value: "\(viewModel.visibleCount)",
+                         label: "Airborne",  color: .skyAccent)
 
-                StatChip(
-                    icon: "arrow.up.right",
-                    value: "\(viewModel.climbingCount)",
-                    label: "Climbing",
-                    color: .skyGreen)
+                if viewModel.militaryCount > 0 {
+                    StatChip(icon: "shield.fill", value: "\(viewModel.militaryCount)",
+                             label: "Military", color: .milAmber)
+                }
 
-                StatChip(
-                    icon: "arrow.down.right",
-                    value: "\(viewModel.descendingCount)",
-                    label: "Descending",
-                    color: .skyOrange)
+                divider
 
-                StatChip(
-                    icon: "speedometer",
-                    value: "\(viewModel.averageSpeedKts)",
-                    label: "Avg kts",
-                    color: .skyYellow)
+                StatChip(icon: "arrow.up.right", value: "\(viewModel.climbingCount)",
+                         label: "Climb",     color: .skyGreen)
 
-                StatChip(
-                    icon: "cloud",
-                    value: "\(viewModel.averageAltitudeFt.withCommas)",
-                    label: "Avg ft",
-                    color: .skyTextSecondary)
+                StatChip(icon: "arrow.down.right", value: "\(viewModel.descendingCount)",
+                         label: "Descend",   color: .skyOrange)
+
+                divider
+
+                StatChip(icon: "speedometer",   value: "\(viewModel.averageSpeedKts)",
+                         label: "Avg kts",   color: .skyYellow)
+
+                StatChip(icon: "cloud",         value: "\(viewModel.averageAltitudeFt.withCommas)",
+                         label: "Avg ft",    color: .skyTextSecondary)
 
                 if let t = viewModel.lastUpdate {
-                    Divider()
-                        .frame(height: 28)
-                        .overlay(Color.skyBorder)
-
+                    divider
                     HStack(spacing: 4) {
-                        Image(systemName: "clock")
-                            .font(.system(size: 10))
-                            .foregroundColor(.skyTextDim)
+                        Image(systemName: "clock").font(.system(size: 10))
                         Text(t.relativeShort)
                             .font(.system(size: 11, weight: .medium, design: .monospaced))
-                            .foregroundColor(.skyTextDim)
                     }
+                    .foregroundColor(.skyTextDim)
                 }
             }
             .padding(.horizontal, 14)
-            .padding(.vertical, 10)
+            .padding(.vertical, 11)
         }
         .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
         .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.skyBorder, lineWidth: 1))
     }
 
-    private var liveBadge: some View {
-        HStack(spacing: 6) {
+    private var divider: some View {
+        Rectangle()
+            .fill(Color.skyBorder)
+            .frame(width: 1, height: 26)
+    }
+}
+
+struct LiveBadge: View {
+    @State private var ring = false
+
+    var body: some View {
+        HStack(spacing: 5) {
             ZStack {
                 Circle()
-                    .fill(Color.skyGreen.opacity(0.25))
-                    .frame(width: 16, height: 16)
-                    .scaleEffect(pulse ? 1.6 : 1.0)
-                    .opacity(pulse ? 0 : 0.6)
-                    .animation(.easeOut(duration: 1.2).repeatForever(autoreverses: false), value: pulse)
+                    .fill(Color.skyGreen.opacity(0.3))
+                    .frame(width: 14, height: 14)
+                    .scaleEffect(ring ? 1.9 : 1)
+                    .opacity(ring ? 0 : 0.7)
+                    .animation(.easeOut(duration: 1.5).repeatForever(autoreverses: false), value: ring)
                 Circle()
                     .fill(Color.skyGreen)
                     .frame(width: 7, height: 7)
@@ -84,7 +79,7 @@ struct StatsBarView: View {
                 .foregroundColor(.skyGreen)
                 .tracking(1.5)
         }
-        .onAppear { pulse = true }
+        .onAppear { ring = true }
     }
 }
 

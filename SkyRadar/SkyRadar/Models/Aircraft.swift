@@ -16,6 +16,13 @@ struct Aircraft: Identifiable, Equatable {
     let squawk: String?
     let lastContact: Date
 
+    // Derived
+    var aircraftClass: AircraftClass {
+        AircraftClassifier.classify(icao24: id, callsign: callsign)
+    }
+
+    var isMilitary: Bool { aircraftClass.isMilitary }
+
     var coordinate: CLLocationCoordinate2D? {
         guard let lat = latitude, let lon = longitude,
               !lat.isNaN, !lon.isNaN else { return nil }
@@ -50,41 +57,41 @@ struct Aircraft: Identifiable, Equatable {
     }
 
     var displayCallsign: String {
-        let trimmed = callsign.trimmingCharacters(in: .whitespaces)
-        return trimmed.isEmpty ? id.uppercased() : trimmed
+        let t = callsign.trimmingCharacters(in: .whitespaces)
+        return t.isEmpty ? id.uppercased() : t
     }
 
     var altitudeCategory: AltitudeCategory {
         guard let alt = altitudeFeet else { return .unknown }
         switch alt {
-        case 0..<1000: return .ground
-        case 1000..<10000: return .low
+        case 0..<500:    return .ground
+        case 500..<10000: return .low
         case 10000..<25000: return .medium
-        default: return .high
+        default:          return .high
         }
     }
 
-    static func == (lhs: Aircraft, rhs: Aircraft) -> Bool {
-        lhs.id == rhs.id
-    }
+    static func == (lhs: Aircraft, rhs: Aircraft) -> Bool { lhs.id == rhs.id }
 }
+
+// MARK: - Enums
 
 enum ClimbStatus {
     case climbing, descending, level
 
     var symbol: String {
         switch self {
-        case .climbing: return "arrow.up.right"
+        case .climbing:   return "arrow.up.right"
         case .descending: return "arrow.down.right"
-        case .level: return "arrow.right"
+        case .level:      return "arrow.right"
         }
     }
 
     var label: String {
         switch self {
-        case .climbing: return "Climbing"
+        case .climbing:   return "Climbing"
         case .descending: return "Descending"
-        case .level: return "Level"
+        case .level:      return "Level"
         }
     }
 }
@@ -92,13 +99,13 @@ enum ClimbStatus {
 enum AltitudeCategory {
     case ground, low, medium, high, unknown
 
-    var colorName: String {
+    var colorHex: String {
         switch self {
-        case .ground: return "skyGray"
-        case .low: return "skyOrange"
-        case .medium: return "skyYellow"
-        case .high: return "skyAccent"
-        case .unknown: return "skyAccent"
+        case .ground:  return "90A4AE"
+        case .low:     return "FF7043"
+        case .medium:  return "FFD600"
+        case .high:    return "00D4FF"
+        case .unknown: return "00D4FF"
         }
     }
 }

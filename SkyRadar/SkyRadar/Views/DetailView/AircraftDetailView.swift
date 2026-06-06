@@ -1,98 +1,135 @@
 import SwiftUI
-import MapKit
 
 struct AircraftDetailView: View {
     let aircraft: Aircraft
     @ObservedObject var viewModel: FlightViewModel
-    @State private var sheetHeight: SheetHeight = .partial
-    @State private var dragOffset: CGFloat = 0
+    @State private var expanded = false
 
-    enum SheetHeight { case partial, full }
+    var isMil: Bool { aircraft.isMilitary }
+    var accentColor: Color { isMil ? .milAmber : .skyAccent }
 
     var body: some View {
         VStack(spacing: 0) {
             // Drag handle
-            Capsule()
+            RoundedRectangle(cornerRadius: 3)
                 .fill(Color.skyBorder)
-                .frame(width: 36, height: 4)
+                .frame(width: 40, height: 5)
                 .padding(.top, 10)
-                .padding(.bottom, 4)
+                .onTapGesture { withAnimation(.spring()) { expanded.toggle() } }
+
+            // Photo (collapsed: 130 pt, expanded: 200 pt)
+            photoSection
+                .frame(height: expanded ? 200 : 130)
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: expanded)
 
             // Header
             headerSection
 
             ScrollView {
-                VStack(spacing: 16) {
-                    flightStatusRow
-                    Divider().overlay(Color.skyBorder)
+                VStack(spacing: 0) {
+                    if isMil { militaryBanner }
+
+                    Divider().overlay(Color.skyBorder).padding(.horizontal)
+
+                    statusRow
+                        .padding(.vertical, 12)
+                        .padding(.horizontal, 16)
+
+                    Divider().overlay(Color.skyBorder).padding(.horizontal)
+
                     metricsGrid
-                    Divider().overlay(Color.skyBorder)
-                    transponderSection
-                    actionButtons
+                        .padding(14)
+
+                    if expanded {
+                        Divider().overlay(Color.skyBorder).padding(.horizontal)
+                        transponderRow
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                    }
+
+                    actionRow
+                        .padding(.horizontal, 14)
+                        .padding(.bottom, 16)
+                        .padding(.top, 6)
                 }
-                .padding()
             }
         }
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .background(Color.skyCard, in: RoundedRectangle(cornerRadius: 26, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(Color.skyBorder, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 26, style: .continuous)
+                .stroke(isMil ? Color.milAmber.opacity(0.3) : Color.skyBorder, lineWidth: 1)
         )
         .padding(.horizontal, 8)
-        .frame(maxHeight: sheetHeight == .full ? 520 : 340)
+        .frame(maxHeight: expanded ? 620 : 400)
         .gesture(
-            DragGesture()
+            DragGesture(minimumDistance: 20)
                 .onEnded { g in
                     if g.translation.height < -40 {
-                        withAnimation(.spring()) { sheetHeight = .full }
+                        withAnimation(.spring()) { expanded = true }
                     } else if g.translation.height > 40 {
-                        if sheetHeight == .partial {
-                            viewModel.select(nil)
+                        if expanded {
+                            withAnimation(.spring()) { expanded = false }
                         } else {
-                            withAnimation(.spring()) { sheetHeight = .partial }
+                            viewModel.select(nil)
                         }
                     }
                 }
         )
-        .padding(.bottom, 20)
+        .padding(.bottom, 16)
+    }
+
+    // MARK: Photo
+    private var photoSection: some View {
+        AircraftPhotoView(icao24: aircraft.id)
+            .clipShape(
+                UnevenRoundedRectangle(
+                    topLeadingRadius: 0,
+                    bottomLeadingRadius: 0,
+                    bottomTrailingRadius: 0,
+                    topTrailingRadius: 0)
+            )
     }
 
     // MARK: Header
     private var headerSection: some View {
-        HStack(alignment: .center, spacing: 14) {
-            // Animated plane icon
+        HStack(alignment: .center, spacing: 12) {
+            // Icon
             ZStack {
                 Circle()
-                    .fill(aircraft.altitudeCategory.color.opacity(0.15))
-                    .frame(width: 52, height: 52)
+                    .fill(accentColor.opacity(0.12))
+                    .frame(width: 50, height: 50)
                 Circle()
-                    .stroke(aircraft.altitudeCategory.color.opacity(0.3), lineWidth: 1)
-                    .frame(width: 52, height: 52)
-                Image(systemName: "airplane")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundColor(aircraft.altitudeCategory.color)
+                    .stroke(accentColor.opacity(0.28), lineWidth: 1)
+                    .frame(width: 50, height: 50)
+                Image(systemName: isMil ? "airplane.departure" : "airplane")
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(accentColor)
                     .rotationEffect(.degrees(-45))
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
                     Text(aircraft.displayCallsign)
-                        .font(.system(size: 22, weight: .bold, design: .monospaced))
+                        .font(.system(size: 21, weight: .bold, design: .monospaced))
                         .foregroundColor(.skyText)
+
                     climbBadge
                 }
                 HStack(spacing: 6) {
-                    Image(systemName: "globe")
-                        .font(.system(size: 11))
-                        .foregroundColor(.skyTextDim)
-                    Text(aircraft.originCountry)
-                        .font(.system(size: 13))
-                        .foregroundColor(.skyTextSecondary)
+                    if let mil = aircraft.aircraftClass.militaryInfo {
+                        Text(mil.flag)
+                        Text(mil.country)
+                            .font(.system(size: 12, weight: .semibold))
+                            .foregroundColor(.milAmber)
+                    } else {
+                        Text("🌍")
+                        Text(aircraft.originCountry)
+                            .font(.system(size: 12))
+                            .foregroundColor(.skyTextSecondary)
+                    }
                     if let sq = aircraft.squawk {
-                        Text("·")
-                            .foregroundColor(.skyTextDim)
-                        Text("SQK \(sq)")
-                            .font(.system(size: 12, design: .monospaced))
+                        Text("· SQK \(sq)")
+                            .font(.system(size: 11, design: .monospaced))
                             .foregroundColor(.skyTextDim)
                     }
                 }
@@ -100,29 +137,65 @@ struct AircraftDetailView: View {
 
             Spacer()
 
-            Button {
-                viewModel.select(nil)
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(.skyTextSecondary)
-                    .frame(width: 32, height: 32)
-                    .background(Color.skyCard)
-                    .clipShape(Circle())
+            // Expand / close
+            VStack(spacing: 6) {
+                Button { viewModel.select(nil) } label: {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundColor(.skyTextSecondary)
+                        .frame(width: 30, height: 30)
+                        .background(Color.skyCardSecondary)
+                        .clipShape(Circle())
+                }
+                Button { withAnimation(.spring()) { expanded.toggle() } } label: {
+                    Image(systemName: expanded ? "chevron.down" : "chevron.up")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(.skyTextDim)
+                        .frame(width: 30, height: 30)
+                        .background(Color.skyCardSecondary)
+                        .clipShape(Circle())
+                }
             }
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 14)
         .padding(.vertical, 10)
     }
 
+    // MARK: Military banner
+    private var militaryBanner: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "shield.fill")
+                .font(.system(size: 13))
+                .foregroundColor(.milAmber)
+
+            if let info = aircraft.aircraftClass.militaryInfo {
+                Text("\(info.flag) \(info.branch)")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundColor(.milAmber)
+                Spacer()
+                Text("MILITARY AIRCRAFT")
+                    .font(.system(size: 9, weight: .black, design: .monospaced))
+                    .foregroundColor(.milAmber.opacity(0.7))
+                    .tracking(1)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 9)
+        .background(Color.milAmber.opacity(0.08))
+        .overlay(
+            Rectangle()
+                .fill(Color.milAmber.opacity(0.3))
+                .frame(height: 1),
+            alignment: .bottom)
+    }
+
     // MARK: Status row
-    private var flightStatusRow: some View {
-        HStack(spacing: 0) {
+    private var statusRow: some View {
+        HStack(spacing: 8) {
             StatusPill(
                 icon: aircraft.onGround ? "building.2" : "airplane",
                 label: aircraft.onGround ? "On Ground" : "Airborne",
                 color: aircraft.onGround ? .skyGray : .skyGreen)
-            Spacer()
             StatusPill(
                 icon: aircraft.climbStatus.symbol,
                 label: aircraft.climbStatus.label,
@@ -133,90 +206,57 @@ struct AircraftDetailView: View {
                 label: aircraft.lastContact.relativeShort,
                 color: .skyTextSecondary)
         }
-        .padding(.horizontal, 4)
     }
 
-    // MARK: Metrics grid
+    // MARK: Metrics
     private var metricsGrid: some View {
-        LazyVGrid(columns: [
-            GridItem(.flexible()),
-            GridItem(.flexible()),
-            GridItem(.flexible())
-        ], spacing: 12) {
-            MetricCard(
-                icon: "cloud",
-                value: aircraft.altitudeFeet.map { "\($0.withCommas)" } ?? "—",
-                unit: "ft",
-                label: "Altitude",
-                color: aircraft.altitudeCategory.color)
-
-            MetricCard(
-                icon: "speedometer",
-                value: aircraft.speedKnots.map { "\($0)" } ?? "—",
-                unit: "kts",
-                label: "Speed",
-                color: .skyAccent)
-
-            MetricCard(
-                icon: "arrow.up.and.down",
-                value: aircraft.verticalRateFpm.map { abs($0).withCommas } ?? "—",
-                unit: "fpm",
-                label: aircraft.climbStatus == .climbing ? "Climb" : aircraft.climbStatus == .descending ? "Descent" : "V/Speed",
-                color: climbColor)
-
-            MetricCard(
-                icon: "location.north",
-                value: aircraft.heading.map { String(format: "%.0f°", $0) } ?? "—",
-                unit: "",
-                label: "Heading",
-                color: .skyYellow)
-
-            MetricCard(
-                icon: "flag",
-                value: aircraft.flightLevel,
-                unit: "",
-                label: "Flight Level",
-                color: .skyText)
-
-            MetricCard(
-                icon: "antenna.radiowaves.left.and.right",
-                value: aircraft.squawk ?? "—",
-                unit: "",
-                label: "Squawk",
-                color: .skyTextSecondary)
+        LazyVGrid(columns: Array(repeating: .init(.flexible(), spacing: 8), count: 3), spacing: 8) {
+            MetricCard(icon: "cloud",              value: aircraft.altitudeFeet.map { "\($0.withCommas)" } ?? "—",
+                       unit: "ft",   label: "Altitude",    color: isMil ? .milAmber : aircraft.altitudeCategory.color)
+            MetricCard(icon: "speedometer",        value: aircraft.speedKnots.map { "\($0)" } ?? "—",
+                       unit: "kts",  label: "Speed",       color: accentColor)
+            MetricCard(icon: "arrow.up.and.down",  value: aircraft.verticalRateFpm.map { abs($0).withCommas } ?? "—",
+                       unit: "fpm",  label: vLabel,        color: climbColor)
+            MetricCard(icon: "location.north.fill",value: aircraft.heading.map { String(format: "%.0f°", $0) } ?? "—",
+                       unit: "",     label: "Heading",     color: .skyYellow)
+            MetricCard(icon: "flag.fill",          value: aircraft.flightLevel,
+                       unit: "",     label: "Flight Level",color: .skyText)
+            MetricCard(icon: "antenna.radiowaves.left.and.right",
+                       value: aircraft.squawk ?? "—",      unit: "", label: "Squawk", color: .skyTextSecondary)
         }
     }
 
-    // MARK: Transponder section
-    private var transponderSection: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("TRANSPONDER")
-                .font(.system(size: 10, weight: .bold, design: .monospaced))
-                .foregroundColor(.skyTextDim)
-                .tracking(1.5)
-
-            HStack(spacing: 16) {
-                DataRow(key: "ICAO24", value: aircraft.id.uppercased())
-                Spacer()
-                if let lat = aircraft.latitude, let lon = aircraft.longitude {
-                    DataRow(key: "Position", value: String(format: "%.3f° %.3f°", lat, lon))
-                }
+    // MARK: Transponder
+    private var transponderRow: some View {
+        HStack(alignment: .top) {
+            DataRow(key: "ICAO24", value: aircraft.id.uppercased())
+            Spacer()
+            if let lat = aircraft.latitude, let lon = aircraft.longitude {
+                DataRow(key: "Position",
+                        value: String(format: "%.4f°  %.4f°", lat, lon))
             }
         }
     }
 
-    // MARK: Action buttons
-    private var actionButtons: some View {
-        HStack(spacing: 12) {
-            ActionButton(icon: "location.fill", label: "Centre") {
+    // MARK: Actions
+    private var actionRow: some View {
+        HStack(spacing: 10) {
+            ActionButton(icon: "location.fill", label: "Centre map", accent: accentColor) {
                 viewModel.centerOn(aircraft)
             }
-
-            ActionButton(icon: "arrow.triangle.2.circlepath", label: "Track") {
-                viewModel.followUserLocation.toggle()
+            ActionButton(icon: "arrow.triangle.2.circlepath", label: "Refresh", accent: accentColor) {
+                Task { await viewModel.manualRefresh() }
             }
         }
-        .padding(.bottom, 4)
+    }
+
+    // MARK: Helpers
+    private var vLabel: String {
+        switch aircraft.climbStatus {
+        case .climbing:   return "Climb Rate"
+        case .descending: return "Descent Rate"
+        case .level:      return "V/Speed"
+        }
     }
 
     private var climbColor: Color {
@@ -232,7 +272,7 @@ struct AircraftDetailView: View {
             Image(systemName: aircraft.climbStatus.symbol)
                 .font(.system(size: 10))
             Text(aircraft.climbStatus.label)
-                .font(.system(size: 10, weight: .semibold))
+                .font(.system(size: 10, weight: .bold))
         }
         .foregroundColor(climbColor)
         .padding(.horizontal, 7)
@@ -242,7 +282,7 @@ struct AircraftDetailView: View {
     }
 }
 
-// MARK: - Sub-components
+// MARK: - Shared sub-components
 
 struct MetricCard: View {
     let icon: String
@@ -253,30 +293,31 @@ struct MetricCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            HStack(spacing: 5) {
+            HStack(spacing: 4) {
                 Image(systemName: icon)
-                    .font(.system(size: 11))
-                    .foregroundColor(color.opacity(0.8))
+                    .font(.system(size: 10))
+                    .foregroundColor(color.opacity(0.75))
                 Text(label)
-                    .font(.system(size: 10, weight: .medium))
+                    .font(.system(size: 9, weight: .medium))
                     .foregroundColor(.skyTextDim)
+                    .lineLimit(1)
             }
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 17, weight: .bold, design: .rounded))
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
                     .foregroundColor(.skyText)
                 if !unit.isEmpty {
                     Text(unit)
-                        .font(.system(size: 10, weight: .medium))
+                        .font(.system(size: 9, weight: .medium))
                         .foregroundColor(.skyTextSecondary)
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(Color.skyCard)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.skyBorder, lineWidth: 1))
+        .padding(10)
+        .background(Color.skyBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 11))
+        .overlay(RoundedRectangle(cornerRadius: 11).stroke(Color.skyBorder, lineWidth: 1))
     }
 }
 
@@ -286,16 +327,16 @@ struct StatusPill: View {
     let color: Color
 
     var body: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: 4) {
             Image(systemName: icon)
-                .font(.system(size: 11))
+                .font(.system(size: 10))
             Text(label)
-                .font(.system(size: 12, weight: .semibold))
+                .font(.system(size: 11, weight: .semibold))
         }
         .foregroundColor(color)
-        .padding(.horizontal, 10)
-        .padding(.vertical, 6)
-        .background(color.opacity(0.12))
+        .padding(.horizontal, 9)
+        .padding(.vertical, 5)
+        .background(color.opacity(0.1))
         .clipShape(Capsule())
     }
 }
@@ -319,22 +360,23 @@ struct DataRow: View {
 struct ActionButton: View {
     let icon: String
     let label: String
+    let accent: Color
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 8) {
+            HStack(spacing: 7) {
                 Image(systemName: icon)
-                    .font(.system(size: 14))
+                    .font(.system(size: 13))
                 Text(label)
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.system(size: 13, weight: .semibold))
             }
-            .foregroundColor(.skyAccent)
+            .foregroundColor(accent)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
-            .background(Color.skyAccent.opacity(0.1))
+            .padding(.vertical, 11)
+            .background(accent.opacity(0.1))
             .clipShape(RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.skyAccent.opacity(0.3), lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 12).stroke(accent.opacity(0.28), lineWidth: 1))
         }
         .buttonStyle(.plain)
     }

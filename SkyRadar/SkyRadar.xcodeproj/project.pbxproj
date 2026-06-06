@@ -1,8 +1,7 @@
 // !$*UTF8*$!
 {
 	archiveVersion = 1;
-	classes = {
-	};
+	classes = {};
 	objectVersion = 56;
 	objects = {
 
@@ -15,11 +14,14 @@
 		A31B028AAE3E703090B06181 = {isa = PBXBuildFile; fileRef = BF4857596B84E34FC87183C9 /* RadarSweepView.swift */; };
 		34E55D22479B8FFAE1640BCC = {isa = PBXBuildFile; fileRef = C9A48B8F909BA09AF0EAA941 /* StatsBarView.swift */; };
 		E0B52C6000D27101304D64A2 = {isa = PBXBuildFile; fileRef = E5B4E2107B8CD6C581633FBD /* FilterView.swift */; };
+		7ECF83E0810169C8C398A580 = {isa = PBXBuildFile; fileRef = 89DFD128F2A339333F930419 /* AircraftPhotoView.swift */; };
 		67F0F160CE4AD146EE4B769A = {isa = PBXBuildFile; fileRef = 97240DD9214071E805956878 /* SearchOverlayView.swift */; };
 		FB82996984E6CD338B2470A6 = {isa = PBXBuildFile; fileRef = 50C645425B110EBD0C7B6078 /* Aircraft.swift */; };
+		8B6DCD1766F197D2CA774201 = {isa = PBXBuildFile; fileRef = 876CE65468431D66DA202811 /* AircraftClassifier.swift */; };
 		5C306180A85069408626A6B2 = {isa = PBXBuildFile; fileRef = 5B66A261E7EA40ADF9B20B0F /* OpenSkyResponse.swift */; };
 		4062DCA94C7F12F647A4D264 = {isa = PBXBuildFile; fileRef = BBE54F5F9F068AE305DECD0B /* OpenSkyService.swift */; };
 		B2BE0B87784ACAF22FD1D0ED = {isa = PBXBuildFile; fileRef = 68FE8E95EB9190BE24B73E4C /* LocationService.swift */; };
+		2CB887620D442A8A539340B5 = {isa = PBXBuildFile; fileRef = 372BDC5B3B8C80C561B8EC20 /* PhotoService.swift */; };
 		AA640F0BDF1C281A0C4369AA = {isa = PBXBuildFile; fileRef = C21188930308FDC795C9F1FD /* FlightViewModel.swift */; };
 		F987219FCC701C51CD38B6D9 = {isa = PBXBuildFile; fileRef = 59FA5A1B45F0D7A0C628F92B /* ColorTheme.swift */; };
 		C967AAFC760EB5CDA5B5BE5A = {isa = PBXBuildFile; fileRef = 64B93C1196A2D9CAC3F8D049 /* Formatters.swift */; };
@@ -37,11 +39,14 @@
 		BF4857596B84E34FC87183C9 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadarSweepView.swift; sourceTree = "<group>"; };
 		C9A48B8F909BA09AF0EAA941 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsBarView.swift; sourceTree = "<group>"; };
 		E5B4E2107B8CD6C581633FBD = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
+		89DFD128F2A339333F930419 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftPhotoView.swift; sourceTree = "<group>"; };
 		97240DD9214071E805956878 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchOverlayView.swift; sourceTree = "<group>"; };
 		50C645425B110EBD0C7B6078 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Aircraft.swift; sourceTree = "<group>"; };
+		876CE65468431D66DA202811 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AircraftClassifier.swift; sourceTree = "<group>"; };
 		5B66A261E7EA40ADF9B20B0F = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSkyResponse.swift; sourceTree = "<group>"; };
 		BBE54F5F9F068AE305DECD0B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenSkyService.swift; sourceTree = "<group>"; };
 		68FE8E95EB9190BE24B73E4C = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
+		372BDC5B3B8C80C561B8EC20 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoService.swift; sourceTree = "<group>"; };
 		C21188930308FDC795C9F1FD = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlightViewModel.swift; sourceTree = "<group>"; };
 		59FA5A1B45F0D7A0C628F92B = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color+Theme.swift; sourceTree = "<group>"; };
 		64B93C1196A2D9CAC3F8D049 = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -50,32 +55,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		C448FB86A22E5B7F468F9341 = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+		C448FB86A22E5B7F468F9341 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		396AE4B78ADCA057876B0448 = {
-			isa = PBXGroup;
-			children = (
-				8818C2830E56A33B2B6438D5 /* SkyRadar */,
-				B879358E0122ADB25F226773 /* Products */,
-			);
-			sourceTree = "<group>";
-		};
-		B879358E0122ADB25F226773 = {
-			isa = PBXGroup;
-			children = (
-				387FFFCC1F8E83BC6F712A64 /* SkyRadar.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
+		396AE4B78ADCA057876B0448 = {isa = PBXGroup; children = (8818C2830E56A33B2B6438D5 /* SkyRadar */, B879358E0122ADB25F226773 /* Products */,); sourceTree = "<group>"; };
+		B879358E0122ADB25F226773 = {isa = PBXGroup; children = (387FFFCC1F8E83BC6F712A64 /* SkyRadar.app */,); name = Products; sourceTree = "<group>"; };
 		8818C2830E56A33B2B6438D5 = {
 			isa = PBXGroup;
 			children = (
@@ -87,11 +72,14 @@
 				BF4857596B84E34FC87183C9 /* RadarSweepView.swift */,
 				C9A48B8F909BA09AF0EAA941 /* StatsBarView.swift */,
 				E5B4E2107B8CD6C581633FBD /* FilterView.swift */,
+				89DFD128F2A339333F930419 /* AircraftPhotoView.swift */,
 				97240DD9214071E805956878 /* SearchOverlayView.swift */,
 				50C645425B110EBD0C7B6078 /* Aircraft.swift */,
+				876CE65468431D66DA202811 /* AircraftClassifier.swift */,
 				5B66A261E7EA40ADF9B20B0F /* OpenSkyResponse.swift */,
 				BBE54F5F9F068AE305DECD0B /* OpenSkyService.swift */,
 				68FE8E95EB9190BE24B73E4C /* LocationService.swift */,
+				372BDC5B3B8C80C561B8EC20 /* PhotoService.swift */,
 				C21188930308FDC795C9F1FD /* FlightViewModel.swift */,
 				59FA5A1B45F0D7A0C628F92B /* ColorTheme.swift */,
 				64B93C1196A2D9CAC3F8D049 /* Formatters.swift */,
@@ -107,16 +95,10 @@
 /* Begin PBXNativeTarget section */
 		D7CEEE107A2FA3884322246B = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A24E63F991640AA2E40120B7 /* Build configuration list for PBXNativeTarget SkyRadar */;
-			buildPhases = (
-				CD77EE1B024738EBDDD804E8 /* Sources */,
-				CEB73B00154D0F57D6819D49 /* Resources */,
-				C448FB86A22E5B7F468F9341 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
+			buildConfigurationList = A24E63F991640AA2E40120B7;
+			buildPhases = (CD77EE1B024738EBDDD804E8 /* Sources */, CEB73B00154D0F57D6819D49 /* Resources */, C448FB86A22E5B7F468F9341 /* Frameworks */,);
+			buildRules = ();
+			dependencies = ();
 			name = SkyRadar;
 			productName = SkyRadar;
 			productReference = 387FFFCC1F8E83BC6F712A64 /* SkyRadar.app */;
@@ -127,253 +109,152 @@
 /* Begin PBXProject section */
 		1781F676DEDF5767F3243DB0 = {
 			isa = PBXProject;
-			attributes = {
-				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
-				TargetAttributes = {
-					D7CEEE107A2FA3884322246B = {
-						CreatedOnToolsVersion = 15.0;
-					};
-				};
-			};
-			buildConfigurationList = 918461C0674A7F898915D308 /* Build configuration list for PBXProject SkyRadar */;
+			attributes = {BuildIndependentTargetsInParallel = 1; LastSwiftUpdateCheck = 1500; LastUpgradeCheck = 1500; TargetAttributes = {D7CEEE107A2FA3884322246B = {CreatedOnToolsVersion = 15.0;};};  };
+			buildConfigurationList = 918461C0674A7F898915D308;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
-			knownRegions = (
-				en,
-				Base,
-			);
+			knownRegions = (en, Base,);
 			mainGroup = 396AE4B78ADCA057876B0448;
 			productRefGroup = B879358E0122ADB25F226773 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
-			targets = (
-				D7CEEE107A2FA3884322246B /* SkyRadar */,
-			);
+			targets = (D7CEEE107A2FA3884322246B /* SkyRadar */,);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		CEB73B00154D0F57D6819D49 = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				5A51A7BE100D1BC44B237940,
-				0739DC6A2157B19192224894,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+		CEB73B00154D0F57D6819D49 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (
+			5A51A7BE100D1BC44B237940,
+			0739DC6A2157B19192224894,
+		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		CD77EE1B024738EBDDD804E8 = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8BE1EE0FB6863AA03A34332F /* SkyRadarApp.swift in Sources */,
-				D939BE8F34256C6FDD8E5EA7 /* ContentView.swift in Sources */,
-				D5FB77D9F1A62A3ABA0C9766 /* FlightMapView.swift in Sources */,
-				4A20CC0409017CD864C6AEA0 /* AircraftAnnotation.swift in Sources */,
-				DDFEFAA4B89D15E4B8863348 /* AircraftDetailView.swift in Sources */,
-				A31B028AAE3E703090B06181 /* RadarSweepView.swift in Sources */,
-				34E55D22479B8FFAE1640BCC /* StatsBarView.swift in Sources */,
-				E0B52C6000D27101304D64A2 /* FilterView.swift in Sources */,
-				67F0F160CE4AD146EE4B769A /* SearchOverlayView.swift in Sources */,
-				FB82996984E6CD338B2470A6 /* Aircraft.swift in Sources */,
-				5C306180A85069408626A6B2 /* OpenSkyResponse.swift in Sources */,
-				4062DCA94C7F12F647A4D264 /* OpenSkyService.swift in Sources */,
-				B2BE0B87784ACAF22FD1D0ED /* LocationService.swift in Sources */,
-				AA640F0BDF1C281A0C4369AA /* FlightViewModel.swift in Sources */,
-				F987219FCC701C51CD38B6D9 /* ColorTheme.swift in Sources */,
-				C967AAFC760EB5CDA5B5BE5A /* Formatters.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
+		CD77EE1B024738EBDDD804E8 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (
+			8BE1EE0FB6863AA03A34332F /* SkyRadarApp.swift in Sources */,
+			D939BE8F34256C6FDD8E5EA7 /* ContentView.swift in Sources */,
+			D5FB77D9F1A62A3ABA0C9766 /* FlightMapView.swift in Sources */,
+			4A20CC0409017CD864C6AEA0 /* AircraftAnnotation.swift in Sources */,
+			DDFEFAA4B89D15E4B8863348 /* AircraftDetailView.swift in Sources */,
+			A31B028AAE3E703090B06181 /* RadarSweepView.swift in Sources */,
+			34E55D22479B8FFAE1640BCC /* StatsBarView.swift in Sources */,
+			E0B52C6000D27101304D64A2 /* FilterView.swift in Sources */,
+			7ECF83E0810169C8C398A580 /* AircraftPhotoView.swift in Sources */,
+			67F0F160CE4AD146EE4B769A /* SearchOverlayView.swift in Sources */,
+			FB82996984E6CD338B2470A6 /* Aircraft.swift in Sources */,
+			8B6DCD1766F197D2CA774201 /* AircraftClassifier.swift in Sources */,
+			5C306180A85069408626A6B2 /* OpenSkyResponse.swift in Sources */,
+			4062DCA94C7F12F647A4D264 /* OpenSkyService.swift in Sources */,
+			B2BE0B87784ACAF22FD1D0ED /* LocationService.swift in Sources */,
+			2CB887620D442A8A539340B5 /* PhotoService.swift in Sources */,
+			AA640F0BDF1C281A0C4369AA /* FlightViewModel.swift in Sources */,
+			F987219FCC701C51CD38B6D9 /* ColorTheme.swift in Sources */,
+			C967AAFC760EB5CDA5B5BE5A /* Formatters.swift in Sources */,
+		); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		EF531B549CC7D196200CF87B = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1 $(inherited)";
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		E79950FFAD3E4802886EB742 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf-with-dsym;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				MTL_FAST_MATH = YES;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		2672D41866B890189EA4D168 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_ASSET_PATHS = "\"SkyRadar/Preview Content\"";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = SkyRadar/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.skyradar.app;
-				PRODUCT_NAME = $(TARGET_NAME);
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		AF419746B51A97135B3CE667 = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"SkyRadar/Preview Content\"";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = SkyRadar/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.skyradar.app;
-				PRODUCT_NAME = $(TARGET_NAME);
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
+		EF531B549CC7D196200CF87B = {isa = XCBuildConfiguration; buildSettings = {
+			ALWAYS_SEARCH_USER_PATHS = NO;
+			CLANG_ENABLE_MODULES = YES;
+			CLANG_ENABLE_OBJC_ARC = YES;
+			CLANG_ENABLE_OBJC_WEAK = YES;
+			CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+			CLANG_WARN_BOOL_CONVERSION = YES;
+			CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+			CLANG_WARN_EMPTY_BODY = YES;
+			CLANG_WARN_ENUM_CONVERSION = YES;
+			CLANG_WARN_INT_CONVERSION = YES;
+			CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+			CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+			CLANG_WARN_UNREACHABLE_CODE = YES;
+			COPY_PHASE_STRIP = NO;
+			DEBUG_INFORMATION_FORMAT = dwarf;
+			ENABLE_TESTABILITY = YES;
+			GCC_OPTIMIZATION_LEVEL = 0;
+			GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1 $(inherited)";
+			GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+			GCC_WARN_UNDECLARED_SELECTOR = YES;
+			GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+			GCC_WARN_UNUSED_FUNCTION = YES;
+			GCC_WARN_UNUSED_VARIABLE = YES;
+			IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+			MTL_FAST_MATH = YES;
+			ONLY_ACTIVE_ARCH = YES;
+			SDKROOT = iphoneos;
+			SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+			SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			SWIFT_VERSION = 5.0;
+			TARGETED_DEVICE_FAMILY = "1,2";
+		}; name = Debug; };
+		E79950FFAD3E4802886EB742 = {isa = XCBuildConfiguration; buildSettings = {
+			ALWAYS_SEARCH_USER_PATHS = NO;
+			CLANG_ENABLE_MODULES = YES;
+			CLANG_ENABLE_OBJC_ARC = YES;
+			CLANG_ENABLE_OBJC_WEAK = YES;
+			CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+			CLANG_WARN_BOOL_CONVERSION = YES;
+			CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+			CLANG_WARN_EMPTY_BODY = YES;
+			CLANG_WARN_ENUM_CONVERSION = YES;
+			CLANG_WARN_INT_CONVERSION = YES;
+			CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+			CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+			CLANG_WARN_UNREACHABLE_CODE = YES;
+			COPY_PHASE_STRIP = NO;
+			ENABLE_NS_ASSERTIONS = NO;
+			GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+			GCC_WARN_UNDECLARED_SELECTOR = YES;
+			GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+			GCC_WARN_UNUSED_FUNCTION = YES;
+			GCC_WARN_UNUSED_VARIABLE = YES;
+			IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+			MTL_FAST_MATH = YES;
+			SDKROOT = iphoneos;
+			SWIFT_COMPILATION_MODE = wholemodule;
+			SWIFT_OPTIMIZATION_LEVEL = "-O";
+			SWIFT_VERSION = 5.0;
+			TARGETED_DEVICE_FAMILY = "1,2";
+			VALIDATE_PRODUCT = YES;
+		}; name = Release; };
+		2672D41866B890189EA4D168 = {isa = XCBuildConfiguration; buildSettings = {
+			ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+			ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+			CODE_SIGN_STYLE = Automatic;
+			CURRENT_PROJECT_VERSION = 1;
+			ENABLE_PREVIEWS = YES;
+			GENERATE_INFOPLIST_FILE = NO;
+			INFOPLIST_FILE = SkyRadar/Info.plist;
+			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+			MARKETING_VERSION = 1.0;
+			PRODUCT_BUNDLE_IDENTIFIER = com.skyradar.app;
+			PRODUCT_NAME = $(TARGET_NAME);
+			SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+			SWIFT_EMIT_LOC_STRINGS = YES;
+			SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+		}; name = Debug; };
+		AF419746B51A97135B3CE667 = {isa = XCBuildConfiguration; buildSettings = {
+			ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+			ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+			CODE_SIGN_STYLE = Automatic;
+			CURRENT_PROJECT_VERSION = 1;
+			ENABLE_PREVIEWS = YES;
+			GENERATE_INFOPLIST_FILE = NO;
+			INFOPLIST_FILE = SkyRadar/Info.plist;
+			LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+			MARKETING_VERSION = 1.0;
+			PRODUCT_BUNDLE_IDENTIFIER = com.skyradar.app;
+			PRODUCT_NAME = $(TARGET_NAME);
+			SWIFT_COMPILATION_MODE = wholemodule;
+			SWIFT_EMIT_LOC_STRINGS = YES;
+			SWIFT_OPTIMIZATION_LEVEL = "-O";
+		}; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		918461C0674A7F898915D308 = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				EF531B549CC7D196200CF87B /* Debug */,
-				E79950FFAD3E4802886EB742 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A24E63F991640AA2E40120B7 = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				2672D41866B890189EA4D168 /* Debug */,
-				AF419746B51A97135B3CE667 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
+		918461C0674A7F898915D308 = {isa = XCConfigurationList; buildConfigurations = (EF531B549CC7D196200CF87B /* Debug */, E79950FFAD3E4802886EB742 /* Release */,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		A24E63F991640AA2E40120B7 = {isa = XCConfigurationList; buildConfigurations = (2672D41866B890189EA4D168 /* Debug */, AF419746B51A97135B3CE667 /* Release */,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 
 	};
