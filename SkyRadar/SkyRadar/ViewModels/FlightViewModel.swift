@@ -14,6 +14,7 @@ final class FlightViewModel: ObservableObject {
     @Published var isRefreshing  = false
     @Published var errorMessage: String?
     @Published var lastUpdate: Date?
+    @Published var userLocation: CLLocationCoordinate2D?   // mirrors LocationService
 
     // Filters
     @Published var searchQuery    = ""
@@ -25,14 +26,14 @@ final class FlightViewModel: ObservableObject {
 
     // Map
     @Published var mapRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 48.5, longitude: 12.0),
-        span: MKCoordinateSpan(latitudeDelta: 18, longitudeDelta: 22))
+        center: CLLocationCoordinate2D(latitude: 50.0, longitude: 14.0),
+        span: MKCoordinateSpan(latitudeDelta: 10, longitudeDelta: 12))
 
     // MARK: - Stats
-    var visibleCount:        Int { filteredAircraft.count }
-    var militaryCount:       Int { filteredAircraft.filter { $0.isMilitary }.count }
-    var climbingCount:       Int { filteredAircraft.filter { $0.climbStatus == .climbing }.count }
-    var descendingCount:     Int { filteredAircraft.filter { $0.climbStatus == .descending }.count }
+    var visibleCount:    Int { filteredAircraft.count }
+    var militaryCount:   Int { filteredAircraft.filter { $0.isMilitary }.count }
+    var climbingCount:   Int { filteredAircraft.filter { $0.climbStatus == .climbing }.count }
+    var descendingCount: Int { filteredAircraft.filter { $0.climbStatus == .descending }.count }
 
     var averageAltitudeFt: Int {
         let a = filteredAircraft.compactMap { $0.altitudeFeet }
@@ -50,8 +51,12 @@ final class FlightViewModel: ObservableObject {
     // MARK: - Private
     private var refreshTimer: Timer?
     private var cancellables = Set<AnyCancellable>()
+    private var hasAutocentered = false
 
-    init() { setupFilterPipeline() }
+    init() {
+        setupFilterPipeline()
+        observeUserLocation()
+    }
 
     // MARK: - Tracking
     func startTracking() {
@@ -72,6 +77,31 @@ final class FlightViewModel: ObservableObject {
         isRefreshing = false
     }
 
+    // MARK: - GPS / My Location
+
+    /// Called when the user taps the location button — snaps map to their GPS.
+    func goToUserLocation() {
+        guard let loc = userLocation else { return }
+        centerOnCoordinate(loc, span: 6)
+        Task { await fetchFlights() }
+    }
+
+    /// Called automatically on first GPS fix.
+    private func autoCenter(to location: CLLocationCoordinate2D) {
+        guard !hasAutocentered else { return }
+        hasAutocentered = true
+        centerOnCoordinate(location, span: 8)
+        Task { await fetchFlights() }
+    }
+
+    private func centerOnCoordinate(_ c: CLLocationCoordinate2D, span: Double) {
+        withAnimation(.easeInOut(duration: 0.8)) {
+            mapRegion = MKCoordinateRegion(
+                center: c,
+                span: MKCoordinateSpan(latitudeDelta: span, longitudeDelta: span))
+        }
+    }
+
     // MARK: - Selection & navigation
     func select(_ aircraft: Aircraft?) {
         withAnimation(.spring(response: 0.38, dampingFraction: 0.82)) {
@@ -84,7 +114,7 @@ final class FlightViewModel: ObservableObject {
         withAnimation(.easeInOut(duration: 0.6)) {
             mapRegion = MKCoordinateRegion(
                 center: coord,
-                span: MKCoordinateSpan(latitudeDelta: 4, longitudeDelta: 4))
+                span: MKCoordinateSpan(latitudeDelta: 3, longitudeDelta: 3))
         }
     }
 
@@ -93,17 +123,17 @@ final class FlightViewModel: ObservableObject {
         Task { await fetchFlights() }
     }
 
-    // MARK: - Private
+    // MARK: - Private fetch
     private func fetchFlights() async {
         guard !isLoading else { return }
-        isLoading     = true
-        errorMessage  = nil
+        isLoading    = true
+        errorMessage = nil
 
         do {
             let box = BoundingBox(
                 center:  mapRegion.center,
-                latSpan: mapRegion.span.latitudeDelta  * 0.6,
-                lonSpan: mapRegion.span.longitudeDelta * 0.6)
+                latSpan: mapRegion.span.latitudeDelta  * 0.65,
+                lonSpan: mapRegion.span.longitudeDelta * 0.65)
             let fetched = try await OpenSkyService.shared.fetchAircraft(in: box)
             aircraft = fetched
             applyFilters()
@@ -115,14 +145,25 @@ final class FlightViewModel: ObservableObject {
         isLoading = false
     }
 
+    private func observeUserLocation() {
+        LocationService.shared.$userLocation
+            .compactMap { $0 }
+            .receive(on: RunLoop.main)
+            .sink { [weak self] loc in
+                self?.userLocation = loc
+                self?.autoCenter(to: loc)
+            }
+            .store(in: &cancellables)
+    }
+
     private func setupFilterPipeline() {
         Publishers.MergeMany(
-            $searchQuery.map { _ in () }.eraseToAnyPublisher(),
-            $showOnGround.map { _ in () }.eraseToAnyPublisher(),
-            $showMilitary.map { _ in () }.eraseToAnyPublisher(),
-            $onlyMilitary.map { _ in () }.eraseToAnyPublisher(),
+            $searchQuery.map    { _ in () }.eraseToAnyPublisher(),
+            $showOnGround.map   { _ in () }.eraseToAnyPublisher(),
+            $showMilitary.map   { _ in () }.eraseToAnyPublisher(),
+            $onlyMilitary.map   { _ in () }.eraseToAnyPublisher(),
             $altitudeFilter.map { _ in () }.eraseToAnyPublisher(),
-            $countryFilter.map { _ in () }.eraseToAnyPublisher()
+            $countryFilter.map  { _ in () }.eraseToAnyPublisher()
         )
         .debounce(for: .milliseconds(150), scheduler: RunLoop.main)
         .sink { [weak self] in self?.applyFilters() }
@@ -150,9 +191,9 @@ final class FlightViewModel: ObservableObject {
         if !searchQuery.isEmpty {
             let q = searchQuery.lowercased()
             result = result.filter {
-                $0.displayCallsign.lowercased().contains(q) ||
-                $0.id.lowercased().contains(q)              ||
-                $0.originCountry.lowercased().contains(q)   ||
+                $0.displayCallsign.lowercased().contains(q)  ||
+                $0.id.lowercased().contains(q)               ||
+                $0.originCountry.lowercased().contains(q)    ||
                 ($0.aircraftClass.militaryInfo?.branch.lowercased().contains(q) ?? false)
             }
         }
