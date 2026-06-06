@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkyRadar — Preview</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg0:#040A14; --bg1:#060D16; --bg2:#0A1828; --bg3:#0F2035; --bg4:#152840;
+  --b1:#1A2D48; --b2:#243D5C; --b3:#2E4E74;
+  --t1:#DCE9FA; --t2:#7A9DC0; --t3:#3D5A7A; --t4:#243D5C;
+  --cyan:#00C8F0; --green:#00E676; --amber:#FFB300; --red:#FF5252;
+  --low:#FF7043; --mid:#FFD600; --high:#00C8F0; --gnd:#6E8DAD;
+  --blur:blur(22px) saturate(180%); --shadow:0 16px 48px rgba(0,0,0,.75);
+  --r:12px; --r-sm:7px;
+  --glow-cyan:0 0 16px rgba(0,200,240,.28),0 0 4px rgba(0,200,240,.12);
+  --glow-amber:0 0 16px rgba(255,179,0,.3),0 0 4px rgba(255,179,0,.15);
+}
+html,body { height:100%; width:100%; overflow:hidden; background:var(--bg0); color:var(--t1);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Segoe UI',system-ui,sans-serif;
+  font-size:13px; -webkit-font-smoothing:antialiased; }
+
+#map { position:fixed; inset:0; z-index:0; background:var(--bg0); }
+.leaflet-container { background:var(--bg0) !important; }
+.leaflet-control-attribution { background:rgba(4,10,20,.72) !important; color:var(--t3) !important; font-size:9px !important; }
+.leaflet-control-zoom { border:none !important; box-shadow:0 4px 20px rgba(0,0,0,.5) !important; }
+.leaflet-control-zoom a { background:rgba(10,24,40,.88) !important; backdrop-filter:blur(16px) !important; color:var(--t2) !important; border:1px solid var(--b2) !important; width:34px !important; height:34px !important; line-height:34px !important; font-size:16px !important; }
+.leaflet-control-zoom a:first-child { border-radius:9px 9px 0 0 !important; }
+.leaflet-control-zoom a:last-child  { border-radius:0 0 9px 9px !important; border-top-color:var(--b1) !important; }
+.leaflet-control-zoom a:hover { background:var(--bg4) !important; color:var(--cyan) !important; }
+
+#radar-sweep { position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden; }
+#radar-sweep::before { content:''; position:absolute; top:50%; left:50%; width:220vmax; height:220vmax; margin:-110vmax;
+  background:conic-gradient(from 0deg, transparent 0deg 295deg, rgba(0,200,240,.025) 310deg, rgba(0,200,240,.07) 340deg, rgba(0,200,240,.025) 355deg, transparent 360deg);
+  animation:sweep 8s linear infinite; border-radius:50%; }
+@keyframes sweep { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+#scan-line { position:absolute; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent 0%,rgba(0,200,240,0) 15%,rgba(0,200,240,.35) 50%,rgba(0,200,240,0) 85%,transparent 100%); animation:scan 7s linear infinite; mix-blend-mode:screen; }
+@keyframes scan { 0%{top:0;opacity:0} 5%{opacity:1} 90%{opacity:0.5} 100%{top:100vh;opacity:0} }
+
+/* Aircraft markers */
+.ac-wrap { display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; will-change:transform; transition:transform .12s ease; }
+.ac-wrap:hover { transform:scale(1.12); }
+.ac-wrap.selected { transform:scale(1.08); }
+.ac-svg { display:flex; align-items:center; justify-content:center; }
+.ac-lbl { display:flex; flex-direction:column; align-items:center; opacity:0; transform:translateY(-2px); transition:opacity .2s,transform .2s; pointer-events:none; white-space:nowrap; background:rgba(4,10,20,.78); border:1px solid rgba(26,45,72,.7); border-radius:6px; padding:2px 6px; backdrop-filter:blur(8px); }
+.ac-wrap:hover .ac-lbl, .ac-wrap.selected .ac-lbl { opacity:1; transform:translateY(0); }
+.ac-cs { font-size:10px; font-weight:700; letter-spacing:.04em; line-height:1.3; }
+.ac-fl  { font-size:9px; font-weight:500; opacity:.85; line-height:1.2; }
+
+.user-dot { position:relative; width:14px; height:14px; border-radius:50%; background:var(--cyan); border:2.5px solid #fff; box-shadow:0 0 10px var(--cyan),0 0 20px rgba(0,200,240,.3); }
+.user-ring { position:absolute; inset:-7px; border:1.5px solid var(--cyan); border-radius:50%; opacity:.55; animation:user-pulse 2.2s ease-in-out infinite; }
+.user-ring.r2 { inset:-13px; border-color:rgba(0,200,240,.35); animation-delay:.7s; }
+@keyframes user-pulse { 0%,100%{opacity:.55;transform:scale(1)} 50%{opacity:0;transform:scale(1.5)} }
+
+/* Topbar */
+#topbar { position:fixed; top:0; left:0; right:0; z-index:100; height:56px; display:flex; align-items:center; gap:10px; padding:0 14px; background:linear-gradient(180deg,rgba(4,10,20,.96) 0%,rgba(4,10,20,.82) 100%); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur); border-bottom:1px solid var(--b1); box-shadow:inset 0 1px 0 rgba(0,200,240,.12); }
+.tb-logo { display:flex; align-items:center; gap:9px; flex-shrink:0; }
+.tb-logo-box { width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,#003E99 0%,#0055CC 50%,#0078CC 100%); border:1px solid rgba(0,120,204,.4); display:flex; align-items:center; justify-content:center; box-shadow:0 2px 12px rgba(0,85,204,.4); }
+.tb-logo-box svg { width:18px; height:18px; }
+.tb-name { font-size:17px; font-weight:800; letter-spacing:-.025em; background:linear-gradient(135deg,var(--t1) 0%,rgba(0,200,240,.9) 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.tb-live-pill { display:flex; align-items:center; gap:6px; background:rgba(0,230,118,.08); border:1px solid rgba(0,230,118,.18); border-radius:20px; padding:4px 11px; flex-shrink:0; }
+.live-dot { width:7px; height:7px; border-radius:50%; background:var(--green); box-shadow:0 0 8px var(--green); animation:live-blink 2s ease-in-out infinite; flex-shrink:0; }
+@keyframes live-blink { 0%,100%{opacity:1;box-shadow:0 0 8px var(--green)} 50%{opacity:.35;box-shadow:none} }
+.live-label { font-size:10px; font-weight:800; letter-spacing:.1em; color:var(--green); }
+.live-count { font-size:12px; font-weight:600; color:var(--t1); font-variant-numeric:tabular-nums; }
+.tb-actions { margin-left:auto; display:flex; align-items:center; gap:5px; }
+.tb-btn { width:34px; height:34px; border:1px solid var(--b1); border-radius:var(--r-sm); background:rgba(10,24,40,.6); color:var(--t2); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background .15s,color .15s; flex-shrink:0; backdrop-filter:blur(12px); }
+.tb-btn svg { width:16px; height:16px; }
+.tb-btn:hover { background:var(--bg4); color:var(--t1); border-color:var(--b2); }
+.tb-btn:active { background:rgba(0,200,240,.15); color:var(--cyan); border-color:rgba(0,200,240,.3); box-shadow:var(--glow-cyan); }
+
+/* Stats bar */
+#statsbar { position:fixed; bottom:0; left:0; right:0; z-index:100; height:60px; background:linear-gradient(0deg,rgba(4,10,20,.97) 0%,rgba(4,10,20,.82) 100%); backdrop-filter:var(--blur); border-top:1px solid var(--b1); box-shadow:inset 0 -1px 0 rgba(0,200,240,.06); overflow-x:auto; scrollbar-width:none; }
+#statsbar::-webkit-scrollbar { display:none; }
+.sb-inner { height:100%; display:flex; align-items:center; padding:0 14px; gap:0; min-width:max-content; }
+.sb-chip { display:flex; align-items:center; gap:7px; padding:0 12px; white-space:nowrap; }
+.sb-div { width:1px; height:22px; background:var(--b1); flex-shrink:0; }
+.chip-val { font-size:16px; font-weight:700; line-height:1; font-variant-numeric:tabular-nums; color:var(--t1); }
+.chip-lbl { font-size:9px; font-weight:600; letter-spacing:.06em; color:var(--t3); text-transform:uppercase; line-height:1.3; margin-top:2px; }
+
+/* Detail panel */
+#detail-panel { position:fixed; bottom:60px; left:0; right:0; z-index:200; max-width:430px; margin:0 auto; background:var(--bg2); border:1px solid var(--b2); border-bottom:none; border-radius:16px 16px 0 0; box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.04); overflow-y:auto; max-height:calc(100svh - 120px); transform:translateY(100%); transition:transform .38s cubic-bezier(.32,.72,0,1); }
+#detail-panel.open { transform:translateY(0); }
+#dp-drag-bar { width:38px; height:4px; background:var(--b3); border-radius:2px; margin:10px auto 0; }
+#dp-photo { position:relative; width:100%; height:185px; background:var(--bg3); overflow:hidden; }
+#dp-photo::after { content:''; position:absolute; bottom:0; left:0; right:0; height:70px; background:linear-gradient(0deg,var(--bg2) 0%,transparent 100%); pointer-events:none; z-index:1; }
+#dp-photo-img { width:100%; height:100%; object-fit:cover; display:block; }
+#dp-credit { position:absolute; bottom:8px; left:12px; right:12px; font-size:10px; color:rgba(220,233,250,.65); z-index:2; }
+#dp-head { display:flex; align-items:flex-start; gap:12px; padding:12px 14px 6px; }
+.dp-plane-icon { width:40px; height:40px; border-radius:11px; border:1px solid; display:flex; align-items:center; justify-content:center; font-size:19px; flex-shrink:0; }
+.dp-callsign { font-size:18px; font-weight:800; letter-spacing:-.02em; color:var(--t1); line-height:1.2; font-variant-numeric:tabular-nums; }
+.dp-sub { display:flex; align-items:center; flex-wrap:wrap; gap:5px; margin-top:4px; font-size:11.5px; color:var(--t2); }
+.dp-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:10px; }
+.dp-close-btn { background:var(--bg3); border:1px solid var(--b2); color:var(--t2); width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:11px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.dp-close-btn:hover { background:var(--bg4); color:var(--t1); }
+.dp-mil-banner { display:flex; align-items:center; gap:9px; margin:6px 14px; padding:9px 12px; background:linear-gradient(135deg,rgba(255,179,0,.09) 0%,rgba(255,140,0,.05) 100%); border:1px solid rgba(255,179,0,.22); border-radius:var(--r-sm); font-size:12px; color:var(--amber); box-shadow:0 0 20px rgba(255,179,0,.06); }
+.dp-mil-tag { margin-left:auto; font-size:8.5px; font-weight:900; letter-spacing:.1em; background:rgba(255,179,0,.14); border:1px solid rgba(255,179,0,.2); padding:2px 7px; border-radius:4px; }
+.dp-divider { height:1px; background:var(--b1); margin:6px 0; }
+.dp-status-row { padding:0 14px 8px; display:flex; gap:7px; flex-wrap:wrap; }
+.dp-pill { font-size:11px; font-weight:700; padding:4px 11px; border-radius:12px; letter-spacing:.02em; }
+.dp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; padding:2px 14px 10px; }
+.m-card { background:var(--bg3); border:1px solid var(--b1); border-radius:var(--r-sm); padding:9px 10px; }
+.m-top { font-size:8.5px; font-weight:700; letter-spacing:.07em; color:var(--t3); text-transform:uppercase; margin-bottom:5px; display:flex; align-items:center; gap:4px; }
+.m-val { font-size:15px; font-weight:800; font-variant-numeric:tabular-nums; line-height:1.1; }
+.m-unit { font-size:10px; color:var(--t3); font-weight:500; margin-left:1px; }
+.dp-actions { padding:2px 14px 16px; display:flex; gap:8px; }
+.dp-action-btn { flex:1; padding:10px 12px; border-radius:var(--r-sm); border:1px solid; background:transparent; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit; }
+
+/* Search overlay */
+#search-overlay { position:fixed; inset:0; z-index:300; background:rgba(4,10,20,.65); backdrop-filter:var(--blur); display:flex; align-items:flex-start; justify-content:center; padding-top:72px; opacity:0; pointer-events:none; transition:opacity .22s ease; }
+#search-overlay.open { opacity:1; pointer-events:all; }
+#search-box { width:min(500px,calc(100% - 24px)); background:var(--bg2); border:1px solid var(--b2); border-radius:var(--r); box-shadow:var(--shadow); overflow:hidden; display:flex; flex-direction:column; max-height:calc(100svh - 100px); }
+.search-header { display:flex; align-items:center; justify-content:space-between; padding:13px 15px; border-bottom:1px solid var(--b1); }
+.search-title { font-size:14px; font-weight:700; color:var(--t1); }
+.search-close-btn { background:none; border:none; color:var(--cyan); font-size:13px; font-weight:700; cursor:pointer; padding:3px 8px; border-radius:6px; font-family:inherit; }
+.search-input-wrap { position:relative; border-bottom:1px solid var(--b1); }
+.search-icon { position:absolute; left:15px; top:50%; transform:translateY(-50%); width:16px; height:16px; color:var(--t2); pointer-events:none; }
+#search-input { width:100%; padding:13px 15px 13px 42px; background:transparent; border:none; outline:none; color:var(--t1); font-size:15px; font-family:inherit; caret-color:var(--cyan); }
+.search-row { display:flex; align-items:center; gap:11px; padding:10px 15px; cursor:pointer; transition:background .12s; border-bottom:1px solid rgba(26,45,72,.4); }
+.search-row:hover { background:var(--bg3); }
+.sr-icon { width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+.sr-cs { font-size:13px; font-weight:700; }
+.sr-mil-badge { font-size:8.5px; font-weight:900; background:rgba(255,179,0,.14); color:var(--amber); padding:1px 5px; border-radius:4px; margin-left:6px; }
+.sr-sub { font-size:11px; color:var(--t2); margin-top:2px; }
+.sr-spd { font-size:11px; color:var(--t3); flex-shrink:0; }
+
+/* Filter panel */
+#filter-panel { position:fixed; top:0; right:0; bottom:0; z-index:250; width:min(320px,88vw); background:var(--bg2); border-left:1px solid var(--b2); box-shadow:-12px 0 40px rgba(0,0,0,.6); display:flex; flex-direction:column; transform:translateX(100%); transition:transform .32s cubic-bezier(.32,.72,0,1); }
+#filter-panel.open { transform:translateX(0); }
+.fp-header { display:flex; align-items:center; justify-content:space-between; padding:16px; border-bottom:1px solid var(--b1); flex-shrink:0; }
+.fp-title { font-size:15px; font-weight:800; color:var(--t1); }
+.fp-reset,.fp-done { background:none; border:none; font-size:13px; font-weight:700; cursor:pointer; padding:5px 10px; border-radius:var(--r-sm); font-family:inherit; }
+.fp-reset { color:var(--t2); } .fp-done { color:var(--cyan); }
+.fp-scroll { flex:1; overflow-y:auto; padding:6px 0 28px; }
+.fp-section { padding:14px 16px; border-bottom:1px solid rgba(26,45,72,.4); }
+.fp-section-title { font-size:9.5px; font-weight:800; letter-spacing:.12em; color:var(--t3); text-transform:uppercase; margin-bottom:11px; }
+.fp-toggle-row { display:flex; align-items:center; justify-content:space-between; padding:8px 0; cursor:pointer; font-size:13px; color:var(--t1); gap:10px; }
+.fp-toggle-row input[type="checkbox"] { appearance:none; width:40px; height:23px; border-radius:11.5px; background:var(--b2); position:relative; cursor:pointer; flex-shrink:0; transition:background .2s; border:1px solid var(--b2); }
+.fp-toggle-row input[type="checkbox"]:checked { background:var(--cyan); border-color:var(--cyan); }
+.fp-toggle-row input[type="checkbox"]::after { content:''; position:absolute; top:2px; left:2px; width:17px; height:17px; border-radius:50%; background:#fff; transition:transform .22s cubic-bezier(.34,1.56,.64,1); box-shadow:0 1px 4px rgba(0,0,0,.35); }
+.fp-toggle-row input[type="checkbox"]:checked::after { transform:translateX(17px); }
+.fp-radio-row { display:flex; align-items:center; gap:10px; padding:8px 0; cursor:pointer; font-size:13px; color:var(--t1); }
+.fp-select { width:100%; padding:10px 12px; background:var(--bg3); border:1px solid var(--b2); border-radius:var(--r-sm); color:var(--t1); font-size:13px; font-family:inherit; cursor:pointer; outline:none; appearance:none; }
+.fp-legend { display:flex; flex-direction:column; gap:7px; }
+.fp-leg-row { display:flex; align-items:center; gap:9px; font-size:12px; color:var(--t2); }
+
+/* Loading */
+#loading-overlay { position:fixed; inset:0; z-index:400; background:rgba(4,10,20,.82); backdrop-filter:var(--blur); display:flex; align-items:center; justify-content:center; }
+.loading-box { display:flex; flex-direction:column; align-items:center; gap:18px; padding:32px 40px; background:rgba(10,24,40,.7); border:1px solid var(--b2); border-radius:20px; box-shadow:var(--shadow); }
+.spinner { position:relative; width:64px; height:64px; display:flex; align-items:center; justify-content:center; }
+.spinner svg { width:64px; height:64px; animation:spin .95s linear infinite; position:absolute; inset:0; }
+.spinner-plane { font-size:24px; z-index:1; animation:bob 1.6s ease-in-out infinite; filter:drop-shadow(0 0 6px var(--cyan)); }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+@keyframes bob { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+.loading-text { font-size:13px; font-weight:600; color:var(--t2); letter-spacing:.06em; }
+
+/* Error */
+#error-toast { position:fixed; top:66px; left:50%; transform:translateX(-50%) translateY(-10px); z-index:500; display:flex; align-items:center; gap:9px; background:rgba(255,82,82,.12); border:1px solid rgba(255,82,82,.32); border-radius:28px; padding:9px 16px; font-size:13px; color:var(--t1); opacity:0; pointer-events:none; transition:opacity .25s,transform .25s; backdrop-filter:blur(16px); }
+#error-toast.hidden { display:none; }
+::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-track { background:transparent; } ::-webkit-scrollbar-thumb { background:var(--b2); border-radius:2px; }
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+<div id="radar-sweep" aria-hidden="true"><div id="scan-line"></div></div>
+
+<!-- TOP BAR -->
+<header id="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-box">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="3" fill="white"/>
+        <path d="M12 2 L12 5 M12 19 L12 22 M2 12 L5 12 M19 12 L22 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M12 12 L18 6" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      </svg>
+    </div>
+    <span class="tb-name">SkyRadar</span>
+  </div>
+  <div class="tb-live-pill">
+    <div class="live-dot"></div>
+    <span class="live-label">LIVE</span>
+    <span id="stat-airborne" class="live-count">42</span>
+    <span class="live-count"> flights</span>
+  </div>
+  <div class="tb-actions">
+    <button id="btn-search" class="tb-btn" onclick="document.getElementById('search-overlay').classList.toggle('open')" title="Search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button id="btn-filter" class="tb-btn" onclick="document.getElementById('filter-panel').classList.toggle('open')" title="Filter">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button id="btn-refresh" class="tb-btn" title="Refresh">
+      <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 018-8V2L14 4l-2 2V4a6 6 0 106 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <button id="btn-locate" class="tb-btn" title="My location" style="color:#00C8F0">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- STATS BAR -->
+<div id="statsbar">
+  <div class="sb-inner">
+    <div class="sb-chip"><div class="live-dot" style="width:5px;height:5px"></div><span class="live-label">LIVE</span></div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <svg style="width:14px;height:14px;color:#00C8F0;fill:currentColor" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V4a1 1 0 00-2 0v5l-8 5v2l8-2.5V19l-2 1.5V22l3-1 3 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+      <div><div class="chip-val" style="color:#00C8F0">42</div><div class="chip-lbl">Airborne</div></div>
+    </div>
+    <div class="sb-chip">
+      <span style="font-size:13px">🛡</span>
+      <div><div class="chip-val" style="color:#FFB300">3</div><div class="chip-lbl">Military</div></div>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <span style="color:#00E676;font-size:14px">↗</span>
+      <div><div class="chip-val">18</div><div class="chip-lbl">Climbing</div></div>
+    </div>
+    <div class="sb-chip">
+      <span style="color:#FF7043;font-size:14px">↘</span>
+      <div><div class="chip-val">11</div><div class="chip-lbl">Descending</div></div>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <span style="color:#FFD600;font-size:13px">⚡</span>
+      <div><div class="chip-val">468</div><div class="chip-lbl">Avg kts</div></div>
+    </div>
+    <div class="sb-chip">
+      <span style="color:#6E8DAD;font-size:12px">☁</span>
+      <div><div class="chip-val">32,400</div><div class="chip-lbl">Avg ft</div></div>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <span style="font-size:11px">🕐</span>
+      <div><div class="chip-val" style="color:#3D5A7A;font-size:11px">12:34:56</div><div class="chip-lbl">Updated</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- DETAIL PANEL — civilian aircraft -->
+<div id="detail-panel" class="open">
+  <div id="dp-drag-bar"></div>
+  <div id="dp-photo" style="background:linear-gradient(135deg,#0A1828 0%,#152840 100%)">
+    <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+      <div style="font-size:48px;filter:drop-shadow(0 0 12px #00C8F0)">✈</div>
+      <div style="color:#3D5A7A;font-size:12px;letter-spacing:.06em">A320 — OE-LBS</div>
+    </div>
+    <div id="dp-credit">📷 © Jan Novák · Airbus A320neo</div>
+  </div>
+  <div id="dp-head">
+    <div class="dp-plane-icon" style="color:#00C8F0;background:rgba(0,200,240,.12);border-color:rgba(0,200,240,.25)">✈</div>
+    <div class="dp-title">
+      <div class="dp-callsign">AFL2847</div>
+      <div class="dp-sub">
+        <span>🌍 Czech Republic</span>
+        <span>· SQK 2341</span>
+        <span class="dp-badge" style="color:#00E676;background:rgba(0,230,118,.12)">↗ Climbing</span>
+      </div>
+    </div>
+    <button class="dp-close-btn" onclick="document.getElementById('detail-panel').classList.remove('open')">✕</button>
+  </div>
+  <div class="dp-divider"></div>
+  <div class="dp-status-row">
+    <span class="dp-pill" style="color:#00E676;background:rgba(0,230,118,.1)">✈ Airborne</span>
+  </div>
+  <div class="dp-divider"></div>
+  <div class="dp-grid">
+    <div class="m-card"><div class="m-top">☁ Altitude</div><div><span class="m-val" style="color:#00C8F0">34,200</span><span class="m-unit"> ft</span></div></div>
+    <div class="m-card"><div class="m-top">⚡ Speed</div><div><span class="m-val" style="color:#00C8F0">472</span><span class="m-unit"> kts</span></div></div>
+    <div class="m-card"><div class="m-top">↕ V/Speed</div><div><span class="m-val" style="color:#00E676">1,840</span><span class="m-unit"> fpm</span></div></div>
+    <div class="m-card"><div class="m-top">⬆ Heading</div><div><span class="m-val" style="color:#FFD600">247°</span><span class="m-unit"></span></div></div>
+    <div class="m-card"><div class="m-top">🏁 FL Level</div><div><span class="m-val" style="color:#DCE9FA">FL342</span><span class="m-unit"></span></div></div>
+    <div class="m-card"><div class="m-top">📡 ICAO24</div><div><span class="m-val" style="color:#6E8DAD;font-size:13px">44AE7C</span><span class="m-unit"></span></div></div>
+  </div>
+  <div class="dp-actions">
+    <button class="dp-action-btn" style="color:#00C8F0;background:rgba(0,200,240,.1);border-color:rgba(0,200,240,.25)">📍 Centre map</button>
+  </div>
+</div>
+
+<!-- SEARCH OVERLAY -->
+<div id="search-overlay">
+  <div id="search-box">
+    <div class="search-header">
+      <span class="search-title">Search Flights</span>
+      <button class="search-close-btn" onclick="document.getElementById('search-overlay').classList.remove('open')">Done</button>
+    </div>
+    <div class="search-input-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="search-input" type="text" placeholder="Callsign, ICAO24, country…" value="AFL">
+    </div>
+    <div id="search-results">
+      <div class="search-row">
+        <div class="sr-icon" style="background:rgba(0,200,240,.12);color:#00C8F0">✈</div>
+        <div style="flex:1">
+          <div class="sr-cs" style="color:#DCE9FA"><mark style="background:rgba(0,200,240,.25);color:inherit;border-radius:2px">AFL</mark>2847</div>
+          <div class="sr-sub">🌍 Czech Republic &nbsp;·&nbsp; <span style="color:#00C8F0">FL342</span></div>
+        </div>
+        <div class="sr-spd">472 kts</div>
+      </div>
+      <div class="search-row">
+        <div class="sr-icon" style="background:rgba(0,200,240,.12);color:#00C8F0">✈</div>
+        <div style="flex:1">
+          <div class="sr-cs" style="color:#DCE9FA"><mark style="background:rgba(0,200,240,.25);color:inherit;border-radius:2px">AFL</mark>1934</div>
+          <div class="sr-sub">🌍 Russian Federation &nbsp;·&nbsp; <span style="color:#FFD600">FL280</span></div>
+        </div>
+        <div class="sr-spd">398 kts</div>
+      </div>
+      <div class="search-row">
+        <div class="sr-icon" style="background:rgba(255,179,0,.12);color:#FFB300">✈</div>
+        <div style="flex:1">
+          <div class="sr-cs" style="color:#FFB300"><mark style="background:rgba(0,200,240,.25);color:inherit;border-radius:2px">AFL</mark>EAGLE1 <span class="sr-mil-badge">MIL</span></div>
+          <div class="sr-sub">🇺🇸 United States &nbsp;·&nbsp; <span style="color:#FF7043">FL085</span></div>
+        </div>
+        <div class="sr-spd">318 kts</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER PANEL -->
+<div id="filter-panel">
+  <div class="fp-header">
+    <button class="fp-reset">Reset</button>
+    <span class="fp-title">Filters</span>
+    <button class="fp-done" onclick="document.getElementById('filter-panel').classList.remove('open')">Done</button>
+  </div>
+  <div class="fp-scroll">
+    <div class="fp-section">
+      <div class="fp-section-title">MILITARY AIRCRAFT</div>
+      <label class="fp-toggle-row"><span>🛡 Show military aircraft</span><input type="checkbox" checked></label>
+      <label class="fp-toggle-row"><span>🎯 Military only mode</span><input type="checkbox"></label>
+    </div>
+    <div class="fp-section">
+      <div class="fp-section-title">GROUND TRAFFIC</div>
+      <label class="fp-toggle-row"><span>🏢 Show aircraft on ground</span><input type="checkbox"></label>
+    </div>
+    <div class="fp-section">
+      <div class="fp-section-title">ALTITUDE BAND</div>
+      <label class="fp-radio-row"><input type="radio" name="altband" checked> All altitudes</label>
+      <label class="fp-radio-row"><input type="radio" name="altband"> <span style="color:#FF7043">●</span> Low &lt; 10 000 ft</label>
+      <label class="fp-radio-row"><input type="radio" name="altband"> <span style="color:#FFD600">●</span> Mid 10–35 000 ft</label>
+      <label class="fp-radio-row"><input type="radio" name="altband"> <span style="color:#00C8F0">●</span> High &gt; 35 000 ft</label>
+    </div>
+    <div class="fp-section">
+      <div class="fp-section-title">COLOUR LEGEND</div>
+      <div class="fp-legend">
+        <div class="fp-leg-row"><span style="color:#FFB300">✈</span> Military aircraft</div>
+        <div class="fp-leg-row"><span style="color:#8EAABF">✈</span> Ground / parked</div>
+        <div class="fp-leg-row"><span style="color:#FF7043">✈</span> Low &lt; 10 000 ft</div>
+        <div class="fp-leg-row"><span style="color:#FFD600">✈</span> Mid 10–35 000 ft</div>
+        <div class="fp-leg-row"><span style="color:#00C8F0">✈</span> High &gt; 35 000 ft</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+// Init map
+const map = L.map('map', { center:[50.08, 14.43], zoom:7, zoomControl:false, attributionControl:true });
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  attribution:'© OpenStreetMap contributors © CARTO', subdomains:'abcd', maxZoom:19 }).addTo(map);
+L.control.zoom({ position:'bottomright' }).addTo(map);
+
+// SVG plane silhouette function
+function planeSVG(color, heading, selected, isMilitary, onGround) {
+  const rot  = heading ?? 0;
+  const sz   = onGround ? 24 : selected ? 38 : 30;
+  const opac = onGround ? 0.48 : 1;
+  const glow = selected
+    ? `drop-shadow(0 0 7px ${color}) drop-shadow(0 0 3px ${color})`
+    : 'drop-shadow(0 1px 5px rgba(0,0,0,.95))';
+  const milBadge = isMilitary ? `
+    <circle cx="28.5" cy="11" r="4.2" fill="#FFB300" stroke="#060D16" stroke-width="1.3"/>
+    <text x="28.5" y="14" text-anchor="middle" font-size="3.8" fill="#060D16" font-weight="900">MIL</text>` : '';
+  const selRing = selected ? `
+    <circle cx="20" cy="20" r="17.5" fill="none" stroke="${color}" stroke-width="1.2" stroke-dasharray="5 3.5" opacity="0.65">
+      <animateTransform attributeName="transform" type="rotate" from="0 20 20" to="360 20 20" dur="9s" repeatCount="indefinite"/>
+    </circle>` : '';
+  return `<svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}" style="filter:${glow};opacity:${opac};overflow:visible">
+    ${selRing}
+    <g transform="rotate(${rot},20,20)">
+      <ellipse cx="20" cy="20" rx="2.1" ry="12.5" fill="${color}"/>
+      <path d="M20 14.5 L3 24 L5.5 25.8 L20 20.5 L34.5 25.8 L37 24 Z" fill="${color}"/>
+      <path d="M20 29.5 L15.5 34.5 L17.5 34.5 L20 31 L22.5 34.5 L24.5 34.5 Z" fill="${color}" opacity="0.82"/>
+    </g>
+    ${milBadge}
+  </svg>`;
+}
+
+// Mock aircraft data
+const mockFlights = [
+  { id:'44ae7c', callsign:'AFL2847', lat:50.08, lon:14.43, alt:34200, vel:472, heading:247, ground:false, mil:false, fl:'FL342' },
+  { id:'3c6ad6', callsign:'DLH459', lat:50.35, lon:13.82, alt:28400, vel:438, heading:118, ground:false, mil:false, fl:'FL284' },
+  { id:'4b1234', callsign:'CSA7723', lat:49.75, lon:14.87, alt:12100, vel:312, heading:195, ground:false, mil:false, fl:'FL121' },
+  { id:'405e78', callsign:'BAW881', lat:50.52, lon:14.12, alt:37000, vel:490, heading:285, ground:false, mil:false, fl:'FL370' },
+  { id:'ae1234', callsign:'REACH47', lat:49.95, lon:15.28, alt:8500,  vel:318, heading:62,  ground:false, mil:true,  fl:'FL085' },
+  { id:'3d9abc', callsign:'AFR1234', lat:50.18, lon:13.55, alt:36500, vel:485, heading:330, ground:false, mil:false, fl:'FL365' },
+  { id:'477bcd', callsign:'SWR234',  lat:49.62, lon:14.42, alt:22000, vel:395, heading:78,  ground:false, mil:false, fl:'FL220' },
+  { id:'406abc', callsign:'EZY4521', lat:50.71, lon:15.01, alt:31000, vel:455, heading:205, ground:false, mil:false, fl:'FL310' },
+  { id:'43cdef', callsign:'GAF452',  lat:50.44, lon:15.62, alt:18500, vel:340, heading:155, ground:false, mil:true,  fl:'FL185' },
+  { id:'3a5678', callsign:'KLM773',  lat:49.88, lon:13.11, alt:39000, vel:495, heading:270, ground:false, mil:false, fl:'FL390' },
+  { id:'4061ab', callsign:'UAE22',   lat:50.15, lon:16.35, alt:40500, vel:510, heading:300, ground:false, mil:false, fl:'FL405' },
+  { id:'484567', callsign:'QFA1',    lat:49.55, lon:15.78, alt:7200,  vel:290, heading:45,  ground:false, mil:false, fl:'FL072' },
+  { id:'ae5678', callsign:'SPAR99',  lat:50.62, lon:13.44, alt:6000,  vel:265, heading:178, ground:false, mil:true,  fl:'FL060' },
+];
+
+const altColors = { ground:'#6E8DAD', low:'#FF7043', medium:'#FFD600', high:'#00C8F0' };
+function altCat(ft) { if(!ft||ft<500) return 'ground'; if(ft<10000) return 'low'; if(ft<35000) return 'medium'; return 'high'; }
+function acColor(ac) { return ac.mil ? '#FFB300' : (altColors[altCat(ac.alt)] || altColors.high); }
+
+const markers = new Map();
+
+mockFlights.forEach((ac, i) => {
+  const color = acColor(ac);
+  const icon  = L.divIcon({
+    className:'',
+    html:`<div class="ac-wrap"><div class="ac-svg">${planeSVG(color,ac.heading,false,ac.mil,ac.ground)}</div><div class="ac-lbl"><span class="ac-cs" style="color:${ac.mil?'#FFB300':'#DCE9FA'}">${ac.callsign}</span><span class="ac-fl" style="color:${color}">${ac.fl}</span></div></div>`,
+    iconSize:[76,84], iconAnchor:[38,20]
+  });
+  const m = L.marker([ac.lat,ac.lon],{ icon, zIndexOffset: ac.mil?500:0, keyboard:false, riseOnHover:true });
+  m.on('click', () => alert('Flight: ' + ac.callsign + '\n' + ac.fl + ' · ' + ac.vel + ' kts · ' + ac.alt?.toLocaleString() + ' ft'));
+  m.addTo(map);
+  markers.set(ac.id, m);
+});
+
+// User location marker
+const userIcon = L.divIcon({
+  className:'',
+  html:`<div class="user-dot"><div class="user-ring"></div><div class="user-ring r2"></div></div>`,
+  iconSize:[24,24], iconAnchor:[12,12]
+});
+L.marker([50.08,14.43], { icon:userIcon, zIndexOffset:2000 }).addTo(map);
+
+// Animate planes slowly
+setInterval(() => {
+  mockFlights.forEach(ac => {
+    const rad = ac.heading * Math.PI / 180;
+    ac.lat += Math.cos(rad) * 0.0015;
+    ac.lon += Math.sin(rad) * 0.0015;
+    const m = markers.get(ac.id);
+    if (m) m.setLatLng([ac.lat, ac.lon]);
+  });
+}, 200);
+</script>
+</body>
+</html>
