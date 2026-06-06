@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SkyRadar — Live Flight Tracker</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<!-- ═══════════════════════ MAP ═══════════════════════ -->
+<div id="map"></div>
+
+<!-- ═══════════════════════ RADAR SWEEP ═══════════════ -->
+<div id="radar-sweep" aria-hidden="true"></div>
+
+<!-- ═══════════════════════ TOP BAR ═══════════════════ -->
+<header id="topbar">
+  <div class="tb-logo">
+    <div class="tb-logo-box">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c.83 0 1.5.67 1.5 1.5S12.83 8 12 8s-1.5-.67-1.5-1.5S11.17 5 12 5zm4 11H8v-2h3V9.5H9V7.5h4V14h3v2z" fill="white" opacity="0"/>
+        <circle cx="12" cy="12" r="3" fill="white"/>
+        <path d="M12 2 L12 5 M12 19 L12 22 M2 12 L5 12 M19 12 L22 12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <path d="M12 12 L18 6" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      </svg>
+    </div>
+    <span class="tb-name">SkyRadar</span>
+  </div>
+
+  <div class="tb-live-pill">
+    <div class="live-dot"></div>
+    <span class="live-label">LIVE</span>
+    <span id="stat-airborne" class="live-count">—</span>
+    <span class="live-count"> flights</span>
+  </div>
+
+  <div class="tb-actions">
+    <button id="btn-search" class="tb-btn" title="Search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button id="btn-filter" class="tb-btn" title="Filter">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="6" x2="20" y2="6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="7" y1="12" x2="17" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button id="btn-refresh" class="tb-btn" title="Refresh">
+      <svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 018-8V2L14 4l-2 2V4a6 6 0 106 6" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <button id="btn-locate" class="tb-btn" title="My location">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ═══════════════════════ STATS BAR ════════════════ -->
+<div id="statsbar">
+  <div class="sb-inner">
+    <div class="sb-chip">
+      <div class="live-dot sm"></div>
+      <span class="chip-lbl">LIVE</span>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <svg class="chip-icon" viewBox="0 0 24 24" style="color:#00C8F0"><path d="M21 16v-2l-8-5V4a1 1 0 00-2 0v5l-8 5v2l8-2.5V19l-2 1.5V22l3-1 3 1v-1.5L13 19v-5.5l8 2.5z" fill="currentColor"/></svg>
+      <div><div class="chip-val" id="stat-airborne2" style="color:#00C8F0">—</div><div class="chip-lbl">Airborne</div></div>
+    </div>
+    <div id="stat-mil-chip" class="sb-chip hidden">
+      <span style="font-size:13px">🛡</span>
+      <div><div class="chip-val" id="stat-military" style="color:#FFB300">—</div><div class="chip-lbl">Military</div></div>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <span class="chip-icon" style="color:#00E676;font-size:14px">↗</span>
+      <div><div class="chip-val" id="stat-climbing">—</div><div class="chip-lbl">Climbing</div></div>
+    </div>
+    <div class="sb-chip">
+      <span class="chip-icon" style="color:#FF7043;font-size:14px">↘</span>
+      <div><div class="chip-val" id="stat-descending">—</div><div class="chip-lbl">Descending</div></div>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <span class="chip-icon" style="color:#FFD600;font-size:13px">⚡</span>
+      <div><div class="chip-val" id="stat-avg-spd">—</div><div class="chip-lbl">Avg kts</div></div>
+    </div>
+    <div class="sb-chip">
+      <span class="chip-icon" style="color:#6E8DAD;font-size:12px">☁</span>
+      <div><div class="chip-val" id="stat-avg-alt">—</div><div class="chip-lbl">Avg ft</div></div>
+    </div>
+    <div class="sb-div"></div>
+    <div class="sb-chip">
+      <span class="chip-icon" style="color:#384D68;font-size:11px">🕐</span>
+      <div><div class="chip-val" id="stat-update" style="color:#384D68;font-size:11px">—</div><div class="chip-lbl">Updated</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ DETAIL PANEL ════════════ -->
+<div id="detail-panel" class="hidden">
+  <div id="dp-drag-bar"></div>
+
+  <!-- Photo -->
+  <div id="dp-photo">
+    <div id="dp-photo-shimmer" class="shimmer"></div>
+    <img id="dp-photo-img" class="hidden" alt="Aircraft photo">
+    <div id="dp-credit"></div>
+  </div>
+
+  <!-- Header -->
+  <div id="dp-head">
+    <div id="dp-icon" class="dp-plane-icon">✈</div>
+    <div class="dp-title">
+      <div id="dp-callsign" class="dp-callsign"></div>
+      <div class="dp-sub">
+        <span id="dp-country"></span>
+        <span id="dp-squawk" class="dp-squawk"></span>
+        <span id="dp-climb-badge" class="dp-badge"></span>
+      </div>
+    </div>
+    <button id="dp-close" class="dp-close-btn">✕</button>
+  </div>
+
+  <!-- Military banner -->
+  <div id="dp-mil-banner" class="dp-mil-banner hidden">
+    <span>🛡</span>
+    <span id="dp-mil-text"></span>
+    <span class="dp-mil-tag">MILITARY AIRCRAFT</span>
+  </div>
+
+  <div class="dp-divider"></div>
+
+  <!-- Status pills -->
+  <div class="dp-status-row">
+    <span id="dp-status-airborne" class="dp-pill">✈ Airborne</span>
+  </div>
+
+  <div class="dp-divider"></div>
+
+  <!-- Metrics grid -->
+  <div class="dp-grid">
+    <div class="m-card" id="dp-alt">
+      <div class="m-top"><span>☁</span> Altitude</div>
+      <div><span class="m-val">—</span><span class="m-unit"> ft</span></div>
+    </div>
+    <div class="m-card" id="dp-speed">
+      <div class="m-top"><span>⚡</span> Speed</div>
+      <div><span class="m-val">—</span><span class="m-unit"> kts</span></div>
+    </div>
+    <div class="m-card" id="dp-vspeed">
+      <div class="m-top"><span>↕</span> V/Speed</div>
+      <div><span class="m-val">—</span><span class="m-unit"> fpm</span></div>
+    </div>
+    <div class="m-card" id="dp-heading">
+      <div class="m-top"><span>⬆</span> Heading</div>
+      <div><span class="m-val">—</span><span class="m-unit"></span></div>
+    </div>
+    <div class="m-card" id="dp-fl">
+      <div class="m-top"><span>🏁</span> FL Level</div>
+      <div><span class="m-val">—</span><span class="m-unit"></span></div>
+    </div>
+    <div class="m-card" id="dp-icao">
+      <div class="m-top"><span>📡</span> ICAO24</div>
+      <div><span class="m-val" style="font-size:13px">—</span><span class="m-unit"></span></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="dp-actions">
+    <button id="dp-centre-btn" class="dp-action-btn">📍 Centre map</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════ SEARCH ═══════════════════ -->
+<div id="search-overlay">
+  <div id="search-box">
+    <div class="search-header">
+      <span class="search-title">Search Flights</span>
+      <button id="search-close" class="search-close-btn">Done</button>
+    </div>
+    <div class="search-input-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none"/><line x1="16.5" y1="16.5" x2="22" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input id="search-input" type="text" placeholder="Callsign, ICAO24, country…" autocomplete="off" spellcheck="false">
+    </div>
+    <div id="search-results"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ FILTER PANEL ════════════ -->
+<div id="filter-panel">
+  <div class="fp-header">
+    <button id="filter-reset" class="fp-reset">Reset</button>
+    <span class="fp-title">Filters</span>
+    <button id="filter-close" class="fp-done">Done</button>
+  </div>
+
+  <div class="fp-scroll">
+    <div class="fp-section">
+      <div class="fp-section-title">MILITARY</div>
+      <label class="fp-toggle-row">
+        <span>🛡 Show military aircraft</span>
+        <input type="checkbox" id="f-military" checked>
+      </label>
+      <label class="fp-toggle-row">
+        <span>🎯 Military only mode</span>
+        <input type="checkbox" id="f-only-mil">
+      </label>
+    </div>
+
+    <div class="fp-section">
+      <div class="fp-section-title">GROUND TRAFFIC</div>
+      <label class="fp-toggle-row">
+        <span>🏢 Show aircraft on ground</span>
+        <input type="checkbox" id="f-ground">
+      </label>
+    </div>
+
+    <div class="fp-section">
+      <div class="fp-section-title">ALTITUDE BAND</div>
+      <label class="fp-radio-row"><input type="radio" name="altband" value="all" checked> All altitudes</label>
+      <label class="fp-radio-row"><input type="radio" name="altband" value="low">  <span style="color:#FF7043">●</span> Low  &lt; 10 000 ft</label>
+      <label class="fp-radio-row"><input type="radio" name="altband" value="medium"> <span style="color:#FFD600">●</span> Mid  10–35 000 ft</label>
+      <label class="fp-radio-row"><input type="radio" name="altband" value="high">  <span style="color:#00C8F0">●</span> High &gt; 35 000 ft</label>
+    </div>
+
+    <div class="fp-section">
+      <div class="fp-section-title">COUNTRY</div>
+      <select id="f-country" class="fp-select"><option value="">All countries</option></select>
+    </div>
+
+    <div class="fp-section">
+      <div class="fp-section-title">COLOUR LEGEND</div>
+      <div class="fp-legend">
+        <div class="fp-leg-row"><span style="color:#FFB300">✈</span> Military aircraft</div>
+        <div class="fp-leg-row"><span style="color:#8EAABF">✈</span> Ground / parked</div>
+        <div class="fp-leg-row"><span style="color:#FF7043">✈</span> Low  &lt; 10 000 ft</div>
+        <div class="fp-leg-row"><span style="color:#FFD600">✈</span> Mid  10–35 000 ft</div>
+        <div class="fp-leg-row"><span style="color:#00C8F0">✈</span> High &gt; 35 000 ft</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ OVERLAYS ═════════════════ -->
+<div id="loading-overlay" class="hidden">
+  <div class="loading-box">
+    <div class="spinner">
+      <svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" stroke="#1A2D48" stroke-width="2" fill="none"/><circle cx="30" cy="30" r="26" stroke="url(#grad)" stroke-width="2" fill="none" stroke-dasharray="50 114" stroke-linecap="round"/><defs><linearGradient id="grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00C8F0"/><stop offset="100%" stop-color="#0055CC"/></linearGradient></defs></svg>
+      <div class="spinner-plane">✈</div>
+    </div>
+    <div class="loading-text">Scanning airspace…</div>
+  </div>
+</div>
+
+<div id="error-toast" class="hidden">
+  <span>⚠️</span>
+  <span id="error-msg"></span>
+  <button onclick="document.getElementById('error-toast').classList.add('hidden')">✕</button>
+</div>
+
+<!-- Leaflet + App -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script type="module" src="/js/app.js"></script>
+</body>
+</html>
