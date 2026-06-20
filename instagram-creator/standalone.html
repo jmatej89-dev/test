@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@matejjankovic · Post Creator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#070F28;--surface:#0D1A3A;--surface2:#132045;--border:#1E3060;
+  --cyan:#5CE1E6;--cyan-dim:rgba(92,225,230,.15);--white:#fff;
+  --muted:#6484B6;--muted-dim:rgba(100,132,182,.25);
+  --danger:#FF5555;--success:#5CE6A0;--r:10px;--rs:6px;
+}
+html,body{height:100%;font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--white);font-size:14px;line-height:1.5;overflow:hidden}
+.app{display:flex;flex-direction:column;height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+header h1{font-size:16px;font-weight:700;color:var(--cyan)}
+header .badge{font-size:11px;color:var(--muted);font-weight:500}
+.workspace{display:flex;flex:1;overflow:hidden}
+
+/* Sidebar */
+.sidebar{width:360px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.sidebar-scroll{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px}
+.sidebar-scroll::-webkit-scrollbar{width:3px}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+/* Tabs */
+.type-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:var(--surface2);border-radius:var(--r);padding:4px}
+.type-tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 3px;border:none;background:transparent;border-radius:var(--rs);color:var(--muted);cursor:pointer;transition:all .15s;font-family:inherit;font-size:9px;font-weight:700;letter-spacing:.3px}
+.type-tab .icon{font-size:17px;line-height:1}
+.type-tab:hover{background:var(--muted-dim);color:var(--white)}
+.type-tab.active{background:var(--cyan);color:var(--bg)}
+
+/* Section */
+.section{background:var(--surface2);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:9px}
+.section-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+
+/* Fields */
+label.fl{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:3px}
+input[type=text],input[type=number],textarea,select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--white);font-family:inherit;font-size:12px;padding:7px 9px;outline:none;transition:border-color .15s;resize:vertical}
+input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:var(--cyan)}
+textarea{min-height:64px}
+select option{background:var(--surface2)}
+.field{display:flex;flex-direction:column;gap:3px}
+.hint{font-size:10px;color:var(--muted)}
+.hint code{background:var(--muted-dim);padding:1px 4px;border-radius:3px;color:var(--cyan);font-size:10px}
+
+/* Toggle */
+.trow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.trow input[type=text]{flex:1}
+.tog{position:relative;width:34px;height:18px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.tog-sl{position:absolute;inset:0;background:var(--border);border-radius:18px;cursor:pointer;transition:background .2s}
+.tog-sl::before{content:'';position:absolute;width:12px;height:12px;left:3px;top:3px;background:white;border-radius:50%;transition:transform .2s}
+.tog input:checked+.tog-sl{background:var(--cyan)}
+.tog input:checked+.tog-sl::before{transform:translateX(16px)}
+
+/* Sliders */
+.sl-group{display:flex;flex-direction:column;gap:5px}
+.sl-row{display:flex;align-items:center;gap:8px}
+.sl-lbl{font-size:10px;font-weight:600;color:var(--muted);width:46px;flex-shrink:0}
+.sl-val{font-size:11px;font-weight:700;color:var(--cyan);width:34px;text-align:right;flex-shrink:0}
+input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--cyan);border-radius:50%;cursor:pointer}
+
+/* Dropzone */
+.dz{border:2px dashed var(--border);border-radius:var(--r);padding:16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.dz:hover,.dz.dragover{border-color:var(--cyan);background:var(--cyan-dim)}
+.dz .dz-icon{font-size:24px;color:var(--muted)}
+.dz .dz-text{font-size:11px;color:var(--muted);font-weight:500}
+.dz.has-photo{border-style:solid;border-color:var(--cyan);padding:0}
+.dz.has-photo img{width:100%;height:90px;object-fit:cover;border-radius:8px;display:block}
+.dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.ph-clear{position:absolute;top:5px;right:5px;background:rgba(7,15,40,.85);border:1px solid var(--border);color:var(--white);border-radius:50%;width:20px;height:20px;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:10px;z-index:2}
+.dz.has-photo .ph-clear{display:flex}
+
+/* Technical details */
+details.tech{background:var(--surface2);border-radius:var(--r);overflow:hidden}
+details.tech summary{padding:10px 12px;cursor:pointer;font-size:11px;font-weight:600;color:var(--muted);user-select:none;list-style:none;display:flex;align-items:center;gap:7px}
+details.tech summary::before{content:'›';font-size:15px;transition:transform .2s;color:var(--cyan)}
+details[open].tech summary::before{transform:rotate(90deg)}
+.tech-body{padding:0 12px 12px;display:flex;flex-direction:column;gap:10px}
+
+/* Carousel */
+.slide-list{display:flex;flex-direction:column;gap:7px}
+.slide-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.sc-head{display:flex;align-items:center;padding:9px 12px;cursor:pointer;user-select:none;gap:7px}
+.sc-head:hover{background:var(--muted-dim)}
+.sc-num{font-size:10px;font-weight:700;color:var(--cyan);background:var(--cyan-dim);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sc-title{flex:1;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:3px}
+.sc-del:hover{color:var(--danger)}
+.sc-body{padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:9px}
+.sc-body.col{display:none}
+.add-slide{width:100%;padding:9px;background:var(--cyan-dim);border:2px dashed var(--cyan);border-radius:var(--r);color:var(--cyan);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.add-slide:hover{background:rgba(92,225,230,.25)}
+
+/* Chart */
+.chart-rows{display:flex;flex-direction:column;gap:5px}
+.chart-row{display:grid;grid-template-columns:1fr 60px 32px 26px;gap:5px;align-items:center}
+.chart-row input[type=color]{width:32px;height:28px;padding:2px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);cursor:pointer}
+.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:3px;display:flex;align-items:center;justify-content:center;height:28px}
+.icon-btn:hover{color:var(--danger)}
+.add-row{font-size:11px;font-weight:600;color:var(--cyan);background:var(--cyan-dim);border:1px solid var(--cyan);border-radius:var(--rs);padding:5px 10px;cursor:pointer;font-family:inherit;width:100%}
+.rh{display:grid;grid-template-columns:1fr 60px 32px 26px;gap:5px;padding-bottom:3px}
+.rh span{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase}
+.auto-b{display:inline-block;background:var(--cyan-dim);color:var(--cyan);font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
+
+/* Preview */
+.preview-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#020810}
+.prev-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;gap:10px}
+.prev-left{display:flex;align-items:center;gap:10px}
+.prev-lbl{font-size:11px;font-weight:600;color:var(--muted)}
+.car-nav{display:flex;align-items:center;gap:5px}
+.car-nav button{background:var(--surface2);border:1px solid var(--border);color:var(--white);width:26px;height:26px;border-radius:var(--rs);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.car-nav button:hover{border-color:var(--cyan);color:var(--cyan)}
+.car-ind{font-size:11px;color:var(--muted);font-weight:600}
+.tbbtns{display:flex;gap:7px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;white-space:nowrap}
+.btn-g{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
+.btn-g:hover{border-color:var(--cyan);color:var(--cyan)}
+.btn-p{background:var(--cyan);color:var(--bg)}
+.btn-p:hover{filter:brightness(1.1)}
+.btn-p:disabled{opacity:.5;cursor:not-allowed}
+.prev-area{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;padding:20px;position:relative}
+.prev-frame{position:relative;border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.6)}
+#main-canvas{display:block;cursor:zoom-in;border-radius:10px;transition:transform .15s,box-shadow .15s}
+#main-canvas:hover{transform:scale(1.008);box-shadow:0 0 36px rgba(92,225,230,.18)}
+.prev-empty{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted)}
+.prev-empty .ei{font-size:44px;opacity:.35}
+.prev-empty p{font-size:13px;opacity:.5;font-weight:500}
+.spinner-wrap{position:absolute;inset:0;background:rgba(7,15,40,.7);display:none;align-items:center;justify-content:center;border-radius:10px}
+.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Caption */
+.cap-panel{width:300px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.cap-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:space-between}
+.cap-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.cap-out{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px;font-size:11px;line-height:1.65;color:var(--white);white-space:pre-wrap;word-break:break-word;min-height:160px;flex:1}
+
+/* Toasts */
+.toasts{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:7px;z-index:9999}
+.toast{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-size:12px;font-weight:500;box-shadow:0 4px 24px rgba(0,0,0,.5);animation:slideIn .2s ease}
+.toast.success{border-color:var(--success);color:var(--success)}
+.toast.error{border-color:var(--danger);color:var(--danger)}
+@keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
+.hidden{display:none!important}
+
+/* Lightbox */
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;animation:fadeIn .18s ease}
+#lb-img{max-height:96vh;max-width:96vw;border-radius:6px;box-shadow:0 0 60px rgba(0,0,0,.9)}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>@matejjankovic · Post Creator</h1>
+    <span class="badge">1080 × 1350 px · Canvas · Offline</span>
+  </header>
+  <div class="workspace">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-scroll">
+
+        <div class="type-tabs">
+          <button class="type-tab active" data-type="info"><span class="icon">📰</span>INFO</button>
+          <button class="type-tab" data-type="citation"><span class="icon">💬</span>CITACE</button>
+          <button class="type-tab" data-type="carousel"><span class="icon">🎠</span>CAROUSEL</button>
+          <button class="type-tab" data-type="data"><span class="icon">📊</span>DATA</button>
+          <button class="type-tab" data-type="clean"><span class="icon">⬛</span>ČISTÝ</button>
+        </div>
+
+        <!-- INFO -->
+        <div id="panel-info" class="pp">
+          <div class="section">
+            <div class="section-title">Fotografie</div>
+            <div class="dz" id="dz-info"><input type="file" accept="image/*" id="ph-info"><div class="dz-icon">🖼️</div><div class="dz-text">Přetáhněte nebo klikněte</div><button class="ph-clear" data-z="info">✕</button></div>
+          </div>
+          <div class="section">
+            <div class="section-title">Obsah</div>
+            <div class="field">
+              <label class="fl">Eyebrow label</label>
+              <div class="trow">
+                <input type="text" id="info-eyebrow" placeholder="BILANCE VLÁDY">
+                <label class="tog"><input type="checkbox" id="info-eyebrow-on" checked><span class="tog-sl"></span></label>
+              </div>
+            </div>
+            <div class="field"><label class="fl">Nadpis</label><textarea id="info-hl" rows="3" placeholder="Sliboval levnější hypotéky. Realita? Zdražují dál."></textarea></div>
+            <div class="field"><label class="fl">Cyan zvýraznění</label><input type="text" id="info-cyan" placeholder="Realita?|Zdražují dál."><span class="hint">Oddělujte <code>|</code></span></div>
+          </div>
+          <details class="tech"><summary>⚙ Technické nastavení</summary><div class="tech-body">
+            <div class="sl-group"><div class="section-title">Přechod gradientu</div>
+              <div class="sl-row"><span class="sl-lbl">Začátek</span><input type="range" id="info-fo0" min=".3" max=".95" step=".01" value=".72"><span class="sl-val" id="info-fo0-v">.72</span></div>
+              <div class="sl-row"><span class="sl-lbl">Konec</span><input type="range" id="info-fo1" min=".5" max="1" step=".01" value=".96"><span class="sl-val" id="info-fo1-v">.96</span></div>
+            </div>
+            <div class="field"><label class="fl">Písmo <span class="auto-b">AUTO</span></label>
+              <select id="info-fs"><option value="0">Auto</option><option value="84">84px</option><option value="78">78px</option><option value="74">74px</option><option value="68">68px</option><option value="62">62px</option><option value="56">56px</option><option value="52">52px</option></select>
+            </div>
+            <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="info-yn" min="-120" max="120" step="4" value="0"><span class="sl-val" id="info-yn-v">0</span></div>
+          </div></details>
+        </div>
+
+        <!-- CITATION -->
+        <div id="panel-citation" class="pp hidden">
+          <div class="section">
+            <div class="section-title">Fotografie</div>
+            <div class="dz" id="dz-citation"><input type="file" accept="image/*" id="ph-citation"><div class="dz-icon">🖼️</div><div class="dz-text">Portrét closeup</div><button class="ph-clear" data-z="citation">✕</button></div>
+          </div>
+          <div class="section">
+            <div class="section-title">Citace</div>
+            <div class="field"><label class="fl">Text (bez uvozovek)</label><textarea id="cit-q" rows="4" placeholder="Zákon si vykládáme jinak. A na tom se nic nezmění."></textarea></div>
+            <div class="field"><label class="fl">Cyan fráze (1 výraz)</label><input type="text" id="cit-cyan" placeholder="nic nezmění"><span class="hint">Max 4–5 slov, musí být přesně v citátu</span></div>
+          </div>
+          <div class="section">
+            <div class="section-title">Atribuce</div>
+            <div class="field"><label class="fl">Jméno + strana</label><input type="text" id="cit-name" placeholder="Jan Novák /ANO/"></div>
+            <div class="field"><label class="fl">Role / funkce</label><input type="text" id="cit-role" placeholder="Ministr financí, poslanec"></div>
+          </div>
+          <details class="tech"><summary>⚙ Technické nastavení</summary><div class="tech-body">
+            <div class="sl-group">
+              <div class="sl-row"><span class="sl-lbl">Začátek</span><input type="range" id="cit-fo0" min=".3" max=".95" step=".01" value=".6"><span class="sl-val" id="cit-fo0-v">.60</span></div>
+              <div class="sl-row"><span class="sl-lbl">Konec</span><input type="range" id="cit-fo1" min=".5" max="1" step=".01" value=".92"><span class="sl-val" id="cit-fo1-v">.92</span></div>
+            </div>
+            <div class="field"><label class="fl">Písmo <span class="auto-b">AUTO</span></label>
+              <select id="cit-fs"><option value="0">Auto</option><option value="66">66px</option><option value="60">60px</option><option value="56">56px</option><option value="52">52px</option><option value="48">48px</option><option value="44">44px</option></select>
+            </div>
+            <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="cit-yn" min="-120" max="120" step="4" value="0"><span class="sl-val" id="cit-yn-v">0</span></div>
+          </div></details>
+        </div>
+
+        <!-- CAROUSEL -->
+        <div id="panel-carousel" class="pp hidden">
+          <div class="section">
+            <div class="section-title">Slidy</div>
+            <div class="slide-list" id="slide-list"></div>
+            <button class="add-slide" id="add-slide">+ Přidat slide (max 5)</button>
+          </div>
+        </div>
+
+        <!-- DATA -->
+        <div id="panel-data" class="pp hidden">
+          <div class="section">
+            <div class="section-title">Fotografie (volitelné)</div>
+            <div class="dz" id="dz-data"><input type="file" accept="image/*" id="ph-data"><div class="dz-icon">🖼️</div><div class="dz-text">Nebo nechte prázdné</div><button class="ph-clear" data-z="data">✕</button></div>
+          </div>
+          <div class="section">
+            <div class="section-title">Popis</div>
+            <div class="field"><label class="fl">Eyebrow</label><input type="text" id="data-eyebrow" placeholder="PRŮZKUM MEDIAN · ČERVEN 2026"></div>
+            <div class="field"><label class="fl">Nadpis</label><textarea id="data-hl" rows="2" placeholder="ANO vede s 32 %. ODS a Piráti ztrácejí."></textarea></div>
+            <div class="field"><label class="fl">Cyan</label><input type="text" id="data-cyan" placeholder="32 %|ztrácejí"></div>
+          </div>
+          <div class="section">
+            <div class="section-title">Graf</div>
+            <div class="field"><label class="fl">Typ</label><select id="data-ct"><option value="bar">Sloupcový</option><option value="table">Tabulka</option></select></div>
+            <div class="rh"><span>Název</span><span>%</span><span>Barva</span><span></span></div>
+            <div class="chart-rows" id="chart-rows"></div>
+            <button class="add-row" id="add-chart-row">+ Přidat řádek</button>
+          </div>
+          <div class="section"><div class="field"><label class="fl">Footnote</label><input type="text" id="data-fn" placeholder="Zdroj: Median, n=1020, 1.–7. 6. 2026"></div></div>
+          <details class="tech"><summary>⚙ Technické nastavení</summary><div class="tech-body">
+            <div class="sl-group">
+              <div class="sl-row"><span class="sl-lbl">Začátek</span><input type="range" id="data-fo0" min=".3" max=".95" step=".01" value=".55"><span class="sl-val" id="data-fo0-v">.55</span></div>
+              <div class="sl-row"><span class="sl-lbl">Konec</span><input type="range" id="data-fo1" min=".5" max="1" step=".01" value=".85"><span class="sl-val" id="data-fo1-v">.85</span></div>
+            </div>
+            <div class="field"><label class="fl">Písmo</label><select id="data-fs"><option value="0">Auto</option><option value="68">68px</option><option value="62">62px</option><option value="56">56px</option></select></div>
+            <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="data-yn" min="-80" max="80" step="4" value="0"><span class="sl-val" id="data-yn-v">0</span></div>
+          </div></details>
+        </div>
+
+        <!-- CLEAN -->
+        <div id="panel-clean" class="pp hidden">
+          <div class="section">
+            <div class="section-title">Barva pozadí</div>
+            <select id="clean-color"><option value="navy">Navy #070F28</option><option value="black">Černá #000000</option></select>
+            <p class="hint" style="margin-top:4px">Prázdný slide bez textu. Ideální jako ironická odpověď v carouselu.</p>
+          </div>
+        </div>
+
+        <!-- CAPTION -->
+        <div class="section">
+          <div class="section-title">Caption</div>
+          <div class="field"><label class="fl">Hlavní věty</label><textarea id="cap-text" rows="3" placeholder="ANO si udržuje stabilní předstih před rozpadající se opozicí."></textarea></div>
+          <div class="field"><label class="fl">Zdroj</label><input type="text" id="cap-src" placeholder="Median · ČT24"></div>
+          <div class="field"><label class="fl">Hashtagy</label><input type="text" id="cap-tags" placeholder="#politika #průzkum #česko"></div>
+          <button class="btn btn-g" id="btn-cap" style="width:100%">🪄 Generovat caption</button>
+        </div>
+
+      </div>
+    </aside>
+
+    <!-- PREVIEW -->
+    <div class="preview-panel">
+      <div class="prev-toolbar">
+        <div class="prev-left">
+          <span class="prev-lbl">Náhled · live</span>
+          <div class="car-nav hidden" id="car-nav">
+            <button id="prev-s">‹</button>
+            <span class="car-ind" id="car-ind">1 / 1</span>
+            <button id="next-s">›</button>
+          </div>
+        </div>
+        <div class="tbbtns">
+          <button class="btn btn-g" id="btn-ref">↺ Obnovit</button>
+          <button class="btn btn-p" id="btn-exp">⬇ Export PNG</button>
+        </div>
+      </div>
+      <div class="prev-area">
+        <div class="prev-frame" id="pframe">
+          <div class="prev-empty" id="pempty"><div class="ei">🖼️</div><p>Zadejte text a náhled se zobrazí</p></div>
+          <canvas id="main-canvas" style="display:none"></canvas>
+          <div class="spinner-wrap" id="pload"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAPTION PANEL -->
+    <div class="cap-panel">
+      <div class="cap-head">Caption <button class="btn btn-g" id="btn-cpcap" style="font-size:10px;padding:3px 9px">Kopírovat</button></div>
+      <div class="cap-body">
+        <div class="cap-out" id="cap-out">Caption se zobrazí po kliknutí na „Generovat caption".</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<div id="lb" onclick="closeLb()">
+  <img id="lb-img" src="" alt="">
+</div>
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────────────────────────
+const W=1080,H=1350,LX=68,MAXW=944;
+const NAVY='#070F28',WHITE='#FFFFFF',CYAN='#5CE1E6',MUTED='#6484B6',BLACK='#000000';
+const NAVYr=7,NAVYg=15,NAVYb=40;
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+const S={
+  type:'info',
+  photos:{info:null,citation:null,data:null},
+  carousel:{slides:[],cur:0},
+  deb:null,
+  carCanvases:[],
+};
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+window.addEventListener('load',async()=>{
+  await document.fonts.load('700 80px Montserrat');
+  await document.fonts.load('600 30px Montserrat');
+  await document.fonts.load('400 20px Montserrat');
+  initTabs(); initDZ(); initSliders(); initCarousel(); initChart(); initButtons(); watchAll();
+  addSlide(); redraw();
+});
+
+// ── TABS ───────────────────────────────────────────────────────────────────────
+function initTabs(){
+  document.querySelectorAll('.type-tab').forEach(b=>{
+    b.addEventListener('click',()=>{
+      S.type=b.dataset.type;
+      document.querySelectorAll('.type-tab').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      document.querySelectorAll('.pp').forEach(p=>p.classList.add('hidden'));
+      document.getElementById('panel-'+S.type).classList.remove('hidden');
+      updateCarNav(); redraw();
+    });
+  });
+}
+
+// ── DROPZONES ─────────────────────────────────────────────────────────────────
+function initDZ(){
+  ['info','citation','data'].forEach(z=>{
+    const dz=document.getElementById('dz-'+z);
+    const inp=document.getElementById('ph-'+z);
+    inp.addEventListener('change',()=>loadPhoto(z,inp.files[0]));
+    dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover')});
+    dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
+    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const f=e.dataTransfer?.files?.[0];if(f&&f.type.startsWith('image/'))loadPhoto(z,f)});
+  });
+  document.querySelectorAll('.ph-clear').forEach(b=>{
+    b.addEventListener('click',e=>{e.stopPropagation();clearPhoto(b.dataset.z)});
+  });
+}
+
+function loadPhoto(zone,file){
+  if(!file)return;
+  const img=new Image();
+  const url=URL.createObjectURL(file);
+  img.onload=()=>{
+    S.photos[zone]=img;
+    const dz=document.getElementById('dz-'+zone);
+    dz.classList.add('has-photo');
+    let pi=dz.querySelector('img.dz-pi');
+    if(!pi){pi=document.createElement('img');pi.className='dz-pi';pi.style.cssText='width:100%;height:90px;object-fit:cover;border-radius:8px;display:block';dz.insertBefore(pi,dz.firstChild);}
+    pi.src=url;
+    dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='none');
+    redraw();
+  };
+  img.src=url;
+}
+
+function clearPhoto(zone){
+  S.photos[zone]=null;
+  const dz=document.getElementById('dz-'+zone);
+  dz.classList.remove('has-photo');
+  const pi=dz.querySelector('img.dz-pi'); if(pi)pi.remove();
+  dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='');
+  const inp=document.getElementById('ph-'+zone); if(inp)inp.value='';
+  redraw();
+}
+
+// ── SLIDERS ────────────────────────────────────────────────────────────────────
+function initSliders(){
+  document.querySelectorAll('input[type=range]').forEach(r=>{
+    const vid=r.id+'-v'; const vel=document.getElementById(vid);
+    const fmt=v=>parseFloat(v)<1?parseFloat(v).toFixed(2):parseInt(v);
+    if(vel)vel.textContent=fmt(r.value);
+    r.addEventListener('input',()=>{if(vel)vel.textContent=fmt(r.value);redraw()});
+  });
+}
+
+// ── CAROUSEL ──────────────────────────────────────────────────────────────────
+let scid=0;
+function initCarousel(){
+  document.getElementById('add-slide').addEventListener('click',()=>{
+    if(S.carousel.slides.length>=5){toast('Max 5 slidů','error');return;}
+    addSlide();
+  });
+  document.getElementById('prev-s').addEventListener('click',()=>{
+    if(S.carousel.cur>0){S.carousel.cur--;showCarSlide(S.carousel.cur);}
+  });
+  document.getElementById('next-s').addEventListener('click',()=>{
+    if(S.carousel.cur<S.carousel.slides.length-1){S.carousel.cur++;showCarSlide(S.carousel.cur);}
+  });
+}
+
+function addSlide(d={}){
+  const id=++scid;
+  const sl={id,headline:d.headline||'',eyebrow:d.eyebrow||'',cyan:d.cyan||'',fo0:d.fo0??0.72,fo1:d.fo1??0.96,fontsize:0,ynudge:0,photo:null,isLast:false,canvas:null};
+  S.carousel.slides.push(sl);
+  renderSlideCard(S.carousel.slides.length-1);
+  updateLastFlags(); updateCarNav(); redraw();
+}
+
+function renderSlideCard(idx){
+  const sl=S.carousel.slides[idx];
+  const list=document.getElementById('slide-list');
+  const card=document.createElement('div');
+  card.className='slide-card'; card.dataset.sid=sl.id;
+  card.innerHTML=`
+    <div class="sc-head" data-sid="${sl.id}">
+      <span class="sc-num">${idx+1}</span>
+      <span class="sc-title">${sl.headline||'Slide '+(idx+1)}</span>
+      <button class="sc-del" data-sid="${sl.id}">✕</button>
+    </div>
+    <div class="sc-body col" id="scb-${sl.id}">
+      <div class="dz" id="dz-sl-${sl.id}" style="min-height:72px">
+        <input type="file" accept="image/*" id="ph-sl-${sl.id}">
+        <div class="dz-icon" style="font-size:20px">🖼️</div>
+        <div class="dz-text" style="font-size:10px">Fotografie slidu</div>
+        <button class="ph-clear" data-sid="${sl.id}" style="top:4px;right:4px">✕</button>
+      </div>
+      <div class="field"><label class="fl">Eyebrow</label><input type="text" class="sl-ey" data-sid="${sl.id}" placeholder="KONTEXT…" value="${sl.eyebrow}"></div>
+      <div class="field"><label class="fl">Nadpis</label><textarea class="sl-hl" data-sid="${sl.id}" rows="3" placeholder="Hook slidu…">${sl.headline}</textarea></div>
+      <div class="field"><label class="fl">Cyan</label><input type="text" class="sl-cy" data-sid="${sl.id}" placeholder="fráze|další" value="${sl.cyan}"></div>
+      <details class="tech"><summary style="font-size:10px">⚙ Gradient & písmo</summary><div class="tech-body">
+        <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" class="sl-fo0" data-sid="${sl.id}" min=".3" max=".95" step=".01" value="${sl.fo0}"><span class="sl-val sl-fo0v">0.72</span></div>
+        <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" class="sl-fo1" data-sid="${sl.id}" min=".5" max="1" step=".01" value="${sl.fo1}"><span class="sl-val sl-fo1v">0.96</span></div>
+        <div class="field"><label class="fl">Písmo</label><select class="sl-fz" data-sid="${sl.id}"><option value="0">Auto</option><option value="84">84px</option><option value="78">78px</option><option value="68">68px</option><option value="56">56px</option></select></div>
+        <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" class="sl-yn" data-sid="${sl.id}" min="-120" max="120" step="4" value="0"><span class="sl-val sl-ynv">0</span></div>
+      </div></details>
+    </div>`;
+  list.appendChild(card);
+
+  card.querySelector('.sc-head').addEventListener('click',e=>{
+    if(e.target.closest('.sc-del'))return;
+    card.querySelector('.sc-body').classList.toggle('col');
+    const ci=S.carousel.slides.findIndex(s=>s.id===sl.id);
+    if(ci>=0){S.carousel.cur=ci;showCarSlide(ci);}
+  });
+  card.querySelector('.sc-del').addEventListener('click',e=>{e.stopPropagation();removeSlide(sl.id)});
+
+  // Photo
+  const dzs=card.querySelector(`#dz-sl-${sl.id}`);
+  const phi=card.querySelector(`#ph-sl-${sl.id}`);
+  phi.addEventListener('change',()=>loadSlidePhoto(sl.id,phi.files[0]));
+  dzs.addEventListener('dragover',e=>{e.preventDefault();dzs.classList.add('dragover')});
+  dzs.addEventListener('dragleave',()=>dzs.classList.remove('dragover'));
+  dzs.addEventListener('drop',e=>{e.preventDefault();dzs.classList.remove('dragover');const f=e.dataTransfer?.files?.[0];if(f)loadSlidePhoto(sl.id,f)});
+  card.querySelector('.ph-clear').addEventListener('click',e=>{e.stopPropagation();clearSlidePhoto(sl.id)});
+
+  card.querySelector('.sl-hl').addEventListener('input',e=>{sl.headline=e.target.value;card.querySelector('.sc-title').textContent=sl.headline||`Slide ${idx+1}`;redraw()});
+  card.querySelector('.sl-ey').addEventListener('input',e=>{sl.eyebrow=e.target.value;redraw()});
+  card.querySelector('.sl-cy').addEventListener('input',e=>{sl.cyan=e.target.value;redraw()});
+  card.querySelectorAll('input[type=range]').forEach(r=>{
+    const vEl=r.nextElementSibling;
+    r.addEventListener('input',()=>{
+      if(vEl)vEl.textContent=parseFloat(r.value).toFixed(2);
+      if(r.classList.contains('sl-fo0'))sl.fo0=parseFloat(r.value);
+      if(r.classList.contains('sl-fo1'))sl.fo1=parseFloat(r.value);
+      if(r.classList.contains('sl-yn'))sl.ynudge=parseInt(r.value);
+      redraw();
+    });
+    if(vEl)vEl.textContent=parseFloat(r.value).toFixed(2);
+  });
+  card.querySelector('.sl-fz').addEventListener('change',e=>{sl.fontsize=parseInt(e.target.value);redraw()});
+}
+
+function loadSlidePhoto(sid,file){
+  if(!file)return;
+  const sl=S.carousel.slides.find(s=>s.id===sid); if(!sl)return;
+  const img=new Image();
+  const url=URL.createObjectURL(file);
+  img.onload=()=>{
+    sl.photo=img;
+    const dz=document.getElementById(`dz-sl-${sid}`);
+    dz.classList.add('has-photo');
+    let pi=dz.querySelector('img.dz-pi');
+    if(!pi){pi=document.createElement('img');pi.className='dz-pi';pi.style.cssText='width:100%;height:72px;object-fit:cover;border-radius:8px;display:block';dz.insertBefore(pi,dz.firstChild);}
+    pi.src=url;
+    dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='none');
+    redraw();
+  };
+  img.src=url;
+}
+
+function clearSlidePhoto(sid){
+  const sl=S.carousel.slides.find(s=>s.id===sid); if(!sl)return;
+  sl.photo=null;
+  const dz=document.getElementById(`dz-sl-${sid}`);
+  dz.classList.remove('has-photo');
+  const pi=dz.querySelector('img.dz-pi'); if(pi)pi.remove();
+  dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='');
+  redraw();
+}
+
+function removeSlide(sid){
+  const idx=S.carousel.slides.findIndex(s=>s.id===sid);
+  if(idx<0)return;
+  if(S.carousel.slides.length===1){toast('Musí být alespoň 1 slide','error');return;}
+  S.carousel.slides.splice(idx,1);
+  S.carCanvases.splice(idx,1);
+  if(S.carousel.cur>=S.carousel.slides.length)S.carousel.cur=S.carousel.slides.length-1;
+  const list=document.getElementById('slide-list'); list.innerHTML='';
+  scid=0; const saved=[...S.carousel.slides]; S.carousel.slides=[];
+  saved.forEach(s=>{S.carousel.slides.push(s);renderSlideCard(S.carousel.slides.length-1)});
+  updateLastFlags(); updateCarNav(); redraw();
+}
+
+function updateLastFlags(){S.carousel.slides.forEach((s,i)=>s.isLast=i===S.carousel.slides.length-1)}
+function updateCarNav(){
+  const nav=document.getElementById('car-nav');
+  if(S.type==='carousel'){nav.classList.remove('hidden');document.getElementById('car-ind').textContent=`${S.carousel.cur+1} / ${S.carousel.slides.length}`;}
+  else nav.classList.add('hidden');
+}
+function showCarSlide(i){
+  S.carousel.cur=i; updateCarNav();
+  const c=S.carCanvases[i]; if(!c)return;
+  const mc=document.getElementById('main-canvas');
+  mc.width=c.width; mc.height=c.height;
+  mc.getContext('2d').drawImage(c,0,0);
+}
+
+// ── CHART ROWS ─────────────────────────────────────────────────────────────────
+const PCOLS=['#2255A4','#034D9B','#FF0000','#000000','#00A651','#FFD700','#971B2F','#FF6600','#6600CC'];
+let crow=0;
+function initChart(){
+  document.getElementById('add-chart-row').addEventListener('click',()=>addChartRow());
+  [['ANO',32,'#2255A4'],['ODS',14,'#034D9B'],['STAN',11,'#00A651'],['Piráti',9,'#231F20']].forEach(([l,v,c])=>addChartRow({label:l,value:v,color:c}));
+}
+function addChartRow(d={}){
+  const id=++crow; const row=document.createElement('div'); row.className='chart-row';
+  const col=d.color||PCOLS[(crow-1)%PCOLS.length];
+  row.innerHTML=`<input type="text" class="cr-l" placeholder="Název" value="${d.label||''}"><input type="number" class="cr-v" placeholder="%" min="0" max="100" value="${d.value||''}"><input type="color" class="cr-c" value="${col}"><button class="icon-btn cr-d">✕</button>`;
+  document.getElementById('chart-rows').appendChild(row);
+  row.querySelector('.cr-d').addEventListener('click',()=>{row.remove();redraw()});
+  row.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>redraw()));
+}
+function getChartData(){
+  return [...document.querySelectorAll('.chart-row')].map(r=>({
+    label:r.querySelector('.cr-l').value.trim(),
+    value:parseFloat(r.querySelector('.cr-v').value)||0,
+    color:r.querySelector('.cr-c').value
+  })).filter(d=>d.label);
+}
+
+// ── WATCH ──────────────────────────────────────────────────────────────────────
+function watchAll(){
+  ['info-eyebrow','info-hl','info-cyan','cit-q','cit-cyan','cit-name','cit-role','data-eyebrow','data-hl','data-cyan','data-fn','cap-text','cap-src','cap-tags'].forEach(id=>{
+    const el=document.getElementById(id); if(!el)return;
+    el.addEventListener('input',()=>redraw());
+  });
+  ['info-eyebrow-on','info-fs','cit-fs','data-ct','data-fs','clean-color'].forEach(id=>{
+    const el=document.getElementById(id); if(!el)return;
+    el.addEventListener('change',()=>redraw());
+  });
+}
+
+// ── REDRAW ─────────────────────────────────────────────────────────────────────
+function redraw(){
+  clearTimeout(S.deb);
+  S.deb=setTimeout(doRender,320);
+}
+
+async function doRender(){
+  setLoading(true);
+  try{
+    if(S.type==='carousel'){
+      S.carCanvases=[];
+      for(let i=0;i<S.carousel.slides.length;i++){
+        const c=document.createElement('canvas');
+        await renderInfo(c,{
+          headline:S.carousel.slides[i].headline,
+          eyebrow:S.carousel.slides[i].eyebrow,
+          cyanPhrases:parseCyan(S.carousel.slides[i].cyan),
+          fo0:S.carousel.slides[i].fo0,fo1:S.carousel.slides[i].fo1,
+          fontSize:S.carousel.slides[i].fontsize,yNudge:S.carousel.slides[i].ynudge,
+          photo:S.carousel.slides[i].photo,arrows:!S.carousel.slides[i].isLast
+        });
+        S.carCanvases.push(c);
+      }
+      showCarSlide(Math.min(S.carousel.cur,S.carCanvases.length-1));
+    } else {
+      const mc=document.getElementById('main-canvas');
+      mc.width=W; mc.height=H;
+      await renderType(mc);
+      showCanvas(mc);
+    }
+  }catch(e){console.error(e);}
+  finally{setLoading(false);}
+}
+
+async function renderType(c){
+  if(S.type==='info') await renderInfo(c,getInfoOpts());
+  else if(S.type==='citation') await renderCitation(c,getCitOpts());
+  else if(S.type==='data') await renderData(c,getDataOpts());
+  else if(S.type==='clean') renderClean(c);
+}
+
+function showCanvas(c){
+  const mc=document.getElementById('main-canvas');
+  if(c!==mc){mc.width=c.width;mc.height=c.height;mc.getContext('2d').drawImage(c,0,0);}
+  mc.style.display='block';
+  document.getElementById('pempty').style.display='none';
+  // Scale to fit preview area
+  const area=document.getElementById('pframe');
+  const maxH=window.innerHeight-200;
+  const scale=Math.min(maxH/H,1);
+  mc.style.width=(W*scale)+'px';
+  mc.style.height=(H*scale)+'px';
+}
+
+function setLoading(on){document.getElementById('pload').style.display=on?'flex':'none'}
+
+// ── CANVAS HELPERS ─────────────────────────────────────────────────────────────
+function setF(ctx,sz,wt=700){ctx.font=`${wt} ${sz}px Montserrat`}
+function mw(ctx,t){return ctx.measureText(t).width}
+
+function wrapT(ctx,text,maxW=MAXW){
+  const words=text.split(' '); const lines=[]; let cur='';
+  for(const w of words){const tr=cur?cur+' '+w:w;if(mw(ctx,tr)<=maxW)cur=tr;else{if(cur)lines.push(cur);cur=w;}}
+  if(cur)lines.push(cur);
+  return lines.length?lines:[''];
+}
+
+function autoSz(ctx,text,minL=2,maxL=3){
+  for(const sz of[84,78,74,68,62,56,52,48,44]){setF(ctx,sz,700);if(wrapT(ctx,text).length>=minL&&wrapT(ctx,text).length<=maxL)return sz;}
+  return 52;
+}
+
+function autoSzMax(ctx,text,maxL=5){
+  for(const sz of[66,60,56,52,48,44,40,36]){setF(ctx,sz,700);if(wrapT(ctx,text).length<=maxL)return sz;}
+  return 36;
+}
+
+function spaced(ctx,x,y,text,sp=3){for(const ch of text){ctx.fillText(ch,x,y);x+=mw(ctx,ch)+sp;}}
+
+function colorLine(ctx,x,y,line,phrases){
+  const ps=phrases.filter(p=>p&&line.includes(p));
+  if(!ps.length){ctx.fillStyle=WHITE;ctx.fillText(line,x,y);return;}
+  let rem=line,cx=x;
+  while(rem){
+    let hit=false;
+    for(const p of ps){if(rem.startsWith(p)){ctx.fillStyle=CYAN;ctx.fillText(p,cx,y);cx+=mw(ctx,p);rem=rem.slice(p.length);hit=true;break;}}
+    if(!hit){
+      let np=rem.length;
+      for(const p of ps){const i=rem.indexOf(p);if(i>0&&i<np)np=i;}
+      const ch=rem.slice(0,np);if(ch){ctx.fillStyle=WHITE;ctx.fillText(ch,cx,y);cx+=mw(ctx,ch);}
+      rem=rem.slice(np);
+    }
+  }
+}
+
+function leading(sz){return Math.round(sz*1.24)}
+
+function yStart(fo1,nLines,sz,extra=0,nudge=0){
+  const bot=H-110,avail=bot-fo1,bh=(nLines-1)*leading(sz)+sz+extra;
+  return fo1+Math.max(40,Math.floor((avail-bh)/2))+extra+nudge;
+}
+
+// ── GRADIENT ──────────────────────────────────────────────────────────────────
+function doGrad(ctx,photoH,fo0f,fo1f){
+  const fo0=photoH*fo0f, fo1=photoH*fo1f;
+  const g=ctx.createLinearGradient(0,fo0,0,fo1);
+  for(let i=0;i<=20;i++){const t=i/20,a=t*t*(3-2*t);g.addColorStop(t,`rgba(${NAVYr},${NAVYg},${NAVYb},${a.toFixed(4)})`);}
+  ctx.fillStyle=g; ctx.fillRect(0,fo0,W,fo1-fo0);
+  ctx.fillStyle=NAVY; ctx.fillRect(0,fo1,W,H-fo1);
+}
+
+async function drawPhoto(ctx,img,fo0,fo1){
+  if(!img)return Math.floor(H*0.30);
+  const sc=W/img.naturalWidth, ih=Math.round(img.naturalHeight*sc);
+  const off=document.createElement('canvas'); off.width=W; off.height=Math.min(ih,H);
+  const oc=off.getContext('2d');
+  oc.filter='contrast(1.12) saturate(1.06)';
+  oc.drawImage(img,0,0,W,ih);
+  ctx.drawImage(off,0,0);
+  const ph=Math.min(ih,H);
+  doGrad(ctx,ph,fo0,fo1);
+  return Math.min(Math.floor(ph*fo1),H-200);
+}
+
+// ── COMPONENTS ────────────────────────────────────────────────────────────────
+function drawEyebrow(ctx,x,y,text){
+  const sz=24;setF(ctx,sz,600);
+  ctx.fillStyle=CYAN;
+  ctx.fillRect(x,y+sz*0.42,22,4);
+  ctx.textBaseline='alphabetic';
+  spaced(ctx,x+34,y+sz*0.82,text.toUpperCase(),3);
+}
+
+function drawWM(ctx){
+  setF(ctx,19,400); ctx.fillStyle=MUTED;
+  const t='Matěj Jankovič', w=mw(ctx,t);
+  ctx.textBaseline='alphabetic';
+  ctx.fillText(t,W-LX-w,1316);
+}
+
+function drawArrows(ctx){
+  const cy=675,sz=20,g=22;
+  for(const ox of[-g,0,g]){
+    const bx=1018+ox;
+    ctx.beginPath();ctx.moveTo(bx-sz/2,cy-sz);ctx.lineTo(bx+sz/2,cy);ctx.lineTo(bx-sz/2,cy+sz);
+    ctx.strokeStyle=BLACK;ctx.lineWidth=7;ctx.lineJoin='round';ctx.stroke();
+    ctx.strokeStyle=WHITE;ctx.lineWidth=4;ctx.stroke();
+  }
+}
+
+// ── TYPE A: INFO ──────────────────────────────────────────────────────────────
+async function renderInfo(canvas,opts){
+  const{headline='',eyebrow='',cyanPhrases=[],fo0=.72,fo1=.96,fontSize=0,yNudge=0,photo=null,arrows=false}=opts;
+  const ctx=canvas.getContext('2d');
+  canvas.width=W; canvas.height=H;
+  ctx.fillStyle=NAVY; ctx.fillRect(0,0,W,H);
+
+  let f1=Math.floor(H*.30);
+  if(photo) f1=await drawPhoto(ctx,photo,fo0,fo1);
+
+  const sz=fontSize||autoSz(ctx,headline||' ');
+  setF(ctx,sz,700); ctx.textBaseline='alphabetic';
+  const lines=wrapT(ctx,headline||' ');
+  const lead=leading(sz);
+  const eyH=eyebrow?24+26:0;
+  let y=yStart(f1,lines.length,sz,eyH,yNudge);
+
+  if(eyebrow) drawEyebrow(ctx,LX,y-eyH,eyebrow);
+  setF(ctx,sz,700);
+  for(const ln of lines){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrases);y+=lead;}
+
+  if(arrows) drawArrows(ctx);
+  drawWM(ctx);
+}
+
+// ── TYPE B: CITATION ──────────────────────────────────────────────────────────
+async function renderCitation(canvas,opts){
+  const{quote='',cyanPhrase='',authorName='',authorRole='',fo0=.6,fo1=.92,fontSize=0,yNudge=0,photo=null}=opts;
+  const ctx=canvas.getContext('2d');
+  canvas.width=W; canvas.height=H;
+  ctx.fillStyle=NAVY; ctx.fillRect(0,0,W,H);
+
+  let f1=Math.floor(H*.35);
+  if(photo) f1=await drawPhoto(ctx,photo,fo0,fo1);
+
+  const full=`„${quote}“`;
+  const sz=fontSize||autoSzMax(ctx,full,5);
+  setF(ctx,sz,700); ctx.textBaseline='alphabetic';
+  const lines=wrapT(ctx,full);
+  const lead=leading(sz);
+  const attrH=authorName?32+8+21+40:0;
+  const blockH=(lines.length-1)*lead+sz+attrH+20;
+  const bot=H-110,avail=bot-f1;
+  let y=f1+Math.max(40,Math.floor((avail-blockH)/2))+yNudge;
+
+  for(const ln of lines){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrase?[cyanPhrase]:[]);y+=lead;}
+
+  if(authorName){
+    const by=y+36;
+    ctx.fillStyle=CYAN; ctx.fillRect(LX,by,4,32+8+21);
+    setF(ctx,32,700); ctx.fillStyle=WHITE; ctx.fillText(authorName,LX+18,by+32*.82);
+    if(authorRole){setF(ctx,21,600); ctx.fillStyle=MUTED; ctx.fillText(authorRole,LX+18,by+40+21*.82);}
+  }
+  drawWM(ctx);
+}
+
+// ── TYPE D: DATA ──────────────────────────────────────────────────────────────
+async function renderData(canvas,opts){
+  const{headline='',eyebrow='',cyanPhrases=[],chartType='bar',chartData=[],footnote='',fo0=.55,fo1=.85,fontSize=0,yNudge=0,photo=null}=opts;
+  const ctx=canvas.getContext('2d');
+  canvas.width=W; canvas.height=H;
+  ctx.fillStyle=NAVY; ctx.fillRect(0,0,W,H);
+
+  let f1=380;
+  if(photo) f1=await drawPhoto(ctx,photo,fo0,fo1);
+
+  let y=f1+40+yNudge;
+
+  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=24+26;}
+
+  const sz=fontSize||autoSz(ctx,headline||' ');
+  setF(ctx,sz,700); ctx.textBaseline='alphabetic';
+  const lines=wrapT(ctx,headline||' ');
+  for(const ln of lines){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrases);y+=leading(sz);}
+  y+=20;
+
+  if(chartData.length){
+    if(chartType==='bar'){
+      const ch=Math.min(300,H-130-y-(footnote?30:0));
+      if(ch>60) drawBarChart(ctx,LX,y,MAXW,ch,chartData);
+      y+=ch+20;
+    } else {
+      y=drawTable(ctx,LX,y,chartData);
+    }
+  }
+
+  if(footnote){setF(ctx,15,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText(footnote,LX,H-96);}
+  drawWM(ctx);
+}
+
+function drawBarChart(ctx,x,y,w,h,data){
+  const n=data.length; if(!n)return;
+  const maxV=Math.max(...data.map(d=>d.value))||1;
+  const lblH=40,barH=h-lblH;
+  // Grid
+  ctx.globalAlpha=.18;
+  for(const f of[.25,.5,.75,1]){
+    const gy=y+barH-barH*f;
+    ctx.strokeStyle=MUTED; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x,gy); ctx.lineTo(x+w,gy); ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+  const slot=w/n, bw=slot*.62, bg=(slot-bw)/2;
+  setF(ctx,14,700); ctx.textBaseline='alphabetic';
+  for(let i=0;i<n;i++){
+    const d=data[i];
+    const bx=x+i*slot+bg, bht=Math.round(barH*d.value/maxV), by=y+barH-bht;
+    ctx.fillStyle=d.color; ctx.fillRect(bx,by,bw,bht);
+    const vs=`${d.value}%`, vw=mw(ctx,vs);
+    ctx.fillStyle=WHITE; ctx.fillText(vs,bx+bw/2-vw/2,by-6);
+    setF(ctx,15,600); ctx.fillStyle=MUTED;
+    const lw=mw(ctx,d.label); ctx.fillText(d.label,bx+bw/2-lw/2,y+barH+lblH*.7);
+    setF(ctx,14,700);
+  }
+}
+
+function drawTable(ctx,x,y,data){
+  const rh=76;
+  for(const d of data){
+    ctx.strokeStyle='rgba(30,48,96,.8)'; ctx.lineWidth=2; ctx.setLineDash([6,6]);
+    ctx.beginPath(); ctx.moveTo(x,y+rh-2); ctx.lineTo(x+MAXW,y+rh-2); ctx.stroke();
+    ctx.setLineDash([]);
+    setF(ctx,20,600); ctx.fillStyle=WHITE; ctx.textBaseline='alphabetic';
+    ctx.fillText(d.label,x,y+rh/2+8);
+    const vs=String(d.value)+'%', vw=mw(ctx,vs);
+    setF(ctx,20,700); ctx.fillStyle=CYAN;
+    ctx.fillText(vs,x+MAXW-vw,y+rh/2+8);
+    y+=rh;
+  }
+  return y;
+}
+
+function renderClean(canvas){
+  const ctx=canvas.getContext('2d'); canvas.width=W; canvas.height=H;
+  ctx.fillStyle=document.getElementById('clean-color').value==='black'?'#000000':NAVY;
+  ctx.fillRect(0,0,W,H);
+  showCanvas(canvas);
+}
+
+// ── OPTS BUILDERS ──────────────────────────────────────────────────────────────
+function parseCyan(s){return(s||'').split('|').map(x=>x.trim()).filter(Boolean)}
+
+function getInfoOpts(){return{
+  headline:v('info-hl'),
+  eyebrow:document.getElementById('info-eyebrow-on').checked?v('info-eyebrow'):'',
+  cyanPhrases:parseCyan(v('info-cyan')),
+  fo0:+document.getElementById('info-fo0').value,fo1:+document.getElementById('info-fo1').value,
+  fontSize:+document.getElementById('info-fs').value,yNudge:+document.getElementById('info-yn').value,
+  photo:S.photos.info
+}}
+function getCitOpts(){return{
+  quote:v('cit-q'),cyanPhrase:v('cit-cyan').trim(),
+  authorName:v('cit-name'),authorRole:v('cit-role'),
+  fo0:+document.getElementById('cit-fo0').value,fo1:+document.getElementById('cit-fo1').value,
+  fontSize:+document.getElementById('cit-fs').value,yNudge:+document.getElementById('cit-yn').value,
+  photo:S.photos.citation
+}}
+function getDataOpts(){return{
+  headline:v('data-hl'),eyebrow:v('data-eyebrow'),cyanPhrases:parseCyan(v('data-cyan')),
+  chartType:document.getElementById('data-ct').value,chartData:getChartData(),
+  footnote:v('data-fn'),
+  fo0:+document.getElementById('data-fo0').value,fo1:+document.getElementById('data-fo1').value,
+  fontSize:+document.getElementById('data-fs').value,yNudge:+document.getElementById('data-yn').value,
+  photo:S.photos.data
+}}
+function v(id){return document.getElementById(id)?.value?.trim()||''}
+
+// ── EXPORT ─────────────────────────────────────────────────────────────────────
+async function exportPost(){
+  const btn=document.getElementById('btn-exp');
+  btn.disabled=true; btn.textContent='⏳ Generuji…';
+  try{
+    if(S.type==='carousel'){
+      for(let i=0;i<S.carousel.slides.length;i++){
+        const c=S.carCanvases[i];if(!c)continue;
+        await dlCanvas(c,`slide_${String(i+1).padStart(2,'0')}.png`);
+        await new Promise(r=>setTimeout(r,200));
+      }
+    } else {
+      const c=document.createElement('canvas');
+      c.width=W; c.height=H;
+      await renderType(c);
+      await dlCanvas(c,S.type==='citation'?'citation.png':S.type==='data'?'data_post.png':S.type==='clean'?'clean_bg.png':'info_post.png');
+    }
+    toast('Staženo!','success');
+  }catch(e){toast(e.message,'error');}
+  finally{btn.disabled=false;btn.textContent='⬇ Export PNG';}
+}
+
+function dlCanvas(canvas,name){
+  return new Promise(res=>{
+    canvas.toBlob(blob=>{
+      const u=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);res();
+    },'image/png');
+  });
+}
+
+// ── LIGHTBOX ──────────────────────────────────────────────────────────────────
+document.getElementById('main-canvas').addEventListener('click',()=>{
+  const mc=document.getElementById('main-canvas');
+  if(mc.style.display==='none')return;
+  const lb=document.getElementById('lb'),img=document.getElementById('lb-img');
+  img.src=mc.toDataURL('image/png');
+  lb.style.display='flex'; document.body.style.overflow='hidden';
+});
+function closeLb(){document.getElementById('lb').style.display='none';document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
+
+// ── CAPTION ───────────────────────────────────────────────────────────────────
+document.getElementById('btn-cap').addEventListener('click',()=>{
+  const text=v('cap-text');
+  if(!text){toast('Vyplňte hlavní věty','error');return;}
+  const today=new Date().toLocaleDateString('cs-CZ');
+  const src=v('cap-src'),tags=v('cap-tags');
+  const parts=[text,'','Zajímá mě váš názor, proto mi ho prosím napište do komentářů!','','👆Nezapomeňte mě sledovat pro váš větší přehled!'];
+  if(src)parts.push('',`Zdroj: ${src} · ${today}`);
+  if(tags)parts.push('',tags);
+  document.getElementById('cap-out').textContent=parts.join('\n');
+  toast('Caption vygenerován','success');
+});
+document.getElementById('btn-cpcap').addEventListener('click',()=>{
+  const t=document.getElementById('cap-out').textContent;
+  if(t.startsWith('Caption se zobrazí')){toast('Nejdřív vygenerujte caption','error');return;}
+  navigator.clipboard.writeText(t).then(()=>toast('Zkopírováno','success'));
+});
+
+// ── BUTTONS ───────────────────────────────────────────────────────────────────
+function initButtons(){
+  document.getElementById('btn-exp').addEventListener('click',exportPost);
+  document.getElementById('btn-ref').addEventListener('click',()=>{clearTimeout(S.deb);doRender();});
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function toast(msg,type=''){
+  const c=document.getElementById('toasts');
+  const el=document.createElement('div'); el.className=`toast ${type}`; el.textContent=msg;
+  c.appendChild(el); setTimeout(()=>el.remove(),3200);
+}
+</script>
+</body>
+</html>
