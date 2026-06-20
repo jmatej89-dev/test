@@ -657,6 +657,31 @@ details.tech summary:hover { color: var(--white); }
   border-radius: 12px;
 }
 
+.preview-clickable {
+  cursor: zoom-in;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.preview-clickable:hover {
+  transform: scale(1.01);
+  box-shadow: 0 0 40px rgba(92,225,230,0.25);
+}
+
+/* Lightbox */
+#lightbox {
+  animation: lbFadeIn 0.18s ease;
+}
+
+#lightbox-img {
+  transition: opacity 0.2s;
+  border-radius: 6px;
+}
+
+@keyframes lbFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 .preview-loading {
   position: absolute;
   inset: 0;

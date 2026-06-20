@@ -356,7 +356,7 @@
             <div class="icon">🖼️</div>
             <p>Vyplňte formulář a náhled se zobrazí automaticky</p>
           </div>
-          <img id="preview-img" src="" alt="Preview" style="display:none">
+          <img id="preview-img" src="" alt="Preview" style="display:none" title="Klikni pro fullscreen" class="preview-clickable">
           <div class="preview-loading" id="preview-loading">
             <div class="spinner"></div>
           </div>
@@ -379,6 +379,11 @@
 </div><!-- /app -->
 
 <div class="toast-container" id="toasts"></div>
+
+<!-- Fullscreen lightbox -->
+<div id="lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:none;align-items:center;justify-content:center;cursor:zoom-out" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" style="max-height:95vh;max-width:95vw;border-radius:4px;box-shadow:0 0 60px rgba(0,0,0,0.8);object-fit:contain">
+</div>
 
 <script src="/static/app.js"></script>
 </body>

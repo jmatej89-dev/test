@@ -678,6 +678,53 @@ function initButtons() {
 
 /* ── TOASTS ──────────────────────────────────────────────────────────────────── */
 
+/* ── LIGHTBOX ─────────────────────────────────────────────────────────────────── */
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('preview-img').addEventListener('click', openLightbox);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+});
+
+async function openLightbox() {
+  const src = document.getElementById('preview-img').src;
+  if (!src || src === window.location.href) return;
+
+  const lb    = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+
+  // Show immediately with preview (scaled up), then swap to full-res
+  lbImg.src = src;
+  lbImg.style.opacity = '0.5';
+  lb.style.display = 'flex';
+  document.body.style.overflow = 'hidden';
+
+  try {
+    let res;
+    if (state.type === 'carousel') {
+      res = await fetch('/api/generate/carousel', { method: 'POST', body: buildCarouselFormData(false) });
+      // For carousel, show current slide at full res
+      const fd2 = buildCarouselFormData(true);
+      // We already have the preview — just show it larger via CSS; full-res carousel is ZIP
+      lbImg.style.opacity = '1';
+      lbImg.style.imageRendering = 'crisp-edges';
+      return;
+    } else {
+      res = await fetch(`/api/generate/${state.type}`, { method: 'POST', body: buildFormData(false) });
+    }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    lbImg.onload = () => { lbImg.style.opacity = '1'; URL.revokeObjectURL(url); };
+    lbImg.src = url;
+  } catch {
+    lbImg.style.opacity = '1';
+  }
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').style.display = 'none';
+  document.body.style.overflow = '';
+}
+
 function toast(msg, type = '') {
   const container = document.getElementById('toasts');
   const el = document.createElement('div');
