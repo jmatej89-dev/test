@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@matejjankovic · Post Creator</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ── HEADER ──────────────────────────────────────────────── -->
+  <header>
+    <h1>@matejjankovic · Post Creator</h1>
+    <span class="badge">1080 × 1350 px · PNG · 4:5</span>
+  </header>
+
+  <div class="workspace">
+
+    <!-- ── SIDEBAR ─────────────────────────────────────────────── -->
+    <aside class="sidebar">
+      <div class="sidebar-scroll" id="sidebar-scroll">
+
+        <!-- Post type tabs -->
+        <div class="type-tabs">
+          <button class="type-tab active" data-type="info">
+            <span class="icon">📰</span>INFO
+          </button>
+          <button class="type-tab" data-type="citation">
+            <span class="icon">💬</span>CITACE
+          </button>
+          <button class="type-tab" data-type="carousel">
+            <span class="icon">🎠</span>CAROUSEL
+          </button>
+          <button class="type-tab" data-type="data">
+            <span class="icon">📊</span>DATA
+          </button>
+          <button class="type-tab" data-type="clean">
+            <span class="icon">⬛</span>ČISTÝ
+          </button>
+        </div>
+
+        <!-- ── TYPE: INFO ────────────────────────────────────────── -->
+        <div id="panel-info" class="post-panel">
+
+          <div class="section">
+            <div class="section-title">Fotografie</div>
+            <div class="dropzone" id="dz-info" data-target="info">
+              <input type="file" accept="image/*" id="photo-info">
+              <div class="dz-icon">🖼️</div>
+              <div class="dz-text">Přetáhněte nebo klikněte</div>
+              <div class="dz-hint">JPG, PNG, WEBP</div>
+              <button class="photo-clear" data-target="info" title="Odebrat fotku">✕</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Obsah</div>
+
+            <div class="field">
+              <label class="field-label">Eyebrow label</label>
+              <div class="toggle-row">
+                <input type="text" id="info-eyebrow" placeholder="BILANCE VLÁDY, PRŮZKUM…">
+                <label class="toggle" style="margin-left:8px">
+                  <input type="checkbox" id="info-eyebrow-on" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Nadpis</label>
+              <textarea id="info-headline" placeholder="Sliboval levnější hypotéky. Realita? Zdražují dál." rows="3"></textarea>
+            </div>
+
+            <div class="field">
+              <label class="field-label">Cyan zvýraznění</label>
+              <input type="text" id="info-cyan" placeholder="Realita?|Zdražují dál.">
+              <span class="cyan-hint">Oddělujte <code>|</code> — výraz musí být přesně v textu</span>
+            </div>
+          </div>
+
+          <!-- Technical -->
+          <details class="tech" id="tech-info">
+            <summary>⚙ Technické nastavení</summary>
+            <div class="tech-body">
+              <div class="slider-group">
+                <div class="section-title">Přechod gradientu</div>
+                <div class="slider-row">
+                  <span class="slider-label">Začátek</span>
+                  <input type="range" id="info-fo0" min="0.3" max="0.95" step="0.01" value="0.72">
+                  <span class="slider-val" id="info-fo0-val">0.72</span>
+                </div>
+                <div class="slider-row">
+                  <span class="slider-label">Konec</span>
+                  <input type="range" id="info-fo1" min="0.5" max="1.0" step="0.01" value="0.96">
+                  <span class="slider-val" id="info-fo1-val">0.96</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label">Velikost písma <span class="auto-badge">AUTO</span></label>
+                <select id="info-fontsize">
+                  <option value="0">Auto</option>
+                  <option value="84">84px</option>
+                  <option value="78">78px</option>
+                  <option value="74">74px</option>
+                  <option value="68">68px</option>
+                  <option value="62">62px</option>
+                  <option value="56">56px</option>
+                  <option value="52">52px</option>
+                  <option value="48">48px</option>
+                </select>
+              </div>
+              <div class="slider-row">
+                <span class="slider-label">Posunutí</span>
+                <input type="range" id="info-ynudge" min="-120" max="120" step="4" value="0">
+                <span class="slider-val" id="info-ynudge-val">0</span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- ── TYPE: CITATION ────────────────────────────────────── -->
+        <div id="panel-citation" class="post-panel hidden">
+
+          <div class="section">
+            <div class="section-title">Fotografie</div>
+            <div class="dropzone" id="dz-citation" data-target="citation">
+              <input type="file" accept="image/*" id="photo-citation">
+              <div class="dz-icon">🖼️</div>
+              <div class="dz-text">Ideálně portrét closeup</div>
+              <div class="dz-hint">JPG, PNG, WEBP</div>
+              <button class="photo-clear" data-target="citation" title="Odebrat">✕</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Citace</div>
+            <div class="field">
+              <label class="field-label">Text citátu (bez uvozovek)</label>
+              <textarea id="cit-quote" placeholder="Zákon si vykládáme jinak. A na tom se nic nezmění." rows="4"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label">Cyan fráze (1 výraz)</label>
+              <input type="text" id="cit-cyan" placeholder="nic nezmění">
+              <span class="cyan-hint">Musí být přesně v citátu, max 4–5 slov</span>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Atribuce</div>
+            <div class="field">
+              <label class="field-label">Jméno + strana</label>
+              <input type="text" id="cit-name" placeholder="Jan Novák /ANO/">
+            </div>
+            <div class="field">
+              <label class="field-label">Role / funkce</label>
+              <input type="text" id="cit-role" placeholder="Ministr financí, poslanec">
+            </div>
+          </div>
+
+          <details class="tech">
+            <summary>⚙ Technické nastavení</summary>
+            <div class="tech-body">
+              <div class="slider-group">
+                <div class="section-title">Přechod gradientu</div>
+                <div class="slider-row">
+                  <span class="slider-label">Začátek</span>
+                  <input type="range" id="cit-fo0" min="0.3" max="0.95" step="0.01" value="0.60">
+                  <span class="slider-val" id="cit-fo0-val">0.60</span>
+                </div>
+                <div class="slider-row">
+                  <span class="slider-label">Konec</span>
+                  <input type="range" id="cit-fo1" min="0.5" max="1.0" step="0.01" value="0.92">
+                  <span class="slider-val" id="cit-fo1-val">0.92</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label">Velikost písma <span class="auto-badge">AUTO</span></label>
+                <select id="cit-fontsize">
+                  <option value="0">Auto</option>
+                  <option value="66">66px</option>
+                  <option value="60">60px</option>
+                  <option value="56">56px</option>
+                  <option value="52">52px</option>
+                  <option value="48">48px</option>
+                  <option value="44">44px</option>
+                </select>
+              </div>
+              <div class="slider-row">
+                <span class="slider-label">Posunutí</span>
+                <input type="range" id="cit-ynudge" min="-120" max="120" step="4" value="0">
+                <span class="slider-val" id="cit-ynudge-val">0</span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- ── TYPE: CAROUSEL ────────────────────────────────────── -->
+        <div id="panel-carousel" class="post-panel hidden">
+          <div class="section">
+            <div class="section-title">Slidy</div>
+            <div class="slide-list" id="slide-list"></div>
+            <button class="add-slide-btn" id="add-slide">+ Přidat slide (max 5)</button>
+          </div>
+        </div>
+
+        <!-- ── TYPE: DATA ────────────────────────────────────────── -->
+        <div id="panel-data" class="post-panel hidden">
+
+          <div class="section">
+            <div class="section-title">Fotografie (volitelné)</div>
+            <div class="dropzone" id="dz-data" data-target="data">
+              <input type="file" accept="image/*" id="photo-data">
+              <div class="dz-icon">🖼️</div>
+              <div class="dz-text">Přetáhněte nebo klikněte</div>
+              <div class="dz-hint">Nebo nechte prázdné pro čistý navy background</div>
+              <button class="photo-clear" data-target="data" title="Odebrat">✕</button>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Popis</div>
+            <div class="field">
+              <label class="field-label">Eyebrow label</label>
+              <input type="text" id="data-eyebrow" placeholder="PRŮZKUM MEDIAN · LISTOPAD 2025">
+            </div>
+            <div class="field">
+              <label class="field-label">Nadpis</label>
+              <textarea id="data-headline" placeholder="ANO vede s 32 %. ODS a Piráti ztrácejí." rows="2"></textarea>
+            </div>
+            <div class="field">
+              <label class="field-label">Cyan zvýraznění</label>
+              <input type="text" id="data-cyan" placeholder="32 %|ztrácejí">
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Graf</div>
+            <div class="field">
+              <label class="field-label">Typ grafu</label>
+              <select id="data-chart-type">
+                <option value="bar">Sloupcový graf</option>
+                <option value="table">Srovnávací tabulka</option>
+              </select>
+            </div>
+            <div class="row-header">
+              <span>Název</span><span>Hodnota</span><span>Barva</span><span></span>
+            </div>
+            <div class="chart-rows" id="chart-rows"></div>
+            <button class="add-row-btn" id="add-chart-row">+ Přidat řádek</button>
+          </div>
+
+          <div class="section">
+            <div class="field">
+              <label class="field-label">Footnote / zdroj</label>
+              <input type="text" id="data-footnote" placeholder="Zdroj: Median, sběr 1.–7. 11. 2025, n=1 020">
+            </div>
+          </div>
+
+          <details class="tech">
+            <summary>⚙ Technické nastavení</summary>
+            <div class="tech-body">
+              <div class="slider-group">
+                <div class="section-title">Přechod (jen s fotkou)</div>
+                <div class="slider-row">
+                  <span class="slider-label">Začátek</span>
+                  <input type="range" id="data-fo0" min="0.3" max="0.95" step="0.01" value="0.55">
+                  <span class="slider-val" id="data-fo0-val">0.55</span>
+                </div>
+                <div class="slider-row">
+                  <span class="slider-label">Konec</span>
+                  <input type="range" id="data-fo1" min="0.5" max="1.0" step="0.01" value="0.85">
+                  <span class="slider-val" id="data-fo1-val">0.85</span>
+                </div>
+              </div>
+              <div class="field">
+                <label class="field-label">Velikost písma nadpisu</label>
+                <select id="data-fontsize">
+                  <option value="0">Auto</option>
+                  <option value="68">68px</option>
+                  <option value="62">62px</option>
+                  <option value="56">56px</option>
+                  <option value="52">52px</option>
+                </select>
+              </div>
+              <div class="slider-row">
+                <span class="slider-label">Posunutí</span>
+                <input type="range" id="data-ynudge" min="-80" max="80" step="4" value="0">
+                <span class="slider-val" id="data-ynudge-val">0</span>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- ── TYPE: CLEAN ───────────────────────────────────────── -->
+        <div id="panel-clean" class="post-panel hidden">
+          <div class="section">
+            <div class="section-title">Barva pozadí</div>
+            <div class="field-row">
+              <div class="field">
+                <label class="field-label">Varianta</label>
+                <select id="clean-color">
+                  <option value="navy">Navy (#070F28)</option>
+                  <option value="black">Černá (#000000)</option>
+                </select>
+              </div>
+            </div>
+            <p style="font-size:12px;color:var(--muted);margin-top:4px;">
+              Čistý slide bez textu. Ideální jako ironický prázdný slide (carousel slide 2 po otázce „Co vláda udělala?").
+            </p>
+          </div>
+        </div>
+
+        <!-- ── CAPTION ──────────────────────────────────────────── -->
+        <div class="section">
+          <div class="section-title">Caption generátor</div>
+          <div class="field">
+            <label class="field-label">Hlavní věty (1–2)</label>
+            <textarea id="cap-text" placeholder="ANO si udržuje stabilní předstih. Průzkum ukazuje erozi středopravého bloku." rows="3"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">Zdroj</label>
+            <input type="text" id="cap-source" placeholder="Median · ČT24">
+          </div>
+          <div class="field">
+            <label class="field-label">Hashtagy (oddělené mezerou)</label>
+            <input type="text" id="cap-tags" placeholder="#politika #průzkum #česko #volby">
+          </div>
+          <button class="btn btn-ghost" id="btn-gen-caption" style="width:100%">🪄 Generovat caption</button>
+        </div>
+
+      </div><!-- /sidebar-scroll -->
+    </aside>
+
+    <!-- ── PREVIEW PANEL ──────────────────────────────────────── -->
+    <div class="preview-panel">
+      <div class="preview-toolbar">
+        <div class="preview-toolbar-left">
+          <span class="preview-label">Náhled</span>
+          <div class="carousel-nav hidden" id="carousel-nav">
+            <button id="prev-slide" title="Předchozí">‹</button>
+            <span class="carousel-indicator" id="slide-indicator">1 / 1</span>
+            <button id="next-slide" title="Další">›</button>
+          </div>
+        </div>
+        <div class="toolbar-btns">
+          <button class="btn btn-ghost" id="btn-refresh" title="Obnovit náhled">↺ Obnovit</button>
+          <button class="btn btn-primary" id="btn-export">⬇ Export PNG</button>
+        </div>
+      </div>
+
+      <div class="preview-area">
+        <div class="preview-frame" id="preview-frame">
+          <div class="preview-empty" id="preview-empty">
+            <div class="icon">🖼️</div>
+            <p>Vyplňte formulář a náhled se zobrazí automaticky</p>
+          </div>
+          <img id="preview-img" src="" alt="Preview" style="display:none">
+          <div class="preview-loading" id="preview-loading">
+            <div class="spinner"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── CAPTION PANEL ──────────────────────────────────────── -->
+    <div class="caption-panel">
+      <div class="caption-header">
+        Caption
+        <button class="btn btn-ghost" id="btn-copy-caption" style="font-size:11px;padding:4px 10px">Kopírovat</button>
+      </div>
+      <div class="caption-body">
+        <div class="caption-output" id="caption-output">Caption se zobrazí po kliknutí na „Generovat caption".</div>
+      </div>
+    </div>
+
+  </div><!-- /workspace -->
+</div><!-- /app -->
+
+<div class="toast-container" id="toasts"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
