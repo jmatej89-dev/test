@@ -134,25 +134,78 @@ details[open].tech summary::before{transform:rotate(90deg)}
 .hidden{display:none!important}
 
 /* ── MOBILE ──────────────────────────────────────────────────────────────── */
-.mob-bar{display:none;background:var(--sf);border-top:1px solid var(--bd)}
-.mob-tab{flex:1;padding:10px 4px 8px;border:none;background:transparent;color:var(--mu);font-family:inherit;font-size:9px;font-weight:700;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;letter-spacing:.4px;transition:color .15s}
-.mob-tab .mi{font-size:19px;line-height:1}
+.mob-bar{display:none;background:var(--sf);border-top:1px solid var(--bd);flex-shrink:0}
+.mob-tab{flex:1;padding:10px 4px;padding-bottom:max(10px,env(safe-area-inset-bottom,10px));border:none;background:transparent;color:var(--mu);font-family:inherit;font-size:10px;font-weight:700;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;letter-spacing:.4px;transition:color .15s;-webkit-tap-highlight-color:transparent}
+.mob-tab .mi{font-size:22px;line-height:1}
 .mob-tab.active{color:var(--cy)}
+.mob-tab.active .mi{filter:drop-shadow(0 0 6px rgba(92,225,230,.7))}
+
 @media(max-width:700px){
-  html,body{overflow:auto}
-  .app{min-height:100dvh;padding-top:46px;padding-bottom:58px}
-  header{position:fixed;top:0;left:0;right:0;z-index:300;height:46px;padding:0 14px}
-  header h1{font-size:12px}
+  /* ── Core layout: header + workspace(flex:1) + mob-bar ── */
+  html,body{height:100%;height:100dvh;overflow:hidden}
+  .app{height:100%;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+  header{flex-shrink:0;height:50px;padding:0 14px}
   header .badge{display:none}
-  .workspace{flex-direction:column;overflow:visible;flex:none}
-  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--bd);display:none;max-height:70vh;overflow:hidden}
-  .sidebar.mob-show{display:flex}
-  .preview-panel{flex:none}
-  .prev-tb{padding:6px 12px}
-  .prev-area{padding:10px}
-  .cap-panel{width:100%;border-left:none;border-top:1px solid var(--bd);display:none;max-height:55vh}
-  .cap-panel.mob-show{display:flex}
-  .mob-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:300}
+  header h1{font-size:13px}
+  .workspace{flex:1;position:relative;overflow:hidden;min-height:0}
+  .mob-bar{display:flex}
+
+  /* ── All 3 panels fill the workspace, slide in/out ── */
+  .sidebar,.preview-panel,.cap-panel{
+    position:absolute;inset:0;width:100%;
+    transition:transform .25s cubic-bezier(.4,0,.2,1);
+    overflow:hidden;border:none;
+  }
+  /* default positions: form left, preview center, caption right */
+  .sidebar{transform:translateX(-100%);z-index:10;background:var(--sf);display:flex;flex-direction:column}
+  .preview-panel{transform:translateX(0);z-index:1;flex:none}
+  .cap-panel{transform:translateX(100%);z-index:10;background:var(--sf);display:flex;flex-direction:column}
+  /* active = center */
+  .sidebar.mob-show{transform:translateX(0)}
+  .cap-panel.mob-show{transform:translateX(0)}
+
+  /* ── Sidebar scroll ── */
+  .sb-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 12px;gap:12px}
+
+  /* ── Preview canvas fills available space ── */
+  .prev-tb{flex-shrink:0;padding:8px 12px}
+  .prev-area{flex:1;padding:10px;overflow:hidden}
+  #mc{border-radius:8px}
+
+  /* ── Caption panel scroll ── */
+  .cap-head{flex-shrink:0;padding:12px 14px}
+  .cap-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+  /* ── PREVENT iOS INPUT ZOOM (must be ≥16px) ── */
+  input[type=text],input[type=number],input[type=date],textarea,select{
+    font-size:16px!important;
+  }
+
+  /* ── Bigger touch targets ── */
+  .btn{padding:10px 14px;font-size:13px;min-height:40px}
+  .cat-pill{padding:7px 12px;font-size:10px;min-height:34px}
+  .type-tab{padding:8px 2px;min-height:52px}
+  .type-tab .icon{font-size:18px}
+  .type-tab{font-size:9px}
+  .add-btn{padding:10px;font-size:12px;min-height:40px}
+  .icon-btn{height:38px;width:38px;font-size:18px}
+  .ck-tog{width:40px;height:40px;font-size:18px}
+  textarea{min-height:64px}
+  input[type=range]{height:6px}
+  input[type=range]::-webkit-slider-thumb{width:20px;height:20px}
+
+  /* ── Section spacing ── */
+  .section{padding:13px;gap:10px}
+  label.fl{font-size:13px;margin-bottom:4px}
+  .section-title{font-size:11px}
+
+  /* ── Toasts above mob-bar ── */
+  .toasts{bottom:70px;right:10px;left:10px}
+  .toast{text-align:center;font-size:13px}
+
+  /* ── Items ── */
+  .ir{gap:6px}
+  .ir input[type=text]{font-size:14px!important}
 }
 
 /* ── PHOTO LIBRARY MODAL ─────────────────────────────────────────────────── */
@@ -625,14 +678,15 @@ details[open].tech summary::before{transform:rotate(90deg)}
   <div class="cap-body"><div class="cap-out" id="cap-out">Caption se zobrazí po kliknutí na „Generovat caption".</div></div>
 </div>
 
-</div></div><!-- end workspace / app -->
+</div><!-- end workspace -->
 
-<!-- MOBILE TAB BAR -->
+<!-- MOBILE TAB BAR (inside .app for flex layout) -->
 <nav class="mob-bar" id="mob-bar">
   <button class="mob-tab active" data-tab="edit"><span class="mi">📝</span>EDITACE</button>
   <button class="mob-tab" data-tab="prev"><span class="mi">🖼️</span>NÁHLED</button>
   <button class="mob-tab" data-tab="cap"><span class="mi">📋</span>CAPTION</button>
 </nav>
+</div><!-- end app -->
 
 <!-- PHOTO LIBRARY MODAL -->
 <div id="ph-modal" class="modal-bg">
@@ -982,7 +1036,9 @@ function showCanvas(c){
   mc.style.display='block';
   document.getElementById('pempty').style.display='none';
   const area=document.querySelector('.prev-area');
-  const aw=area.clientWidth-28,ah=area.clientHeight-28;
+  // clientWidth/Height may be 0 if panel is off-screen; fall back to window
+  const aw=Math.max(area.clientWidth,window.innerWidth*0.9)-24;
+  const ah=Math.max(area.clientHeight,window.innerHeight*0.6)-24;
   const scale=Math.min(aw/W,ah/H,1);
   mc.style.width=(W*scale)+'px';
   mc.style.height=(H*scale)+'px';
@@ -1506,9 +1562,14 @@ function initMobTabs(){
 }
 function switchMobTab(tab){
   document.querySelectorAll('.mob-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
-  document.querySelector('.sidebar').classList.toggle('mob-show',tab==='edit');
-  document.querySelector('.cap-panel').classList.toggle('mob-show',tab==='cap');
-  if(tab==='prev'){setTimeout(()=>{clearTimeout(S.deb);doRender();},80);}
+  const sb=document.querySelector('.sidebar');
+  const cp=document.querySelector('.cap-panel');
+  sb.classList.toggle('mob-show',tab==='edit');
+  cp.classList.toggle('mob-show',tab==='cap');
+  // when switching to preview, redraw after transition completes
+  if(tab==='prev'){
+    setTimeout(()=>{clearTimeout(S.deb);doRender();},260);
+  }
 }
 
 // ── PHOTO LIBRARY ─────────────────────────────────────────────────────────────
