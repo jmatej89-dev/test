@@ -3,502 +3,700 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@matejjankovic · Post Creator</title>
+<title>@matejjankovic · Post Creator v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#070F28;--surface:#0D1A3A;--surface2:#132045;--border:#1E3060;
-  --cyan:#5CE1E6;--cyan-dim:rgba(92,225,230,.15);--white:#fff;
-  --muted:#6484B6;--muted-dim:rgba(100,132,182,.25);
-  --danger:#FF5555;--success:#5CE6A0;--r:10px;--rs:6px;
-}
-html,body{height:100%;font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--white);font-size:14px;line-height:1.5;overflow:hidden}
+:root{--bg:#070F28;--sf:#0D1A3A;--sf2:#132045;--bd:#1E3060;--cy:#5CE1E6;--cy2:rgba(92,225,230,.15);--wh:#fff;--mu:#6484B6;--mu2:rgba(100,132,182,.22);--er:#FF5555;--ok:#5CE6A0;--wa:#FF9A3C;--r:10px;--rs:6px}
+html,body{height:100%;font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--wh);font-size:14px;line-height:1.5;overflow:hidden}
 .app{display:flex;flex-direction:column;height:100vh}
-header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:56px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
-header h1{font-size:16px;font-weight:700;color:var(--cyan)}
-header .badge{font-size:11px;color:var(--muted);font-weight:500}
+header{display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:52px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0}
+header h1{font-size:15px;font-weight:700;color:var(--cy)}
+header .badge{font-size:10px;color:var(--mu);font-weight:500}
 .workspace{display:flex;flex:1;overflow:hidden}
-
-/* Sidebar */
-.sidebar{width:360px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.sidebar-scroll{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:14px}
-.sidebar-scroll::-webkit-scrollbar{width:3px}
-.sidebar-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-/* Tabs */
-.type-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:var(--surface2);border-radius:var(--r);padding:4px}
-.type-tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 3px;border:none;background:transparent;border-radius:var(--rs);color:var(--muted);cursor:pointer;transition:all .15s;font-family:inherit;font-size:9px;font-weight:700;letter-spacing:.3px}
-.type-tab .icon{font-size:17px;line-height:1}
-.type-tab:hover{background:var(--muted-dim);color:var(--white)}
-.type-tab.active{background:var(--cyan);color:var(--bg)}
-
-/* Section */
-.section{background:var(--surface2);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:9px}
-.section-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
-
-/* Fields */
-label.fl{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:3px}
-input[type=text],input[type=number],textarea,select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);color:var(--white);font-family:inherit;font-size:12px;padding:7px 9px;outline:none;transition:border-color .15s;resize:vertical}
-input[type=text]:focus,input[type=number]:focus,textarea:focus,select:focus{border-color:var(--cyan)}
-textarea{min-height:64px}
-select option{background:var(--surface2)}
+.sidebar{width:358px;flex-shrink:0;background:var(--sf);border-right:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.sb-scroll{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.sb-scroll::-webkit-scrollbar{width:3px}
+.sb-scroll::-webkit-scrollbar-thumb{background:var(--bd);border-radius:2px}
+.cat-pills{display:flex;gap:4px;flex-wrap:wrap}
+.cat-pill{padding:4px 9px;border-radius:20px;border:1px solid var(--bd);background:transparent;color:var(--mu);font-size:9px;font-weight:700;cursor:pointer;font-family:inherit;letter-spacing:.4px;white-space:nowrap;transition:all .15s}
+.cat-pill:hover{border-color:var(--cy);color:var(--wh)}
+.cat-pill.active{background:var(--cy);color:var(--bg);border-color:var(--cy)}
+.type-tabs{display:grid;grid-template-columns:repeat(5,1fr);gap:3px;background:var(--sf2);border-radius:var(--r);padding:4px}
+.type-tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:none;background:transparent;border-radius:var(--rs);color:var(--mu);cursor:pointer;transition:all .15s;font-family:inherit;font-size:8px;font-weight:700;letter-spacing:.3px}
+.type-tab .icon{font-size:15px;line-height:1}
+.type-tab:hover{background:var(--mu2);color:var(--wh)}
+.type-tab.active{background:var(--cy);color:var(--bg)}
+.section{background:var(--sf2);border-radius:var(--r);padding:11px;display:flex;flex-direction:column;gap:8px}
+.section-title{font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px}
+label.fl{display:block;font-size:11px;font-weight:600;color:var(--mu);margin-bottom:3px}
+input[type=text],input[type=number],input[type=date],textarea,select{width:100%;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);color:var(--wh);font-family:inherit;font-size:12px;padding:6px 8px;outline:none;transition:border-color .15s;resize:vertical}
+input:focus,textarea:focus,select:focus{border-color:var(--cy)}
+textarea{min-height:52px}
+select option{background:var(--sf2)}
 .field{display:flex;flex-direction:column;gap:3px}
-.hint{font-size:10px;color:var(--muted)}
-.hint code{background:var(--muted-dim);padding:1px 4px;border-radius:3px;color:var(--cyan);font-size:10px}
-
-/* Toggle */
-.trow{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hint{font-size:10px;color:var(--mu)}
+.hint code{background:var(--mu2);padding:1px 4px;border-radius:3px;color:var(--cy);font-size:10px}
+.trow{display:flex;align-items:center;gap:8px}
 .trow input[type=text]{flex:1}
 .tog{position:relative;width:34px;height:18px;flex-shrink:0}
 .tog input{opacity:0;width:0;height:0}
-.tog-sl{position:absolute;inset:0;background:var(--border);border-radius:18px;cursor:pointer;transition:background .2s}
+.tog-sl{position:absolute;inset:0;background:var(--bd);border-radius:18px;cursor:pointer;transition:background .2s}
 .tog-sl::before{content:'';position:absolute;width:12px;height:12px;left:3px;top:3px;background:white;border-radius:50%;transition:transform .2s}
-.tog input:checked+.tog-sl{background:var(--cyan)}
+.tog input:checked+.tog-sl{background:var(--cy)}
 .tog input:checked+.tog-sl::before{transform:translateX(16px)}
-
-/* Sliders */
-.sl-group{display:flex;flex-direction:column;gap:5px}
 .sl-row{display:flex;align-items:center;gap:8px}
-.sl-lbl{font-size:10px;font-weight:600;color:var(--muted);width:46px;flex-shrink:0}
-.sl-val{font-size:11px;font-weight:700;color:var(--cyan);width:34px;text-align:right;flex-shrink:0}
-input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--border);border-radius:2px;outline:none;cursor:pointer}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--cyan);border-radius:50%;cursor:pointer}
-
-/* Dropzone */
-.dz{border:2px dashed var(--border);border-radius:var(--r);padding:16px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
-.dz:hover,.dz.dragover{border-color:var(--cyan);background:var(--cyan-dim)}
-.dz .dz-icon{font-size:24px;color:var(--muted)}
-.dz .dz-text{font-size:11px;color:var(--muted);font-weight:500}
-.dz.has-photo{border-style:solid;border-color:var(--cyan);padding:0}
-.dz.has-photo img{width:100%;height:90px;object-fit:cover;border-radius:8px;display:block}
+.sl-lbl{font-size:10px;font-weight:600;color:var(--mu);width:44px;flex-shrink:0}
+.sl-val{font-size:11px;font-weight:700;color:var(--cy);width:32px;text-align:right;flex-shrink:0}
+input[type=range]{flex:1;-webkit-appearance:none;height:3px;background:var(--bd);border-radius:2px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;background:var(--cy);border-radius:50%;cursor:pointer}
+.dz{border:2px dashed var(--bd);border-radius:var(--r);padding:12px;text-align:center;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;min-height:72px;display:flex;align-items:center;justify-content:center;gap:8px}
+.dz:hover,.dz.dragover{border-color:var(--cy);background:var(--cy2)}
+.dz .dz-icon{font-size:20px;color:var(--mu)}
+.dz .dz-lbl{font-size:11px;color:var(--mu);font-weight:500}
+.dz.has-photo{border-style:solid;border-color:var(--cy);padding:0}
+.dz.has-photo img.dz-pi{width:100%;height:72px;object-fit:cover;border-radius:8px;display:block}
 .dz input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
-.ph-clear{position:absolute;top:5px;right:5px;background:rgba(7,15,40,.85);border:1px solid var(--border);color:var(--white);border-radius:50%;width:20px;height:20px;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:10px;z-index:2}
+.ph-clear{position:absolute;top:5px;right:5px;background:rgba(7,15,40,.85);border:1px solid var(--bd);color:var(--wh);border-radius:50%;width:20px;height:20px;display:none;align-items:center;justify-content:center;cursor:pointer;font-size:10px;z-index:2;flex-shrink:0}
 .dz.has-photo .ph-clear{display:flex}
-
-/* Technical details */
-details.tech{background:var(--surface2);border-radius:var(--r);overflow:hidden}
-details.tech summary{padding:10px 12px;cursor:pointer;font-size:11px;font-weight:600;color:var(--muted);user-select:none;list-style:none;display:flex;align-items:center;gap:7px}
-details.tech summary::before{content:'›';font-size:15px;transition:transform .2s;color:var(--cyan)}
+details.tech{background:var(--sf2);border-radius:var(--r);overflow:hidden}
+details.tech summary{padding:9px 12px;cursor:pointer;font-size:11px;font-weight:600;color:var(--mu);user-select:none;list-style:none;display:flex;align-items:center;gap:6px}
+details.tech summary::before{content:'›';font-size:14px;transition:transform .2s;color:var(--cy)}
 details[open].tech summary::before{transform:rotate(90deg)}
-.tech-body{padding:0 12px 12px;display:flex;flex-direction:column;gap:10px}
-
-/* Carousel */
+.tech-body{padding:0 12px 12px;display:flex;flex-direction:column;gap:8px}
 .slide-list{display:flex;flex-direction:column;gap:7px}
-.slide-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
-.sc-head{display:flex;align-items:center;padding:9px 12px;cursor:pointer;user-select:none;gap:7px}
-.sc-head:hover{background:var(--muted-dim)}
-.sc-num{font-size:10px;font-weight:700;color:var(--cyan);background:var(--cyan-dim);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.slide-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden}
+.sc-head{display:flex;align-items:center;padding:8px 12px;cursor:pointer;user-select:none;gap:7px}
+.sc-head:hover{background:var(--mu2)}
+.sc-num{font-size:10px;font-weight:700;color:var(--cy);background:var(--cy2);width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sc-title{flex:1;font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sc-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:3px}
-.sc-del:hover{color:var(--danger)}
-.sc-body{padding:12px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:9px}
-.sc-body.col{display:none}
-.add-slide{width:100%;padding:9px;background:var(--cyan-dim);border:2px dashed var(--cyan);border-radius:var(--r);color:var(--cyan);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.sc-del{background:none;border:none;color:var(--mu);cursor:pointer;font-size:13px;padding:2px 5px;border-radius:3px}
+.sc-del:hover{color:var(--er)}
+.sc-body{padding:12px;border-top:1px solid var(--bd);display:none;flex-direction:column;gap:8px}
+.sc-body.open{display:flex}
+.add-slide{width:100%;padding:8px;background:var(--cy2);border:2px dashed var(--cy);border-radius:var(--r);color:var(--cy);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
 .add-slide:hover{background:rgba(92,225,230,.25)}
-
-/* Chart */
-.chart-rows{display:flex;flex-direction:column;gap:5px}
-.chart-row{display:grid;grid-template-columns:1fr 60px 32px 26px;gap:5px;align-items:center}
-.chart-row input[type=color]{width:32px;height:28px;padding:2px;border:1px solid var(--border);border-radius:var(--rs);background:var(--surface);cursor:pointer}
-.icon-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:3px;display:flex;align-items:center;justify-content:center;height:28px}
-.icon-btn:hover{color:var(--danger)}
-.add-row{font-size:11px;font-weight:600;color:var(--cyan);background:var(--cyan-dim);border:1px solid var(--cyan);border-radius:var(--rs);padding:5px 10px;cursor:pointer;font-family:inherit;width:100%}
-.rh{display:grid;grid-template-columns:1fr 60px 32px 26px;gap:5px;padding-bottom:3px}
-.rh span{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase}
-.auto-b{display:inline-block;background:var(--cyan-dim);color:var(--cyan);font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px}
-
-/* Preview */
+.item-rows{display:flex;flex-direction:column;gap:5px}
+.ir{display:grid;gap:5px;align-items:center}
+.ir-1{grid-template-columns:1fr 26px}
+.ir-2{grid-template-columns:72px 1fr 26px}
+.ir-3{grid-template-columns:1fr 1fr 1fr 26px}
+.ir-vs{grid-template-columns:1fr 72px 72px 26px}
+.ir-ck{grid-template-columns:36px 1fr 26px}
+.ir-ch{grid-template-columns:1fr 52px 30px 26px}
+.ir-rk{grid-template-columns:1fr 52px 44px 26px}
+.ck-tog{padding:4px;border-radius:var(--rs);font-size:16px;cursor:pointer;border:1px solid var(--bd);background:var(--sf);width:36px;text-align:center}
+.icon-btn{background:none;border:none;color:var(--mu);cursor:pointer;font-size:14px;padding:3px;display:flex;align-items:center;justify-content:center;height:28px}
+.icon-btn:hover{color:var(--er)}
+.add-btn{font-size:11px;font-weight:600;color:var(--cy);background:var(--cy2);border:1px solid var(--cy);border-radius:var(--rs);padding:5px 10px;cursor:pointer;font-family:inherit;width:100%}
+.rh-grid{display:grid;gap:5px;padding-bottom:3px}
+.rh-grid span{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase}
+.chart-row{display:grid;grid-template-columns:1fr 52px 30px 26px;gap:5px;align-items:center}
+.chart-row input[type=color]{width:30px;height:28px;padding:2px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf);cursor:pointer}
 .preview-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;background:#020810}
-.prev-toolbar{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;gap:10px}
+.prev-tb{display:flex;align-items:center;justify-content:space-between;padding:8px 18px;background:var(--sf);border-bottom:1px solid var(--bd);flex-shrink:0;gap:10px}
 .prev-left{display:flex;align-items:center;gap:10px}
-.prev-lbl{font-size:11px;font-weight:600;color:var(--muted)}
+.prev-lbl{font-size:11px;font-weight:600;color:var(--mu)}
 .car-nav{display:flex;align-items:center;gap:5px}
-.car-nav button{background:var(--surface2);border:1px solid var(--border);color:var(--white);width:26px;height:26px;border-radius:var(--rs);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
-.car-nav button:hover{border-color:var(--cyan);color:var(--cyan)}
-.car-ind{font-size:11px;color:var(--muted);font-weight:600}
+.car-nav button{background:var(--sf2);border:1px solid var(--bd);color:var(--wh);width:26px;height:26px;border-radius:var(--rs);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.car-nav button:hover{border-color:var(--cy);color:var(--cy)}
+.car-ind{font-size:11px;color:var(--mu);font-weight:600}
 .tbbtns{display:flex;gap:7px}
-.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;white-space:nowrap}
-.btn-g{background:var(--surface2);color:var(--muted);border:1px solid var(--border)}
-.btn-g:hover{border-color:var(--cyan);color:var(--cyan)}
-.btn-p{background:var(--cyan);color:var(--bg)}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--rs);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;border:none;white-space:nowrap}
+.btn-g{background:var(--sf2);color:var(--mu);border:1px solid var(--bd)}
+.btn-g:hover{border-color:var(--cy);color:var(--cy)}
+.btn-p{background:var(--cy);color:var(--bg)}
 .btn-p:hover{filter:brightness(1.1)}
 .btn-p:disabled{opacity:.5;cursor:not-allowed}
 .prev-area{flex:1;display:flex;align-items:center;justify-content:center;overflow:auto;padding:20px;position:relative}
 .prev-frame{position:relative;border-radius:10px;overflow:hidden;box-shadow:0 4px 32px rgba(0,0,0,.6)}
-#main-canvas{display:block;cursor:zoom-in;border-radius:10px;transition:transform .15s,box-shadow .15s}
-#main-canvas:hover{transform:scale(1.008);box-shadow:0 0 36px rgba(92,225,230,.18)}
-.prev-empty{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--muted)}
-.prev-empty .ei{font-size:44px;opacity:.35}
+#mc{display:block;cursor:zoom-in;border-radius:10px;transition:transform .15s,box-shadow .15s}
+#mc:hover{transform:scale(1.007);box-shadow:0 0 36px rgba(92,225,230,.18)}
+.prev-empty{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--mu)}
+.prev-empty .ei{font-size:44px;opacity:.3}
 .prev-empty p{font-size:13px;opacity:.5;font-weight:500}
 .spinner-wrap{position:absolute;inset:0;background:rgba(7,15,40,.7);display:none;align-items:center;justify-content:center;border-radius:10px}
-.spinner{width:28px;height:28px;border:3px solid var(--border);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite}
+.spinner{width:26px;height:26px;border:3px solid var(--bd);border-top-color:var(--cy);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Caption */
-.cap-panel{width:300px;flex-shrink:0;background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
-.cap-head{padding:12px 14px;border-bottom:1px solid var(--border);font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:space-between}
+.cap-panel{width:272px;flex-shrink:0;background:var(--sf);border-left:1px solid var(--bd);display:flex;flex-direction:column;overflow:hidden}
+.cap-head{padding:11px 14px;border-bottom:1px solid var(--bd);font-size:10px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;display:flex;align-items:center;justify-content:space-between}
 .cap-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
-.cap-out{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px;font-size:11px;line-height:1.65;color:var(--white);white-space:pre-wrap;word-break:break-word;min-height:160px;flex:1}
-
-/* Toasts */
+.cap-out{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:10px;font-size:11px;line-height:1.65;color:var(--wh);white-space:pre-wrap;word-break:break-word;min-height:120px;flex:1}
 .toasts{position:fixed;bottom:20px;right:20px;display:flex;flex-direction:column;gap:7px;z-index:9999}
-.toast{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r);padding:10px 14px;font-size:12px;font-weight:500;box-shadow:0 4px 24px rgba(0,0,0,.5);animation:slideIn .2s ease}
-.toast.success{border-color:var(--success);color:var(--success)}
-.toast.error{border-color:var(--danger);color:var(--danger)}
+.toast{background:var(--sf2);border:1px solid var(--bd);border-radius:var(--r);padding:9px 14px;font-size:12px;font-weight:500;box-shadow:0 4px 24px rgba(0,0,0,.5);animation:slideIn .2s ease}
+.toast.ok{border-color:var(--ok);color:var(--ok)}
+.toast.err{border-color:var(--er);color:var(--er)}
 @keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:translateX(0);opacity:1}}
-.hidden{display:none!important}
-
-/* Lightbox */
 #lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9999;align-items:center;justify-content:center;cursor:zoom-out;animation:fadeIn .18s ease}
-#lb-img{max-height:96vh;max-width:96vw;border-radius:6px;box-shadow:0 0 60px rgba(0,0,0,.9)}
+#lb img{max-height:96vh;max-width:96vw;border-radius:6px;box-shadow:0 0 60px rgba(0,0,0,.9)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.hidden{display:none!important}
 </style>
 </head>
 <body>
 <div class="app">
-  <header>
-    <h1>@matejjankovic · Post Creator</h1>
-    <span class="badge">1080 × 1350 px · Canvas · Offline</span>
-  </header>
-  <div class="workspace">
+<header><h1>@matejjankovic · Post Creator v2</h1><span class="badge">1080 × 1350 px · 25 typů · Canvas · Offline</span></header>
+<div class="workspace">
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="sidebar-scroll">
+<!-- SIDEBAR -->
+<aside class="sidebar"><div class="sb-scroll">
 
-        <div class="type-tabs">
-          <button class="type-tab active" data-type="info"><span class="icon">📰</span>INFO</button>
-          <button class="type-tab" data-type="citation"><span class="icon">💬</span>CITACE</button>
-          <button class="type-tab" data-type="carousel"><span class="icon">🎠</span>CAROUSEL</button>
-          <button class="type-tab" data-type="data"><span class="icon">📊</span>DATA</button>
-          <button class="type-tab" data-type="clean"><span class="icon">⬛</span>ČISTÝ</button>
-        </div>
+<!-- Category pills -->
+<div class="cat-pills" id="cat-pills">
+  <button class="cat-pill active" data-cat="hlavni">🎯 HLAVNÍ</button>
+  <button class="cat-pill" data-cat="zpravy">📡 ZPRÁVY</button>
+  <button class="cat-pill" data-cat="edukace">📚 EDUKACE</button>
+  <button class="cat-pill" data-cat="cisla">📊 ČÍSLA</button>
+  <button class="cat-pill" data-cat="srovnani">⚔️ SROVNÁNÍ</button>
+</div>
 
-        <!-- INFO -->
-        <div id="panel-info" class="pp">
-          <div class="section">
-            <div class="section-title">Fotografie</div>
-            <div class="dz" id="dz-info"><input type="file" accept="image/*" id="ph-info"><div class="dz-icon">🖼️</div><div class="dz-text">Přetáhněte nebo klikněte</div><button class="ph-clear" data-z="info">✕</button></div>
-          </div>
-          <div class="section">
-            <div class="section-title">Obsah</div>
-            <div class="field">
-              <label class="fl">Eyebrow label</label>
-              <div class="trow">
-                <input type="text" id="info-eyebrow" placeholder="BILANCE VLÁDY">
-                <label class="tog"><input type="checkbox" id="info-eyebrow-on" checked><span class="tog-sl"></span></label>
-              </div>
-            </div>
-            <div class="field"><label class="fl">Nadpis</label><textarea id="info-hl" rows="3" placeholder="Sliboval levnější hypotéky. Realita? Zdražují dál."></textarea></div>
-            <div class="field"><label class="fl">Cyan zvýraznění</label><input type="text" id="info-cyan" placeholder="Realita?|Zdražují dál."><span class="hint">Oddělujte <code>|</code></span></div>
-          </div>
-          <details class="tech"><summary>⚙ Technické nastavení</summary><div class="tech-body">
-            <div class="sl-group"><div class="section-title">Přechod gradientu</div>
-              <div class="sl-row"><span class="sl-lbl">Začátek</span><input type="range" id="info-fo0" min=".3" max=".95" step=".01" value=".72"><span class="sl-val" id="info-fo0-v">.72</span></div>
-              <div class="sl-row"><span class="sl-lbl">Konec</span><input type="range" id="info-fo1" min=".5" max="1" step=".01" value=".96"><span class="sl-val" id="info-fo1-v">.96</span></div>
-            </div>
-            <div class="field"><label class="fl">Písmo <span class="auto-b">AUTO</span></label>
-              <select id="info-fs"><option value="0">Auto</option><option value="84">84px</option><option value="78">78px</option><option value="74">74px</option><option value="68">68px</option><option value="62">62px</option><option value="56">56px</option><option value="52">52px</option></select>
-            </div>
-            <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="info-yn" min="-120" max="120" step="4" value="0"><span class="sl-val" id="info-yn-v">0</span></div>
-          </div></details>
-        </div>
+<!-- Type tabs (filled by JS) -->
+<div class="type-tabs" id="type-tabs"></div>
 
-        <!-- CITATION -->
-        <div id="panel-citation" class="pp hidden">
-          <div class="section">
-            <div class="section-title">Fotografie</div>
-            <div class="dz" id="dz-citation"><input type="file" accept="image/*" id="ph-citation"><div class="dz-icon">🖼️</div><div class="dz-text">Portrét closeup</div><button class="ph-clear" data-z="citation">✕</button></div>
-          </div>
-          <div class="section">
-            <div class="section-title">Citace</div>
-            <div class="field"><label class="fl">Text (bez uvozovek)</label><textarea id="cit-q" rows="4" placeholder="Zákon si vykládáme jinak. A na tom se nic nezmění."></textarea></div>
-            <div class="field"><label class="fl">Cyan fráze (1 výraz)</label><input type="text" id="cit-cyan" placeholder="nic nezmění"><span class="hint">Max 4–5 slov, musí být přesně v citátu</span></div>
-          </div>
-          <div class="section">
-            <div class="section-title">Atribuce</div>
-            <div class="field"><label class="fl">Jméno + strana</label><input type="text" id="cit-name" placeholder="Jan Novák /ANO/"></div>
-            <div class="field"><label class="fl">Role / funkce</label><input type="text" id="cit-role" placeholder="Ministr financí, poslanec"></div>
-          </div>
-          <details class="tech"><summary>⚙ Technické nastavení</summary><div class="tech-body">
-            <div class="sl-group">
-              <div class="sl-row"><span class="sl-lbl">Začátek</span><input type="range" id="cit-fo0" min=".3" max=".95" step=".01" value=".6"><span class="sl-val" id="cit-fo0-v">.60</span></div>
-              <div class="sl-row"><span class="sl-lbl">Konec</span><input type="range" id="cit-fo1" min=".5" max="1" step=".01" value=".92"><span class="sl-val" id="cit-fo1-v">.92</span></div>
-            </div>
-            <div class="field"><label class="fl">Písmo <span class="auto-b">AUTO</span></label>
-              <select id="cit-fs"><option value="0">Auto</option><option value="66">66px</option><option value="60">60px</option><option value="56">56px</option><option value="52">52px</option><option value="48">48px</option><option value="44">44px</option></select>
-            </div>
-            <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="cit-yn" min="-120" max="120" step="4" value="0"><span class="sl-val" id="cit-yn-v">0</span></div>
-          </div></details>
-        </div>
+<!-- ═══ PANEL: INFO ═══ -->
+<div id="panel-info" class="pp">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="info"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Přetáhněte nebo klikněte</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Eyebrow</label><div class="trow"><input type="text" id="info-eyebrow" placeholder="BILANCE VLÁDY"><label class="tog"><input type="checkbox" id="info-eyebrow-on" checked><span class="tog-sl"></span></label></div></div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="info-hl" rows="3" placeholder="Sliboval levnější hypotéky. Realita? Zdražují dál."></textarea></div>
+    <div class="field"><label class="fl">Cyan (odděl <code>|</code>)</label><input type="text" id="info-cyan" placeholder="Realita?|Zdražují dál."></div>
+  </div>
+  <details class="tech"><summary>⚙ Gradient & písmo</summary><div class="tech-body">
+    <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" id="info-fo0" min=".3" max=".95" step=".01" value=".72"><span class="sl-val" id="v-info-fo0">.72</span></div>
+    <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" id="info-fo1" min=".5" max="1" step=".01" value=".96"><span class="sl-val" id="v-info-fo1">.96</span></div>
+    <div class="field"><label class="fl">Písmo</label><select id="info-fs"><option value="0">Auto</option><option value="84">84</option><option value="78">78</option><option value="74">74</option><option value="68">68</option><option value="62">62</option><option value="56">56</option><option value="52">52</option></select></div>
+    <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="info-yn" min="-120" max="120" step="4" value="0"><span class="sl-val" id="v-info-yn">0</span></div>
+  </div></details>
+</div>
 
-        <!-- CAROUSEL -->
-        <div id="panel-carousel" class="pp hidden">
-          <div class="section">
-            <div class="section-title">Slidy</div>
-            <div class="slide-list" id="slide-list"></div>
-            <button class="add-slide" id="add-slide">+ Přidat slide (max 5)</button>
-          </div>
-        </div>
+<!-- ═══ PANEL: CITATION ═══ -->
+<div id="panel-citation" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="citation"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Portrét</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Citace</div>
+    <div class="field"><label class="fl">Text (bez uvozovek)</label><textarea id="cit-q" rows="4" placeholder="Zákon si vykládáme jinak. A na tom se nic nezmění."></textarea></div>
+    <div class="field"><label class="fl">Cyan fráze</label><input type="text" id="cit-cyan" placeholder="nic nezmění"></div>
+    <div class="field"><label class="fl">Jméno</label><input type="text" id="cit-name" placeholder="Jan Novák /ANO/"></div>
+    <div class="field"><label class="fl">Role</label><input type="text" id="cit-role" placeholder="Ministr financí"></div>
+  </div>
+  <details class="tech"><summary>⚙ Gradient</summary><div class="tech-body">
+    <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" id="cit-fo0" min=".3" max=".95" step=".01" value=".6"><span class="sl-val" id="v-cit-fo0">.60</span></div>
+    <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" id="cit-fo1" min=".5" max="1" step=".01" value=".92"><span class="sl-val" id="v-cit-fo1">.92</span></div>
+    <div class="field"><label class="fl">Písmo</label><select id="cit-fs"><option value="0">Auto</option><option value="66">66</option><option value="60">60</option><option value="56">56</option><option value="52">52</option><option value="48">48</option><option value="44">44</option></select></div>
+    <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="cit-yn" min="-120" max="120" step="4" value="0"><span class="sl-val" id="v-cit-yn">0</span></div>
+  </div></details>
+</div>
 
-        <!-- DATA -->
-        <div id="panel-data" class="pp hidden">
-          <div class="section">
-            <div class="section-title">Fotografie (volitelné)</div>
-            <div class="dz" id="dz-data"><input type="file" accept="image/*" id="ph-data"><div class="dz-icon">🖼️</div><div class="dz-text">Nebo nechte prázdné</div><button class="ph-clear" data-z="data">✕</button></div>
-          </div>
-          <div class="section">
-            <div class="section-title">Popis</div>
-            <div class="field"><label class="fl">Eyebrow</label><input type="text" id="data-eyebrow" placeholder="PRŮZKUM MEDIAN · ČERVEN 2026"></div>
-            <div class="field"><label class="fl">Nadpis</label><textarea id="data-hl" rows="2" placeholder="ANO vede s 32 %. ODS a Piráti ztrácejí."></textarea></div>
-            <div class="field"><label class="fl">Cyan</label><input type="text" id="data-cyan" placeholder="32 %|ztrácejí"></div>
-          </div>
-          <div class="section">
-            <div class="section-title">Graf</div>
-            <div class="field"><label class="fl">Typ</label><select id="data-ct"><option value="bar">Sloupcový</option><option value="table">Tabulka</option></select></div>
-            <div class="rh"><span>Název</span><span>%</span><span>Barva</span><span></span></div>
-            <div class="chart-rows" id="chart-rows"></div>
-            <button class="add-row" id="add-chart-row">+ Přidat řádek</button>
-          </div>
-          <div class="section"><div class="field"><label class="fl">Footnote</label><input type="text" id="data-fn" placeholder="Zdroj: Median, n=1020, 1.–7. 6. 2026"></div></div>
-          <details class="tech"><summary>⚙ Technické nastavení</summary><div class="tech-body">
-            <div class="sl-group">
-              <div class="sl-row"><span class="sl-lbl">Začátek</span><input type="range" id="data-fo0" min=".3" max=".95" step=".01" value=".55"><span class="sl-val" id="data-fo0-v">.55</span></div>
-              <div class="sl-row"><span class="sl-lbl">Konec</span><input type="range" id="data-fo1" min=".5" max="1" step=".01" value=".85"><span class="sl-val" id="data-fo1-v">.85</span></div>
-            </div>
-            <div class="field"><label class="fl">Písmo</label><select id="data-fs"><option value="0">Auto</option><option value="68">68px</option><option value="62">62px</option><option value="56">56px</option></select></div>
-            <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="data-yn" min="-80" max="80" step="4" value="0"><span class="sl-val" id="data-yn-v">0</span></div>
-          </div></details>
-        </div>
-
-        <!-- CLEAN -->
-        <div id="panel-clean" class="pp hidden">
-          <div class="section">
-            <div class="section-title">Barva pozadí</div>
-            <select id="clean-color"><option value="navy">Navy #070F28</option><option value="black">Černá #000000</option></select>
-            <p class="hint" style="margin-top:4px">Prázdný slide bez textu. Ideální jako ironická odpověď v carouselu.</p>
-          </div>
-        </div>
-
-        <!-- CAPTION -->
-        <div class="section">
-          <div class="section-title">Caption</div>
-          <div class="field"><label class="fl">Hlavní věty</label><textarea id="cap-text" rows="3" placeholder="ANO si udržuje stabilní předstih před rozpadající se opozicí."></textarea></div>
-          <div class="field"><label class="fl">Zdroj</label><input type="text" id="cap-src" placeholder="Median · ČT24"></div>
-          <div class="field"><label class="fl">Hashtagy</label><input type="text" id="cap-tags" placeholder="#politika #průzkum #česko"></div>
-          <button class="btn btn-g" id="btn-cap" style="width:100%">🪄 Generovat caption</button>
-        </div>
-
-      </div>
-    </aside>
-
-    <!-- PREVIEW -->
-    <div class="preview-panel">
-      <div class="prev-toolbar">
-        <div class="prev-left">
-          <span class="prev-lbl">Náhled · live</span>
-          <div class="car-nav hidden" id="car-nav">
-            <button id="prev-s">‹</button>
-            <span class="car-ind" id="car-ind">1 / 1</span>
-            <button id="next-s">›</button>
-          </div>
-        </div>
-        <div class="tbbtns">
-          <button class="btn btn-g" id="btn-ref">↺ Obnovit</button>
-          <button class="btn btn-p" id="btn-exp">⬇ Export PNG</button>
-        </div>
-      </div>
-      <div class="prev-area">
-        <div class="prev-frame" id="pframe">
-          <div class="prev-empty" id="pempty"><div class="ei">🖼️</div><p>Zadejte text a náhled se zobrazí</p></div>
-          <canvas id="main-canvas" style="display:none"></canvas>
-          <div class="spinner-wrap" id="pload"><div class="spinner"></div></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- CAPTION PANEL -->
-    <div class="cap-panel">
-      <div class="cap-head">Caption <button class="btn btn-g" id="btn-cpcap" style="font-size:10px;padding:3px 9px">Kopírovat</button></div>
-      <div class="cap-body">
-        <div class="cap-out" id="cap-out">Caption se zobrazí po kliknutí na „Generovat caption".</div>
-      </div>
-    </div>
-
+<!-- ═══ PANEL: CAROUSEL ═══ -->
+<div id="panel-carousel" class="pp hidden">
+  <div class="section"><div class="section-title">Slidy</div>
+    <div class="slide-list" id="slide-list"></div>
+    <button class="add-slide" id="add-slide">+ Přidat slide (max 5)</button>
   </div>
 </div>
 
-<div class="toasts" id="toasts"></div>
-
-<div id="lb" onclick="closeLb()">
-  <img id="lb-img" src="" alt="">
+<!-- ═══ PANEL: DATA ═══ -->
+<div id="panel-data" class="pp hidden">
+  <div class="section"><div class="section-title">Foto (volitelné)</div>
+    <div class="dz" data-zone="data"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Nebo nechte prázdné</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Eyebrow</label><input type="text" id="data-eyebrow" placeholder="PRŮZKUM MEDIAN · ČERVEN 2026"></div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="data-hl" rows="2" placeholder="ANO vede s 32 %. ODS a Piráti ztrácejí."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="data-cyan" placeholder="32 %|ztrácejí"></div>
+  </div>
+  <div class="section"><div class="section-title">Graf</div>
+    <div class="field"><label class="fl">Typ</label><select id="data-ct"><option value="bar">Sloupcový</option><option value="table">Tabulka</option></select></div>
+    <div class="rh-grid ir-ch" style="padding-bottom:3px"><span>Název</span><span>%</span><span>Barva</span><span></span></div>
+    <div class="item-rows" id="chart-rows"></div>
+    <button class="add-btn" id="add-chart-row">+ Přidat řádek</button>
+  </div>
+  <div class="section"><div class="field"><label class="fl">Footnote</label><input type="text" id="data-fn" placeholder="Zdroj: Median, n=1020"></div></div>
+  <details class="tech"><summary>⚙ Gradient</summary><div class="tech-body">
+    <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" id="data-fo0" min=".3" max=".95" step=".01" value=".55"><span class="sl-val" id="v-data-fo0">.55</span></div>
+    <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" id="data-fo1" min=".5" max="1" step=".01" value=".85"><span class="sl-val" id="v-data-fo1">.85</span></div>
+    <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="data-yn" min="-80" max="80" step="4" value="0"><span class="sl-val" id="v-data-yn">0</span></div>
+  </div></details>
 </div>
 
+<!-- ═══ PANEL: CLEAN ═══ -->
+<div id="panel-clean" class="pp hidden">
+  <div class="section"><div class="section-title">Barva pozadí</div>
+    <select id="clean-color"><option value="navy">Navy #070F28</option><option value="black">Černá #000000</option><option value="dark">Tmavě modrá #050D20</option></select>
+  </div>
+</div>
+
+<!-- ═══ PANEL: BREAKING ═══ -->
+<div id="panel-breaking" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="breaking"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Volitelné</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="br-hl" rows="3" placeholder="Babiš jde na výslech. FBI žádá vydání dokumentů."></textarea></div>
+    <div class="field"><label class="fl">Cyan (odděl <code>|</code>)</label><input type="text" id="br-cyan" placeholder="výslech|FBI"></div>
+    <div class="field"><label class="fl">Zdroj / ticker</label><input type="text" id="br-ticker" placeholder="ČTK · Prague Times · 21. 6. 2026"></div>
+  </div>
+  <details class="tech"><summary>⚙ Gradient</summary><div class="tech-body">
+    <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" id="br-fo0" min=".3" max=".95" step=".01" value=".7"><span class="sl-val" id="v-br-fo0">.70</span></div>
+    <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" id="br-fo1" min=".5" max="1" step=".01" value=".95"><span class="sl-val" id="v-br-fo1">.95</span></div>
+    <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" id="br-yn" min="-120" max="120" step="4" value="0"><span class="sl-val" id="v-br-yn">0</span></div>
+  </div></details>
+</div>
+
+<!-- ═══ PANEL: STAT ═══ -->
+<div id="panel-stat" class="pp hidden">
+  <div class="section"><div class="section-title">Foto (volitelné)</div>
+    <div class="dz" data-zone="stat"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Volitelné</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Statistika</div>
+    <div class="field"><label class="fl">Eyebrow</label><input type="text" id="st-eyebrow" placeholder="PRŮZKUM MEDIAN · 2026"></div>
+    <div class="field"><label class="fl">Číslo (velké)</label><input type="text" id="st-num" placeholder="68 %"></div>
+    <div class="field"><label class="fl">Kontext</label><textarea id="st-ctx" rows="2" placeholder="Čechů nevěří vládě. Rekord za posledních 10 let."></textarea></div>
+    <div class="field"><label class="fl">Cyan (v kontextu)</label><input type="text" id="st-cyan" placeholder="Rekord"></div>
+    <div class="field"><label class="fl">Footnote</label><input type="text" id="st-fn" placeholder="Zdroj: Median, červen 2026"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: VERDICT ═══ -->
+<div id="panel-verdict" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="verdict"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Portrét</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Případ</div>
+    <div class="field"><label class="fl">Jméno</label><input type="text" id="ve-person" placeholder="Andrej Babiš"></div>
+    <div class="field"><label class="fl">Obžaloba</label><input type="text" id="ve-charge" placeholder="Dotační podvod – případ Stork Nest"></div>
+    <div class="field"><label class="fl">Verdikt</label><select id="ve-verdict"><option value="guilty">VINNÝ</option><option value="not">NEVINNNÝ</option><option value="pending">VYŠETŘUJE SE</option></select></div>
+    <div class="field"><label class="fl">Kontext (volitelné)</label><textarea id="ve-ctx" rows="2" placeholder="Soud 1. stupně, odvolání probíhá"></textarea></div>
+  </div>
+  <details class="tech"><summary>⚙ Gradient</summary><div class="tech-body">
+    <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" id="ve-fo0" min=".3" max=".95" step=".01" value=".65"><span class="sl-val" id="v-ve-fo0">.65</span></div>
+    <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" id="ve-fo1" min=".5" max="1" step=".01" value=".9"><span class="sl-val" id="v-ve-fo1">.90</span></div>
+  </div></details>
+</div>
+
+<!-- ═══ PANEL: WARNING ═══ -->
+<div id="panel-warning" class="pp hidden">
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="wa-hl" rows="2" placeholder="Vláda chystá nový zákon o sledování."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="wa-cyan" placeholder="sledování"></div>
+  </div>
+  <div class="section"><div class="section-title">Body varování</div>
+    <div class="item-rows" id="wa-rows"></div>
+    <button class="add-btn" id="add-wa-row">+ Přidat bod</button>
+  </div>
+  <div class="section"><div class="field"><label class="fl">Zdroj</label><input type="text" id="wa-src" placeholder="Zdroj: MV ČR · Právo"></div></div>
+</div>
+
+<!-- ═══ PANEL: ROAST ═══ -->
+<div id="panel-roast" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="roast"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Portrét osoby</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Jméno / strana</label><input type="text" id="ro-person" placeholder="Petr Fiala · ODS"></div>
+    <div class="field"><label class="fl">Původní citát (roastujeme)</label><textarea id="ro-quote" rows="2" placeholder="Česko se stalo vzorem pro celou Evropu."></textarea></div>
+    <div class="field"><label class="fl">Komentář</label><textarea id="ro-text" rows="3" placeholder="...to říká předseda vlády, kde ceny energií stouply o 140 %."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="ro-cyan" placeholder="vzorem|140 %"></div>
+  </div>
+  <details class="tech"><summary>⚙ Gradient</summary><div class="tech-body">
+    <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" id="ro-fo0" min=".3" max=".95" step=".01" value=".6"><span class="sl-val" id="v-ro-fo0">.60</span></div>
+    <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" id="ro-fo1" min=".5" max="1" step=".01" value=".9"><span class="sl-val" id="v-ro-fo1">.90</span></div>
+  </div></details>
+</div>
+
+<!-- ═══ PANEL: THREAD ═══ -->
+<div id="panel-thread" class="pp hidden">
+  <div class="section"><div class="section-title">Vlákno</div>
+    <div class="field"><label class="fl">Téma (malé)</label><input type="text" id="th-topic" placeholder="STORK NEST · KAUZA"></div>
+    <div class="field"><label class="fl">Hook (velký text)</label><textarea id="th-hook" rows="4" placeholder="Věděli jste, že Babiš pobíral dotaci na farmu, kde bydlel? Celá kauza za 5 minut."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="th-cyan" placeholder="5 minut|dotaci"></div>
+    <div class="field"><label class="fl">CTA (volitelné)</label><input type="text" id="th-cta" placeholder="→ Vlákno níže ↓"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: LISTICLE ═══ -->
+<div id="panel-listicle" class="pp hidden">
+  <div class="section"><div class="section-title">Foto (volitelné)</div>
+    <div class="dz" data-zone="listicle"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Volitelné</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Eyebrow</label><input type="text" id="li-eyebrow" placeholder="5 VĚCÍ, KTERÉ VLÁDA SLÍBILA"></div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="li-title" rows="2" placeholder="Co vláda slíbila. A nedodala."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="li-cyan" placeholder="nedodala"></div>
+  </div>
+  <div class="section"><div class="section-title">Položky (max 7)</div>
+    <div class="item-rows" id="li-rows"></div>
+    <button class="add-btn" id="add-li-row">+ Přidat položku</button>
+  </div>
+</div>
+
+<!-- ═══ PANEL: CHECKLIST ═══ -->
+<div id="panel-checklist" class="pp hidden">
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Eyebrow</label><input type="text" id="ck-eyebrow" placeholder="PROGRAMOVÉ PROHLÁŠENÍ 2021"></div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="ck-title" rows="2" placeholder="Co splnili. A co ne."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="ck-cyan" placeholder="Co ne"></div>
+  </div>
+  <div class="section"><div class="section-title">Checklist (max 8)</div>
+    <div class="item-rows" id="ck-rows"></div>
+    <button class="add-btn" id="add-ck-row">+ Přidat položku</button>
+  </div>
+</div>
+
+<!-- ═══ PANEL: TIMELINE ═══ -->
+<div id="panel-timeline" class="pp hidden">
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="tl-title" rows="2" placeholder="Jak se vyvíjela kauza Stork Nest."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="tl-cyan" placeholder="Stork Nest"></div>
+  </div>
+  <div class="section"><div class="section-title">Události (max 6)</div>
+    <div class="item-rows" id="tl-rows"></div>
+    <button class="add-btn" id="add-tl-row">+ Přidat událost</button>
+  </div>
+</div>
+
+<!-- ═══ PANEL: MYTHFACT ═══ -->
+<div id="panel-mythFact" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="mythFact"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Volitelné</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Mýtus vs Fakt</div>
+    <div class="field"><label class="fl">Eyebrow</label><input type="text" id="mf-eyebrow" placeholder="CO SE TVRDÍ VS REALITA"></div>
+    <div class="field"><label class="fl">❌ Mýtus</label><textarea id="mf-myth" rows="3" placeholder="Vláda snížila dluhy."></textarea></div>
+    <div class="field"><label class="fl">✅ Fakt</label><textarea id="mf-fact" rows="3" placeholder="Státní dluh vzrostl o 800 miliard."></textarea></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: PROMISE/REALITY ═══ -->
+<div id="panel-promiseReality" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="promiseReality"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Portrét</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Jméno (volitelné)</label><input type="text" id="pr-person" placeholder="Petr Fiala · ODS · 2021"></div>
+    <div class="field"><label class="fl">🗣 Slib</label><textarea id="pr-promise" rows="2" placeholder="Zastropujeme ceny energií do 6 měsíců."></textarea></div>
+    <div class="field"><label class="fl">😬 Realita</label><textarea id="pr-reality" rows="2" placeholder="Rodiny platí o 140 % více než v roce 2021."></textarea></div>
+    <div class="field"><label class="fl">Cyan (v realitě)</label><input type="text" id="pr-cyan" placeholder="140 %"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: VS ═══ -->
+<div id="panel-vs" class="pp hidden">
+  <div class="section"><div class="section-title">Srovnání</div>
+    <div class="field"><label class="fl">Téma</label><input type="text" id="vs-topic" placeholder="EKONOMIKA · VLÁDNÍ VÝKON"></div>
+    <div class="field"><label class="fl">Label A (vlevo)</label><input type="text" id="vs-labA" placeholder="ODS"></div>
+    <div class="field"><label class="fl">Label B (vpravo)</label><input type="text" id="vs-labB" placeholder="ANO"></div>
+  </div>
+  <div class="section"><div class="section-title">Kritéria (max 5)</div>
+    <div class="rh-grid ir-vs" style="padding-bottom:3px"><span>Kritérium</span><span>A</span><span>B</span><span></span></div>
+    <div class="item-rows" id="vs-rows"></div>
+    <button class="add-btn" id="add-vs-row">+ Přidat řádek</button>
+  </div>
+</div>
+
+<!-- ═══ PANEL: PROFILE ═══ -->
+<div id="panel-profile" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="profile"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Portrét</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Osoba</div>
+    <div class="field"><label class="fl">Jméno</label><input type="text" id="pf-name" placeholder="Andrej Babiš"></div>
+    <div class="field"><label class="fl">Role</label><input type="text" id="pf-role" placeholder="Předseda ANO · premiér 2017–2021"></div>
+    <div class="field"><label class="fl">Strana (badge)</label><input type="text" id="pf-party" placeholder="ANO 2011"></div>
+    <div class="field"><label class="fl">Klíčový fakt 1</label><input type="text" id="pf-f1" placeholder="Majetek: 160 mld. Kč"></div>
+    <div class="field"><label class="fl">Klíčový fakt 2</label><input type="text" id="pf-f2" placeholder="Kauzy: Stork Nest, farmy"></div>
+    <div class="field"><label class="fl">Klíčový fakt 3</label><input type="text" id="pf-f3" placeholder="Volby 2025: 32,4 %"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: POLL ═══ -->
+<div id="panel-poll" class="pp hidden">
+  <div class="section"><div class="section-title">Anketa</div>
+    <div class="field"><label class="fl">Otázka</label><textarea id="pl-question" rows="2" placeholder="Jste spokojeni s výkonem vlády?"></textarea></div>
+  </div>
+  <div class="section"><div class="section-title">Možnosti</div>
+    <div class="item-rows" id="pl-rows"></div>
+    <button class="add-btn" id="add-pl-row">+ Přidat možnost (max 4)</button>
+  </div>
+  <div class="section"><div class="field"><label class="fl">Zdroj</label><input type="text" id="pl-src" placeholder="Median, n=1020, červen 2026"></div></div>
+</div>
+
+<!-- ═══ PANEL: COUNTDOWN ═══ -->
+<div id="panel-countdown" class="pp hidden">
+  <div class="section"><div class="section-title">Odpočet</div>
+    <div class="field"><label class="fl">Název události</label><input type="text" id="cd-event" placeholder="VOLBY DO POSLANECKÉ SNĚMOVNY"></div>
+    <div class="field"><label class="fl">Datum (YYYY-MM-DD)</label><input type="date" id="cd-date"></div>
+    <div class="field"><label class="fl">Podtext</label><input type="text" id="cd-sub" placeholder="Zaregistruj se jako volič ještě dnes."></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: RANKING ═══ -->
+<div id="panel-ranking" class="pp hidden">
+  <div class="section"><div class="section-title">Žebříček</div>
+    <div class="field"><label class="fl">Eyebrow</label><input type="text" id="rk-eyebrow" placeholder="PRŮZKUM · ČERVEN 2026"></div>
+    <div class="field"><label class="fl">Nadpis</label><textarea id="rk-title" rows="2" placeholder="Top strany dle preferencí."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="rk-cyan" placeholder="Top strany"></div>
+  </div>
+  <div class="section"><div class="section-title">Položky</div>
+    <div class="rh-grid ir-rk" style="padding-bottom:3px"><span>Název</span><span>Hodnota</span><span>Změna</span><span></span></div>
+    <div class="item-rows" id="rk-rows"></div>
+    <button class="add-btn" id="add-rk-row">+ Přidat</button>
+  </div>
+</div>
+
+<!-- ═══ PANEL: FLASHCARD ═══ -->
+<div id="panel-flashcard" class="pp hidden">
+  <div class="section"><div class="section-title">Flashcard</div>
+    <div class="field"><label class="fl">Kategorie</label><input type="text" id="fc-cat" placeholder="EKONOMIKA"></div>
+    <div class="field"><label class="fl">Otázka</label><textarea id="fc-q" rows="3" placeholder="Co je to státní dluh?"></textarea></div>
+    <div class="field"><label class="fl">Odpověď</label><textarea id="fc-a" rows="4" placeholder="Celkový objem peněz, které si stát půjčil a dosud nesplatil."></textarea></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: MANIFESTO ═══ -->
+<div id="panel-manifesto" class="pp hidden">
+  <div class="section"><div class="section-title">Manifest</div>
+    <div class="field"><label class="fl">Hlavní prohlášení</label><textarea id="ma-stmt" rows="3" placeholder="Tato vláda lže. A my to dokážeme."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="ma-cyan" placeholder="lže|dokážeme"></div>
+    <div class="field"><label class="fl">Bod 1</label><input type="text" id="ma-p1" placeholder="Data jsou veřejná. Číst umí každý."></div>
+    <div class="field"><label class="fl">Bod 2</label><input type="text" id="ma-p2" placeholder="Odpovědnost začíná u voleb."></div>
+    <div class="field"><label class="fl">Bod 3</label><input type="text" id="ma-p3" placeholder="Informovaný občan je svobodný."></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: ANNOUNCEMENT ═══ -->
+<div id="panel-announcement" class="pp hidden">
+  <div class="section"><div class="section-title">Foto (volitelné)</div>
+    <div class="dz" data-zone="announcement"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Volitelné</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Obsah</div>
+    <div class="field"><label class="fl">Eyebrow</label><input type="text" id="an-eyebrow" placeholder="NOVÝ DÍL · PODCAST"></div>
+    <div class="field"><label class="fl">Název akce</label><textarea id="an-event" rows="2" placeholder="Jak média mlží o kauze Stork Nest"></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="an-cyan" placeholder="média mlží"></div>
+    <div class="field"><label class="fl">Datum</label><input type="text" id="an-date" placeholder="Středa 25. 6. 2026"></div>
+    <div class="field"><label class="fl">Místo / platforma</label><input type="text" id="an-loc" placeholder="Spotify · YouTube · @matejjankovic"></div>
+  </div>
+</div>
+
+<!-- ═══ PANEL: REACTION ═══ -->
+<div id="panel-reaction" class="pp hidden">
+  <div class="section"><div class="section-title">Foto</div>
+    <div class="dz" data-zone="reaction"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon">🖼️</span><span class="dz-lbl">Volitelné</span><button class="ph-clear">✕</button></div>
+  </div>
+  <div class="section"><div class="section-title">Reakce</div>
+    <div class="field"><label class="fl">Situace</label><textarea id="re-sit" rows="2" placeholder="Vláda tvrdí, že snížila inflaci."></textarea></div>
+    <div class="field"><label class="fl">Emoji reakce</label><input type="text" id="re-emoji" placeholder="😂" style="font-size:22px;text-align:center"></div>
+    <div class="field"><label class="fl">Komentář</label><textarea id="re-text" rows="3" placeholder="Inflace spadla z 18 % na 12 %. Gratulujeme."></textarea></div>
+    <div class="field"><label class="fl">Cyan</label><input type="text" id="re-cyan" placeholder="12 %|Gratulujeme"></div>
+  </div>
+</div>
+
+<!-- ═══ CAPTION ═══ -->
+<div class="section">
+  <div class="section-title">Generátor popisku</div>
+  <div class="field"><label class="fl">Hlavní věta</label><textarea id="cap-text" rows="3" placeholder="ANO si udržuje stabilní předstih před opozicí."></textarea></div>
+  <div class="field"><label class="fl">Zdroj</label><input type="text" id="cap-src" placeholder="Median · ČT24"></div>
+  <div class="field"><label class="fl">Hashtagy</label><input type="text" id="cap-tags" placeholder="#politika #česko #průzkum"></div>
+  <button class="btn btn-g" id="btn-cap" style="width:100%">🪄 Generovat caption</button>
+</div>
+
+</div></aside><!-- end sidebar -->
+
+<!-- PREVIEW -->
+<div class="preview-panel">
+  <div class="prev-tb">
+    <div class="prev-left">
+      <span class="prev-lbl">Náhled · live</span>
+      <div class="car-nav hidden" id="car-nav">
+        <button id="prev-s">‹</button>
+        <span class="car-ind" id="car-ind">1 / 1</span>
+        <button id="next-s">›</button>
+      </div>
+    </div>
+    <div class="tbbtns">
+      <button class="btn btn-g" id="btn-ref">↺ Obnovit</button>
+      <button class="btn btn-p" id="btn-exp">⬇ Export PNG</button>
+    </div>
+  </div>
+  <div class="prev-area">
+    <div class="prev-frame" id="pframe">
+      <div class="prev-empty" id="pempty"><div class="ei">🖼️</div><p>Zadejte text a náhled se zobrazí</p></div>
+      <canvas id="mc" style="display:none"></canvas>
+      <div class="spinner-wrap" id="pload"><div class="spinner"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CAPTION PANEL -->
+<div class="cap-panel">
+  <div class="cap-head">Caption <button class="btn btn-g" id="btn-cpcap" style="font-size:10px;padding:3px 9px">Kopírovat</button></div>
+  <div class="cap-body"><div class="cap-out" id="cap-out">Caption se zobrazí po kliknutí na „Generovat caption".</div></div>
+</div>
+
+</div></div><!-- end workspace / app -->
+
+<div class="toasts" id="toasts"></div>
+<div id="lb" onclick="closeLb()"><img id="lb-img" src="" alt=""></div>
 <script>
-// ── CONSTANTS ──────────────────────────────────────────────────────────────────
 const W=1080,H=1350,LX=68,MAXW=944;
 const NAVY='#070F28',WHITE='#FFFFFF',CYAN='#5CE1E6',MUTED='#6484B6',BLACK='#000000';
-const NAVYr=7,NAVYg=15,NAVYb=40;
+const Nr=7,Ng=15,Nb=40;
 
-// ── STATE ──────────────────────────────────────────────────────────────────────
-const S={
-  type:'info',
-  photos:{info:null,citation:null,data:null},
-  carousel:{slides:[],cur:0},
-  deb:null,
-  carCanvases:[],
+const CATS={
+  hlavni:{label:'🎯 HLAVNÍ',types:['info','citation','carousel','data','clean']},
+  zpravy:{label:'📡 ZPRÁVY',types:['breaking','verdict','warning','roast','thread']},
+  edukace:{label:'📚 EDUKACE',types:['listicle','checklist','timeline','flashcard','manifesto']},
+  cisla:{label:'📊 ČÍSLA',types:['stat','poll','countdown','ranking','mythFact']},
+  srovnani:{label:'⚔️ SROVNÁNÍ',types:['promiseReality','vs','profile','announcement','reaction']},
 };
+const TMETA={
+  info:{icon:'📰',label:'INFO'},citation:{icon:'💬',label:'CITACE'},carousel:{icon:'🎠',label:'CAROUSEL'},
+  data:{icon:'📊',label:'DATA'},clean:{icon:'⬛',label:'ČISTÝ'},
+  breaking:{icon:'🔴',label:'BREAKING'},verdict:{icon:'⚖️',label:'VERDICT'},
+  warning:{icon:'⚠️',label:'WARNING'},roast:{icon:'🔥',label:'ROAST'},thread:{icon:'🧵',label:'VLÁKNO'},
+  listicle:{icon:'📋',label:'LISTICLE'},checklist:{icon:'✅',label:'CHECKLIST'},
+  timeline:{icon:'📅',label:'TIMELINE'},flashcard:{icon:'🃏',label:'FLASHCARD'},manifesto:{icon:'📜',label:'MANIFEST'},
+  stat:{icon:'📈',label:'STAT'},poll:{icon:'🗳️',label:'ANKETA'},countdown:{icon:'⏳',label:'ODPOČET'},
+  ranking:{icon:'🏆',label:'ŽEBŘÍČEK'},mythFact:{icon:'❌✅',label:'MÝT/FAKT'},
+  promiseReality:{icon:'🤥',label:'SLIB/REA'},vs:{icon:'⚔️',label:'VS'},
+  profile:{icon:'👤',label:'PROFIL'},announcement:{icon:'📣',label:'OZNÁMENÍ'},reaction:{icon:'😱',label:'REAKCE'},
+};
+const PCOLS=['#2255A4','#034D9B','#FF0000','#1C1C1C','#00A651','#FFD700','#971B2F','#FF6600','#6600CC'];
 
-// ── INIT ───────────────────────────────────────────────────────────────────────
+const S={type:'info',cat:'hlavni',photos:{},carousel:{slides:[],cur:0},carCanvases:[],deb:null};
+
 window.addEventListener('load',async()=>{
   await document.fonts.load('700 80px Montserrat');
-  await document.fonts.load('600 30px Montserrat');
-  await document.fonts.load('400 20px Montserrat');
-  initTabs(); initDZ(); initSliders(); initCarousel(); initChart(); initButtons(); watchAll();
-  addSlide(); redraw();
+  await document.fonts.load('600 20px Montserrat');
+  initCats();initDZ();initSliders();initCarousel();initChart();initItemLists();watchAll();initButtons();
+  addSlide();redraw();
 });
 
-// ── TABS ───────────────────────────────────────────────────────────────────────
-function initTabs(){
-  document.querySelectorAll('.type-tab').forEach(b=>{
-    b.addEventListener('click',()=>{
-      S.type=b.dataset.type;
-      document.querySelectorAll('.type-tab').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      document.querySelectorAll('.pp').forEach(p=>p.classList.add('hidden'));
-      document.getElementById('panel-'+S.type).classList.remove('hidden');
-      updateCarNav(); redraw();
+// ── CATEGORY / TAB SYSTEM ─────────────────────────────────────────────────────
+function initCats(){
+  document.querySelectorAll('.cat-pill').forEach(p=>{
+    p.addEventListener('click',()=>{
+      S.cat=p.dataset.cat;
+      document.querySelectorAll('.cat-pill').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      renderTypeTabs();
     });
   });
+  renderTypeTabs();
+}
+function renderTypeTabs(){
+  const tt=document.getElementById('type-tabs'); tt.innerHTML='';
+  CATS[S.cat].types.forEach(t=>{
+    const m=TMETA[t],b=document.createElement('button');
+    b.className='type-tab'+(S.type===t?' active':'');
+    b.dataset.type=t;
+    b.innerHTML=`<span class="icon">${m.icon}</span>${m.label}`;
+    b.addEventListener('click',()=>switchType(t));
+    tt.appendChild(b);
+  });
+}
+function switchType(t){
+  S.type=t; renderTypeTabs();
+  document.querySelectorAll('.pp').forEach(p=>p.classList.add('hidden'));
+  document.getElementById('panel-'+t)?.classList.remove('hidden');
+  updateCarNav(); redraw();
 }
 
 // ── DROPZONES ─────────────────────────────────────────────────────────────────
 function initDZ(){
-  ['info','citation','data'].forEach(z=>{
-    const dz=document.getElementById('dz-'+z);
-    const inp=document.getElementById('ph-'+z);
-    inp.addEventListener('change',()=>loadPhoto(z,inp.files[0]));
+  document.querySelectorAll('.dz[data-zone]').forEach(dz=>{
+    const zone=dz.dataset.zone,inp=dz.querySelector('.dz-inp');
+    inp.addEventListener('change',()=>loadPhoto(zone,inp.files[0]));
     dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('dragover')});
     dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
-    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const f=e.dataTransfer?.files?.[0];if(f&&f.type.startsWith('image/'))loadPhoto(z,f)});
-  });
-  document.querySelectorAll('.ph-clear').forEach(b=>{
-    b.addEventListener('click',e=>{e.stopPropagation();clearPhoto(b.dataset.z)});
+    dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const f=e.dataTransfer?.files?.[0];if(f&&f.type.startsWith('image/'))loadPhoto(zone,f);});
+    dz.querySelector('.ph-clear')?.addEventListener('click',e=>{e.stopPropagation();clearPhoto(zone);});
   });
 }
-
 function loadPhoto(zone,file){
   if(!file)return;
-  const img=new Image();
-  const url=URL.createObjectURL(file);
+  const url=URL.createObjectURL(file),img=new Image();
   img.onload=()=>{
     S.photos[zone]=img;
-    const dz=document.getElementById('dz-'+zone);
+    const dz=document.querySelector(`.dz[data-zone="${zone}"]`); if(!dz)return;
     dz.classList.add('has-photo');
     let pi=dz.querySelector('img.dz-pi');
-    if(!pi){pi=document.createElement('img');pi.className='dz-pi';pi.style.cssText='width:100%;height:90px;object-fit:cover;border-radius:8px;display:block';dz.insertBefore(pi,dz.firstChild);}
+    if(!pi){pi=document.createElement('img');pi.className='dz-pi';dz.insertBefore(pi,dz.firstChild);}
     pi.src=url;
-    dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='none');
+    dz.querySelectorAll('.dz-icon,.dz-lbl').forEach(x=>x.style.display='none');
     redraw();
   };
   img.src=url;
 }
-
 function clearPhoto(zone){
   S.photos[zone]=null;
-  const dz=document.getElementById('dz-'+zone);
+  const dz=document.querySelector(`.dz[data-zone="${zone}"]`); if(!dz)return;
   dz.classList.remove('has-photo');
-  const pi=dz.querySelector('img.dz-pi'); if(pi)pi.remove();
-  dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='');
-  const inp=document.getElementById('ph-'+zone); if(inp)inp.value='';
+  const pi=dz.querySelector('img.dz-pi');if(pi)pi.remove();
+  dz.querySelectorAll('.dz-icon,.dz-lbl').forEach(x=>x.style.display='');
+  dz.querySelector('.dz-inp')?.setAttribute('value','');
   redraw();
 }
 
-// ── SLIDERS ────────────────────────────────────────────────────────────────────
+// ── SLIDERS ───────────────────────────────────────────────────────────────────
 function initSliders(){
   document.querySelectorAll('input[type=range]').forEach(r=>{
-    const vid=r.id+'-v'; const vel=document.getElementById(vid);
+    const vel=document.getElementById('v-'+r.id);
     const fmt=v=>parseFloat(v)<1?parseFloat(v).toFixed(2):parseInt(v);
     if(vel)vel.textContent=fmt(r.value);
-    r.addEventListener('input',()=>{if(vel)vel.textContent=fmt(r.value);redraw()});
+    r.addEventListener('input',()=>{if(vel)vel.textContent=fmt(r.value);});
   });
 }
 
 // ── CAROUSEL ──────────────────────────────────────────────────────────────────
 let scid=0;
 function initCarousel(){
-  document.getElementById('add-slide').addEventListener('click',()=>{
-    if(S.carousel.slides.length>=5){toast('Max 5 slidů','error');return;}
-    addSlide();
-  });
-  document.getElementById('prev-s').addEventListener('click',()=>{
-    if(S.carousel.cur>0){S.carousel.cur--;showCarSlide(S.carousel.cur);}
-  });
-  document.getElementById('next-s').addEventListener('click',()=>{
-    if(S.carousel.cur<S.carousel.slides.length-1){S.carousel.cur++;showCarSlide(S.carousel.cur);}
-  });
+  document.getElementById('add-slide').addEventListener('click',()=>{if(S.carousel.slides.length>=5){toast('Max 5 slidů','err');return;}addSlide();});
+  document.getElementById('prev-s').addEventListener('click',()=>{if(S.carousel.cur>0){S.carousel.cur--;showCarSlide(S.carousel.cur);}});
+  document.getElementById('next-s').addEventListener('click',()=>{if(S.carousel.cur<S.carousel.slides.length-1){S.carousel.cur++;showCarSlide(S.carousel.cur);}});
 }
-
 function addSlide(d={}){
   const id=++scid;
-  const sl={id,headline:d.headline||'',eyebrow:d.eyebrow||'',cyan:d.cyan||'',fo0:d.fo0??0.72,fo1:d.fo1??0.96,fontsize:0,ynudge:0,photo:null,isLast:false,canvas:null};
-  S.carousel.slides.push(sl);
-  renderSlideCard(S.carousel.slides.length-1);
-  updateLastFlags(); updateCarNav(); redraw();
+  const sl={id,headline:d.headline||'',eyebrow:d.eyebrow||'',cyan:d.cyan||'',fo0:d.fo0??0.72,fo1:d.fo1??0.96,fontsize:0,ynudge:0,photo:null,isLast:false};
+  S.carousel.slides.push(sl); renderSlideCard(S.carousel.slides.length-1);
+  updateLastFlags();updateCarNav();redraw();
 }
-
 function renderSlideCard(idx){
-  const sl=S.carousel.slides[idx];
-  const list=document.getElementById('slide-list');
-  const card=document.createElement('div');
-  card.className='slide-card'; card.dataset.sid=sl.id;
-  card.innerHTML=`
-    <div class="sc-head" data-sid="${sl.id}">
-      <span class="sc-num">${idx+1}</span>
-      <span class="sc-title">${sl.headline||'Slide '+(idx+1)}</span>
-      <button class="sc-del" data-sid="${sl.id}">✕</button>
-    </div>
-    <div class="sc-body col" id="scb-${sl.id}">
-      <div class="dz" id="dz-sl-${sl.id}" style="min-height:72px">
-        <input type="file" accept="image/*" id="ph-sl-${sl.id}">
-        <div class="dz-icon" style="font-size:20px">🖼️</div>
-        <div class="dz-text" style="font-size:10px">Fotografie slidu</div>
-        <button class="ph-clear" data-sid="${sl.id}" style="top:4px;right:4px">✕</button>
-      </div>
-      <div class="field"><label class="fl">Eyebrow</label><input type="text" class="sl-ey" data-sid="${sl.id}" placeholder="KONTEXT…" value="${sl.eyebrow}"></div>
-      <div class="field"><label class="fl">Nadpis</label><textarea class="sl-hl" data-sid="${sl.id}" rows="3" placeholder="Hook slidu…">${sl.headline}</textarea></div>
-      <div class="field"><label class="fl">Cyan</label><input type="text" class="sl-cy" data-sid="${sl.id}" placeholder="fráze|další" value="${sl.cyan}"></div>
-      <details class="tech"><summary style="font-size:10px">⚙ Gradient & písmo</summary><div class="tech-body">
-        <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" class="sl-fo0" data-sid="${sl.id}" min=".3" max=".95" step=".01" value="${sl.fo0}"><span class="sl-val sl-fo0v">0.72</span></div>
-        <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" class="sl-fo1" data-sid="${sl.id}" min=".5" max="1" step=".01" value="${sl.fo1}"><span class="sl-val sl-fo1v">0.96</span></div>
-        <div class="field"><label class="fl">Písmo</label><select class="sl-fz" data-sid="${sl.id}"><option value="0">Auto</option><option value="84">84px</option><option value="78">78px</option><option value="68">68px</option><option value="56">56px</option></select></div>
-        <div class="sl-row"><span class="sl-lbl">Y-posuv</span><input type="range" class="sl-yn" data-sid="${sl.id}" min="-120" max="120" step="4" value="0"><span class="sl-val sl-ynv">0</span></div>
+  const sl=S.carousel.slides[idx],list=document.getElementById('slide-list');
+  const card=document.createElement('div'); card.className='slide-card'; card.dataset.sid=sl.id;
+  card.innerHTML=`<div class="sc-head"><span class="sc-num">${idx+1}</span><span class="sc-title">${sl.headline||'Slide '+(idx+1)}</span><button class="sc-del">✕</button></div>
+    <div class="sc-body" id="scb-${sl.id}">
+      <div class="dz" data-zone="sl-${sl.id}" style="min-height:60px"><input type="file" accept="image/*" class="dz-inp"><span class="dz-icon" style="font-size:18px">🖼️</span><span class="dz-lbl" style="font-size:10px">Foto</span><button class="ph-clear">✕</button></div>
+      <div class="field"><label class="fl">Eyebrow</label><input type="text" class="sl-ey" placeholder="KONTEXT…" value="${sl.eyebrow}"></div>
+      <div class="field"><label class="fl">Nadpis</label><textarea class="sl-hl" rows="3">${sl.headline}</textarea></div>
+      <div class="field"><label class="fl">Cyan (|)</label><input type="text" class="sl-cy" value="${sl.cyan}"></div>
+      <details class="tech"><summary style="font-size:10px">⚙ Gradient</summary><div class="tech-body">
+        <div class="sl-row"><span class="sl-lbl">fo0</span><input type="range" class="sl-fo0" min=".3" max=".95" step=".01" value="${sl.fo0}"><span class="sl-val">.72</span></div>
+        <div class="sl-row"><span class="sl-lbl">fo1</span><input type="range" class="sl-fo1" min=".5" max="1" step=".01" value="${sl.fo1}"><span class="sl-val">.96</span></div>
+        <div class="sl-row"><span class="sl-lbl">Y</span><input type="range" class="sl-yn" min="-120" max="120" step="4" value="0"><span class="sl-val">0</span></div>
       </div></details>
     </div>`;
   list.appendChild(card);
-
   card.querySelector('.sc-head').addEventListener('click',e=>{
     if(e.target.closest('.sc-del'))return;
-    card.querySelector('.sc-body').classList.toggle('col');
+    card.querySelector('.sc-body').classList.toggle('open');
     const ci=S.carousel.slides.findIndex(s=>s.id===sl.id);
     if(ci>=0){S.carousel.cur=ci;showCarSlide(ci);}
   });
-  card.querySelector('.sc-del').addEventListener('click',e=>{e.stopPropagation();removeSlide(sl.id)});
-
-  // Photo
-  const dzs=card.querySelector(`#dz-sl-${sl.id}`);
-  const phi=card.querySelector(`#ph-sl-${sl.id}`);
-  phi.addEventListener('change',()=>loadSlidePhoto(sl.id,phi.files[0]));
+  card.querySelector('.sc-del').addEventListener('click',e=>{e.stopPropagation();removeSlide(sl.id);});
+  const dzs=card.querySelector(`[data-zone="sl-${sl.id}"]`),phi=dzs.querySelector('.dz-inp');
+  phi.addEventListener('change',()=>loadPhoto('sl-'+sl.id,phi.files[0]));
   dzs.addEventListener('dragover',e=>{e.preventDefault();dzs.classList.add('dragover')});
   dzs.addEventListener('dragleave',()=>dzs.classList.remove('dragover'));
-  dzs.addEventListener('drop',e=>{e.preventDefault();dzs.classList.remove('dragover');const f=e.dataTransfer?.files?.[0];if(f)loadSlidePhoto(sl.id,f)});
-  card.querySelector('.ph-clear').addEventListener('click',e=>{e.stopPropagation();clearSlidePhoto(sl.id)});
-
-  card.querySelector('.sl-hl').addEventListener('input',e=>{sl.headline=e.target.value;card.querySelector('.sc-title').textContent=sl.headline||`Slide ${idx+1}`;redraw()});
-  card.querySelector('.sl-ey').addEventListener('input',e=>{sl.eyebrow=e.target.value;redraw()});
-  card.querySelector('.sl-cy').addEventListener('input',e=>{sl.cyan=e.target.value;redraw()});
+  dzs.addEventListener('drop',e=>{e.preventDefault();dzs.classList.remove('dragover');const f=e.dataTransfer?.files?.[0];if(f)loadPhoto('sl-'+sl.id,f);});
+  dzs.querySelector('.ph-clear').addEventListener('click',e=>{e.stopPropagation();clearPhoto('sl-'+sl.id);});
+  card.querySelector('.sl-hl').addEventListener('input',e=>{sl.headline=e.target.value;card.querySelector('.sc-title').textContent=sl.headline||`Slide ${idx+1}`;redraw();});
+  card.querySelector('.sl-ey').addEventListener('input',e=>{sl.eyebrow=e.target.value;redraw();});
+  card.querySelector('.sl-cy').addEventListener('input',e=>{sl.cyan=e.target.value;redraw();});
   card.querySelectorAll('input[type=range]').forEach(r=>{
     const vEl=r.nextElementSibling;
     r.addEventListener('input',()=>{
@@ -510,420 +708,573 @@ function renderSlideCard(idx){
     });
     if(vEl)vEl.textContent=parseFloat(r.value).toFixed(2);
   });
-  card.querySelector('.sl-fz').addEventListener('change',e=>{sl.fontsize=parseInt(e.target.value);redraw()});
 }
-
-function loadSlidePhoto(sid,file){
-  if(!file)return;
-  const sl=S.carousel.slides.find(s=>s.id===sid); if(!sl)return;
-  const img=new Image();
-  const url=URL.createObjectURL(file);
-  img.onload=()=>{
-    sl.photo=img;
-    const dz=document.getElementById(`dz-sl-${sid}`);
-    dz.classList.add('has-photo');
-    let pi=dz.querySelector('img.dz-pi');
-    if(!pi){pi=document.createElement('img');pi.className='dz-pi';pi.style.cssText='width:100%;height:72px;object-fit:cover;border-radius:8px;display:block';dz.insertBefore(pi,dz.firstChild);}
-    pi.src=url;
-    dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='none');
-    redraw();
-  };
-  img.src=url;
-}
-
-function clearSlidePhoto(sid){
-  const sl=S.carousel.slides.find(s=>s.id===sid); if(!sl)return;
-  sl.photo=null;
-  const dz=document.getElementById(`dz-sl-${sid}`);
-  dz.classList.remove('has-photo');
-  const pi=dz.querySelector('img.dz-pi'); if(pi)pi.remove();
-  dz.querySelectorAll('.dz-icon,.dz-text').forEach(x=>x.style.display='');
-  redraw();
-}
-
 function removeSlide(sid){
   const idx=S.carousel.slides.findIndex(s=>s.id===sid);
-  if(idx<0)return;
-  if(S.carousel.slides.length===1){toast('Musí být alespoň 1 slide','error');return;}
-  S.carousel.slides.splice(idx,1);
-  S.carCanvases.splice(idx,1);
+  if(idx<0||S.carousel.slides.length<=1){toast('Musí být alespoň 1 slide','err');return;}
+  S.carousel.slides.splice(idx,1);S.carCanvases.splice(idx,1);
   if(S.carousel.cur>=S.carousel.slides.length)S.carousel.cur=S.carousel.slides.length-1;
-  const list=document.getElementById('slide-list'); list.innerHTML='';
-  scid=0; const saved=[...S.carousel.slides]; S.carousel.slides=[];
-  saved.forEach(s=>{S.carousel.slides.push(s);renderSlideCard(S.carousel.slides.length-1)});
-  updateLastFlags(); updateCarNav(); redraw();
+  const list=document.getElementById('slide-list');list.innerHTML='';
+  const saved=[...S.carousel.slides];S.carousel.slides=[];scid=0;
+  saved.forEach(s=>{S.carousel.slides.push(s);renderSlideCard(S.carousel.slides.length-1);});
+  updateLastFlags();updateCarNav();redraw();
 }
+function updateLastFlags(){S.carousel.slides.forEach((s,i)=>s.isLast=i===S.carousel.slides.length-1);}
+function updateCarNav(){const nav=document.getElementById('car-nav');if(S.type==='carousel'){nav.classList.remove('hidden');document.getElementById('car-ind').textContent=`${S.carousel.cur+1} / ${S.carousel.slides.length}`;}else nav.classList.add('hidden');}
+function showCarSlide(i){S.carousel.cur=i;updateCarNav();const c=S.carCanvases[i];if(!c)return;const mc=document.getElementById('mc');mc.width=c.width;mc.height=c.height;mc.getContext('2d').drawImage(c,0,0);}
 
-function updateLastFlags(){S.carousel.slides.forEach((s,i)=>s.isLast=i===S.carousel.slides.length-1)}
-function updateCarNav(){
-  const nav=document.getElementById('car-nav');
-  if(S.type==='carousel'){nav.classList.remove('hidden');document.getElementById('car-ind').textContent=`${S.carousel.cur+1} / ${S.carousel.slides.length}`;}
-  else nav.classList.add('hidden');
-}
-function showCarSlide(i){
-  S.carousel.cur=i; updateCarNav();
-  const c=S.carCanvases[i]; if(!c)return;
-  const mc=document.getElementById('main-canvas');
-  mc.width=c.width; mc.height=c.height;
-  mc.getContext('2d').drawImage(c,0,0);
-}
-
-// ── CHART ROWS ─────────────────────────────────────────────────────────────────
-const PCOLS=['#2255A4','#034D9B','#FF0000','#000000','#00A651','#FFD700','#971B2F','#FF6600','#6600CC'];
+// ── CHART ─────────────────────────────────────────────────────────────────────
 let crow=0;
 function initChart(){
   document.getElementById('add-chart-row').addEventListener('click',()=>addChartRow());
   [['ANO',32,'#2255A4'],['ODS',14,'#034D9B'],['STAN',11,'#00A651'],['Piráti',9,'#231F20']].forEach(([l,v,c])=>addChartRow({label:l,value:v,color:c}));
 }
 function addChartRow(d={}){
-  const id=++crow; const row=document.createElement('div'); row.className='chart-row';
-  const col=d.color||PCOLS[(crow-1)%PCOLS.length];
-  row.innerHTML=`<input type="text" class="cr-l" placeholder="Název" value="${d.label||''}"><input type="number" class="cr-v" placeholder="%" min="0" max="100" value="${d.value||''}"><input type="color" class="cr-c" value="${col}"><button class="icon-btn cr-d">✕</button>`;
+  const row=document.createElement('div');row.className='chart-row';
+  row.style.cssText='display:grid;grid-template-columns:1fr 52px 30px 26px;gap:5px;align-items:center';
+  const col=d.color||PCOLS[(crow++)%PCOLS.length];
+  row.innerHTML=`<input type="text" class="cr-l" placeholder="Název" value="${d.label||''}"><input type="number" class="cr-v" placeholder="%" min="0" max="100" value="${d.value||''}"><input type="color" class="cr-c" value="${col}" style="width:30px;height:28px;padding:2px;border:1px solid var(--bd);border-radius:var(--rs);background:var(--sf);cursor:pointer"><button class="icon-btn cr-d">✕</button>`;
   document.getElementById('chart-rows').appendChild(row);
-  row.querySelector('.cr-d').addEventListener('click',()=>{row.remove();redraw()});
+  row.querySelector('.cr-d').addEventListener('click',()=>{row.remove();redraw();});
   row.querySelectorAll('input').forEach(i=>i.addEventListener('input',()=>redraw()));
 }
-function getChartData(){
-  return [...document.querySelectorAll('.chart-row')].map(r=>({
-    label:r.querySelector('.cr-l').value.trim(),
-    value:parseFloat(r.querySelector('.cr-v').value)||0,
-    color:r.querySelector('.cr-c').value
-  })).filter(d=>d.label);
-}
+function getChartData(){return[...document.querySelectorAll('.chart-row')].map(r=>({label:r.querySelector('.cr-l').value.trim(),value:parseFloat(r.querySelector('.cr-v').value)||0,color:r.querySelector('.cr-c').value})).filter(d=>d.label);}
 
-// ── WATCH ──────────────────────────────────────────────────────────────────────
+// ── ITEM LISTS ────────────────────────────────────────────────────────────────
+function initItemLists(){
+  initList('wa-rows','add-wa-row',()=>mkRow1('Bod varování…'));
+  ['Zákon porušuje právo na soukromí','Sankce hrozí každému, kdo odmítne','EU upozornila na rizika'].forEach(t=>addToList('wa-rows',mkRow1(t)));
+  initList('li-rows','add-li-row',()=>mkRow1('Položka…'),7);
+  ['Zrušit daně pro rodiny','Zvýšit minimální mzdu na 25 000 Kč','Stavět 100 000 bytů ročně'].forEach(t=>addToList('li-rows',mkRow1(t)));
+  initList('ck-rows','add-ck-row',()=>mkRowCk('Položka…'),8);
+  [['Snížit daně',true],['Levnější energie',false],['Dostupné bydlení',false]].forEach(([t,c])=>addToList('ck-rows',mkRowCk(t,c)));
+  initList('tl-rows','add-tl-row',()=>mkRow2('Datum','Popis…'),6);
+  [['2021','Vláda složila programový slib'],['2022','První porušení, skandál eskaluje'],['2023','Opozice podává trestní oznámení']].forEach(([d,t])=>addToList('tl-rows',mkRow2(d,t,d,t)));
+  initList('pl-rows','add-pl-row',()=>mkRowPoll('Možnost',0),4);
+  [['Ano, jsem spokojen',18],['Ne, zklamal mě',61],['Nevím / nesleduji',21]].forEach(([l,v])=>addToList('pl-rows',mkRowPoll(l,v)));
+  initList('vs-rows','add-vs-row',()=>mkRowVs('Kritérium','–','–'),5);
+  [['Inflace','17 %','8 %'],['Nezaměstnanost','4 %','3 %'],['Státní dluh','roste','klesal']].forEach(([l,a,b])=>addToList('vs-rows',mkRowVs(l,a,b)));
+  initList('rk-rows','add-rk-row',()=>mkRowRk('Strana','0 %',''),7);
+  [['ANO','32 %','+2'],['ODS','14 %','-1'],['STAN','11 %','0'],['Piráti','9 %','-2'],['SPD','8 %','+1']].forEach(([n,v,c])=>addToList('rk-rows',mkRowRk(n,v,c)));
+}
+function initList(rowsId,addBtnId,mkFn,max=10){
+  document.getElementById(addBtnId)?.addEventListener('click',()=>{
+    const rows=document.getElementById(rowsId);
+    if(rows.children.length>=max){toast('Dosažen limit','err');return;}
+    addToList(rowsId,mkFn());redraw();
+  });
+}
+function addToList(rowsId,row){
+  document.getElementById(rowsId).appendChild(row);
+  row.querySelectorAll('input,textarea,select').forEach(i=>i.addEventListener('input',()=>redraw()));
+  row.querySelector('.ir-del')?.addEventListener('click',()=>{row.remove();redraw();});
+}
+function mkRow1(ph=''){const d=document.createElement('div');d.className='ir ir-1';d.innerHTML=`<input type="text" placeholder="${ph}"><button class="icon-btn ir-del">✕</button>`;return d;}
+function mkRow2(ph1='',ph2='',v1='',v2=''){const d=document.createElement('div');d.className='ir ir-2';d.innerHTML=`<input type="text" placeholder="${ph1}" value="${v1}"><input type="text" placeholder="${ph2}" value="${v2}"><button class="icon-btn ir-del">✕</button>`;return d;}
+function mkRowCk(ph='',checked=true){const d=document.createElement('div');d.className='ir ir-ck';d.innerHTML=`<button class="ck-tog" data-v="${checked?1:0}">${checked?'✅':'❌'}</button><input type="text" placeholder="${ph}" value="${ph!=='Položka…'?ph:''}"><button class="icon-btn ir-del">✕</button>`;d.querySelector('.ck-tog').addEventListener('click',b=>{const btn=b.currentTarget;btn.dataset.v=btn.dataset.v==='1'?'0':'1';btn.textContent=btn.dataset.v==='1'?'✅':'❌';redraw();});return d;}
+function mkRowPoll(label='',pct=0){const d=document.createElement('div');d.className='ir ir-2';d.innerHTML=`<input type="text" placeholder="Možnost" value="${label}"><input type="number" placeholder="%" min="0" max="100" value="${pct}"><button class="icon-btn ir-del">✕</button>`;return d;}
+function mkRowVs(label='',a='',b=''){const d=document.createElement('div');d.className='ir ir-vs';d.innerHTML=`<input type="text" placeholder="Kritérium" value="${label}"><input type="text" placeholder="A" value="${a}"><input type="text" placeholder="B" value="${b}"><button class="icon-btn ir-del">✕</button>`;return d;}
+function mkRowRk(name='',val='',chg=''){const d=document.createElement('div');d.className='ir ir-rk';d.innerHTML=`<input type="text" placeholder="Název" value="${name}"><input type="text" placeholder="%" value="${val}"><input type="text" placeholder="+/-" value="${chg}"><button class="icon-btn ir-del">✕</button>`;return d;}
+function getListItems(id){return[...document.querySelectorAll(`#${id} .ir input[type=text]`)].map(i=>i.value.trim()).filter(Boolean);}
+function getCkItems(id){return[...document.querySelectorAll(`#${id} .ir`)].map(r=>({text:r.querySelector('input[type=text]').value.trim(),check:r.querySelector('.ck-tog').dataset.v==='1'})).filter(i=>i.text);}
+function getPollItems(id){return[...document.querySelectorAll(`#${id} .ir`)].map(r=>{const ii=r.querySelectorAll('input');return{label:ii[0].value.trim(),pct:parseFloat(ii[1].value)||0};}).filter(i=>i.label);}
+function getTlItems(id){return[...document.querySelectorAll(`#${id} .ir`)].map(r=>{const ii=r.querySelectorAll('input');return{date:ii[0].value.trim(),text:ii[1].value.trim()};}).filter(i=>i.text);}
+function getVsRows(id){return[...document.querySelectorAll(`#${id} .ir`)].map(r=>{const ii=r.querySelectorAll('input');return{label:ii[0].value.trim(),a:ii[1].value.trim(),b:ii[2].value.trim()};}).filter(i=>i.label);}
+function getRkItems(id){return[...document.querySelectorAll(`#${id} .ir`)].map(r=>{const ii=r.querySelectorAll('input');return{name:ii[0].value.trim(),val:ii[1].value.trim(),chg:ii[2].value.trim()};}).filter(i=>i.name);}
+
+// ── WATCH / REDRAW ────────────────────────────────────────────────────────────
 function watchAll(){
-  ['info-eyebrow','info-hl','info-cyan','cit-q','cit-cyan','cit-name','cit-role','data-eyebrow','data-hl','data-cyan','data-fn','cap-text','cap-src','cap-tags'].forEach(id=>{
-    const el=document.getElementById(id); if(!el)return;
-    el.addEventListener('input',()=>redraw());
-  });
-  ['info-eyebrow-on','info-fs','cit-fs','data-ct','data-fs','clean-color'].forEach(id=>{
-    const el=document.getElementById(id); if(!el)return;
-    el.addEventListener('change',()=>redraw());
-  });
+  const sb=document.querySelector('.sb-scroll');
+  sb.addEventListener('input',redraw);sb.addEventListener('change',redraw);
 }
-
-// ── REDRAW ─────────────────────────────────────────────────────────────────────
-function redraw(){
-  clearTimeout(S.deb);
-  S.deb=setTimeout(doRender,320);
-}
-
+function redraw(){clearTimeout(S.deb);S.deb=setTimeout(doRender,320);}
 async function doRender(){
   setLoading(true);
   try{
     if(S.type==='carousel'){
       S.carCanvases=[];
       for(let i=0;i<S.carousel.slides.length;i++){
-        const c=document.createElement('canvas');
-        await renderInfo(c,{
-          headline:S.carousel.slides[i].headline,
-          eyebrow:S.carousel.slides[i].eyebrow,
-          cyanPhrases:parseCyan(S.carousel.slides[i].cyan),
-          fo0:S.carousel.slides[i].fo0,fo1:S.carousel.slides[i].fo1,
-          fontSize:S.carousel.slides[i].fontsize,yNudge:S.carousel.slides[i].ynudge,
-          photo:S.carousel.slides[i].photo,arrows:!S.carousel.slides[i].isLast
-        });
+        const c=document.createElement('canvas'),sl=S.carousel.slides[i];
+        await renderInfo(c,{headline:sl.headline,eyebrow:sl.eyebrow,cyanPhrases:parseCyan(sl.cyan),fo0:sl.fo0,fo1:sl.fo1,fontSize:sl.fontsize,yNudge:sl.ynudge,photo:S.photos['sl-'+sl.id],arrows:!sl.isLast});
         S.carCanvases.push(c);
       }
       showCarSlide(Math.min(S.carousel.cur,S.carCanvases.length-1));
-    } else {
-      const mc=document.getElementById('main-canvas');
-      mc.width=W; mc.height=H;
-      await renderType(mc);
-      showCanvas(mc);
+    }else{
+      const mc=document.getElementById('mc');mc.width=W;mc.height=H;
+      await renderType(mc);showCanvas(mc);
     }
   }catch(e){console.error(e);}
   finally{setLoading(false);}
 }
-
 async function renderType(c){
-  if(S.type==='info') await renderInfo(c,getInfoOpts());
-  else if(S.type==='citation') await renderCitation(c,getCitOpts());
-  else if(S.type==='data') await renderData(c,getDataOpts());
-  else if(S.type==='clean') renderClean(c);
+  const t=S.type;
+  if(t==='info')await renderInfo(c,getInfoOpts());
+  else if(t==='citation')await renderCitation(c,getCitOpts());
+  else if(t==='data')await renderData(c,getDataOpts());
+  else if(t==='clean')renderClean(c);
+  else if(t==='breaking')await renderBreaking(c,getBrOpts());
+  else if(t==='stat')await renderStat(c,getStOpts());
+  else if(t==='verdict')await renderVerdict(c,getVeOpts());
+  else if(t==='warning')await renderWarning(c,getWaOpts());
+  else if(t==='roast')await renderRoast(c,getRoOpts());
+  else if(t==='thread')renderThread(c,getThOpts());
+  else if(t==='listicle')await renderListicle(c,getLiOpts());
+  else if(t==='checklist')renderChecklist(c,getCkOpts());
+  else if(t==='timeline')renderTimeline(c,getTlOpts());
+  else if(t==='flashcard')renderFlashcard(c,getFcOpts());
+  else if(t==='manifesto')renderManifesto(c,getMaOpts());
+  else if(t==='stat')await renderStat(c,getStOpts());
+  else if(t==='poll')renderPoll(c,getPlOpts());
+  else if(t==='countdown')renderCountdown(c,getCdOpts());
+  else if(t==='ranking')renderRanking(c,getRkOpts());
+  else if(t==='mythFact')await renderMythFact(c,getMfOpts());
+  else if(t==='promiseReality')await renderPromiseReality(c,getPrOpts());
+  else if(t==='vs')renderVs(c,getVsOpts());
+  else if(t==='profile')await renderProfile(c,getPfOpts());
+  else if(t==='announcement')await renderAnnouncement(c,getAnOpts());
+  else if(t==='reaction')await renderReaction(c,getReOpts());
 }
 
-function showCanvas(c){
-  const mc=document.getElementById('main-canvas');
-  if(c!==mc){mc.width=c.width;mc.height=c.height;mc.getContext('2d').drawImage(c,0,0);}
-  mc.style.display='block';
-  document.getElementById('pempty').style.display='none';
-  // Scale to fit preview area
-  const area=document.getElementById('pframe');
-  const maxH=window.innerHeight-200;
-  const scale=Math.min(maxH/H,1);
-  mc.style.width=(W*scale)+'px';
-  mc.style.height=(H*scale)+'px';
-}
-
-function setLoading(on){document.getElementById('pload').style.display=on?'flex':'none'}
-
-// ── CANVAS HELPERS ─────────────────────────────────────────────────────────────
-function setF(ctx,sz,wt=700){ctx.font=`${wt} ${sz}px Montserrat`}
-function mw(ctx,t){return ctx.measureText(t).width}
-
-function wrapT(ctx,text,maxW=MAXW){
-  const words=text.split(' '); const lines=[]; let cur='';
-  for(const w of words){const tr=cur?cur+' '+w:w;if(mw(ctx,tr)<=maxW)cur=tr;else{if(cur)lines.push(cur);cur=w;}}
-  if(cur)lines.push(cur);
-  return lines.length?lines:[''];
-}
-
-function autoSz(ctx,text,minL=2,maxL=3){
-  for(const sz of[84,78,74,68,62,56,52,48,44]){setF(ctx,sz,700);if(wrapT(ctx,text).length>=minL&&wrapT(ctx,text).length<=maxL)return sz;}
-  return 52;
-}
-
-function autoSzMax(ctx,text,maxL=5){
-  for(const sz of[66,60,56,52,48,44,40,36]){setF(ctx,sz,700);if(wrapT(ctx,text).length<=maxL)return sz;}
-  return 36;
-}
-
-function spaced(ctx,x,y,text,sp=3){for(const ch of text){ctx.fillText(ch,x,y);x+=mw(ctx,ch)+sp;}}
-
+// ── CANVAS HELPERS ────────────────────────────────────────────────────────────
+function setup(cv){cv.width=W;cv.height=H;const c=cv.getContext('2d');c.fillStyle=NAVY;c.fillRect(0,0,W,H);return c;}
+function setF(ctx,sz,wt=700){ctx.font=`${wt} ${sz}px Montserrat`;}
+function mw(ctx,t){return ctx.measureText(t).width;}
+function wrapT(ctx,text,maxW=MAXW){const words=text.split(' ');const lines=[];let cur='';for(const w of words){const tr=cur?cur+' '+w:w;if(mw(ctx,tr)<=maxW)cur=tr;else{if(cur)lines.push(cur);cur=w;}}if(cur)lines.push(cur);return lines.length?lines:[''];}
+function autoSz(ctx,text,min=2,max=3){for(const sz of[84,78,74,68,62,56,52,48,44]){setF(ctx,sz,700);if(wrapT(ctx,text).length>=min&&wrapT(ctx,text).length<=max)return sz;}return 44;}
+function autoSzMax(ctx,text,maxL=5){for(const sz of[66,60,56,52,48,44,40,36]){setF(ctx,sz,700);if(wrapT(ctx,text).length<=maxL)return sz;}return 36;}
+function leading(sz){return Math.round(sz*1.24);}
+function parseCyan(s){return(s||'').split('|').map(x=>x.trim()).filter(Boolean);}
 function colorLine(ctx,x,y,line,phrases){
   const ps=phrases.filter(p=>p&&line.includes(p));
   if(!ps.length){ctx.fillStyle=WHITE;ctx.fillText(line,x,y);return;}
   let rem=line,cx=x;
-  while(rem){
+  while(rem.length){
     let hit=false;
     for(const p of ps){if(rem.startsWith(p)){ctx.fillStyle=CYAN;ctx.fillText(p,cx,y);cx+=mw(ctx,p);rem=rem.slice(p.length);hit=true;break;}}
-    if(!hit){
-      let np=rem.length;
-      for(const p of ps){const i=rem.indexOf(p);if(i>0&&i<np)np=i;}
-      const ch=rem.slice(0,np);if(ch){ctx.fillStyle=WHITE;ctx.fillText(ch,cx,y);cx+=mw(ctx,ch);}
-      rem=rem.slice(np);
-    }
+    if(!hit){let np=rem.length;for(const p of ps){const i=rem.indexOf(p);if(i>0&&i<np)np=i;}const ch=rem.slice(0,np);if(ch){ctx.fillStyle=WHITE;ctx.fillText(ch,cx,y);cx+=mw(ctx,ch);}rem=rem.slice(np);}
   }
 }
+function spaced(ctx,x,y,text,sp=3){for(const ch of text){ctx.fillText(ch,x,y);x+=mw(ctx,ch)+sp;}}
+function drawEyebrow(ctx,x,y,text){setF(ctx,22,600);ctx.fillStyle=CYAN;ctx.fillRect(x,y+22*.42,20,4);ctx.textBaseline='alphabetic';spaced(ctx,x+32,y+22*.82,text.toUpperCase(),3);}
+function drawWM(ctx){setF(ctx,19,400);ctx.fillStyle=MUTED;const t='Matěj Jankovič',w=mw(ctx,t);ctx.textBaseline='alphabetic';ctx.fillText(t,W-LX-w,H-34);}
+function drawArrows(ctx){const cy=675,sz=18,g=20;for(const ox of[-g,0,g]){const bx=1018+ox;ctx.beginPath();ctx.moveTo(bx-sz/2,cy-sz);ctx.lineTo(bx+sz/2,cy);ctx.lineTo(bx-sz/2,cy+sz);ctx.strokeStyle=BLACK;ctx.lineWidth=7;ctx.lineJoin='round';ctx.stroke();ctx.strokeStyle=WHITE;ctx.lineWidth=4;ctx.stroke();}}
+function doGrad(ctx,ph,fo0f,fo1f){const fo0=ph*fo0f,fo1=ph*fo1f;const g=ctx.createLinearGradient(0,fo0,0,fo1);for(let i=0;i<=20;i++){const t=i/20,a=t*t*(3-2*t);g.addColorStop(t,`rgba(${Nr},${Ng},${Nb},${a.toFixed(4)})`);}ctx.fillStyle=g;ctx.fillRect(0,fo0,W,fo1-fo0);ctx.fillStyle=NAVY;ctx.fillRect(0,fo1,W,H-fo1);}
+async function drawPhoto(ctx,img,fo0,fo1){if(!img)return Math.floor(H*.3);const sc=W/img.naturalWidth,ih=Math.round(img.naturalHeight*sc);const off=document.createElement('canvas');off.width=W;off.height=Math.min(ih,H);const oc=off.getContext('2d');oc.filter='contrast(1.12) saturate(1.06)';oc.drawImage(img,0,0,W,ih);ctx.drawImage(off,0,0);const ph=Math.min(ih,H);doGrad(ctx,ph,fo0,fo1);return Math.min(Math.floor(ph*fo1),H-200);}
+function showCanvas(c){const mc=document.getElementById('mc');if(c!==mc){mc.width=c.width;mc.height=c.height;mc.getContext('2d').drawImage(c,0,0);}mc.style.display='block';document.getElementById('pempty').style.display='none';const maxH=window.innerHeight-160;const scale=Math.min(maxH/H,1);mc.style.width=(W*scale)+'px';mc.style.height=(H*scale)+'px';}
+function setLoading(on){document.getElementById('pload').style.display=on?'flex':'none';}
+function v(id){return document.getElementById(id)?.value?.trim()||'';}
+function vn(id,def=0){return parseFloat(document.getElementById(id)?.value)||def;}
+function drawBarChart(ctx,x,y,w,h,data){const n=data.length;if(!n)return;const maxV=Math.max(...data.map(d=>d.value))||1;const lblH=40,barH=h-lblH;ctx.globalAlpha=.18;for(const f of[.25,.5,.75,1]){const gy=y+barH-barH*f;ctx.strokeStyle=MUTED;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,gy);ctx.lineTo(x+w,gy);ctx.stroke();}ctx.globalAlpha=1;const slot=w/n,bw=slot*.62,bg=(slot-bw)/2;setF(ctx,14,700);ctx.textBaseline='alphabetic';for(let i=0;i<n;i++){const d=data[i],bx=x+i*slot+bg,bht=Math.round(barH*d.value/maxV),by=y+barH-bht;ctx.fillStyle=d.color;ctx.fillRect(bx,by,bw,bht);const vs=`${d.value}%`,vw=mw(ctx,vs);ctx.fillStyle=WHITE;ctx.fillText(vs,bx+bw/2-vw/2,by-6);setF(ctx,14,600);ctx.fillStyle=MUTED;const lw=mw(ctx,d.label);ctx.fillText(d.label,bx+bw/2-lw/2,y+barH+lblH*.7);setF(ctx,14,700);}}
+function drawTable(ctx,x,y,data){const rh=76;for(const d of data){ctx.strokeStyle='rgba(30,48,96,.8)';ctx.lineWidth=2;ctx.setLineDash([6,6]);ctx.beginPath();ctx.moveTo(x,y+rh-2);ctx.lineTo(x+MAXW,y+rh-2);ctx.stroke();ctx.setLineDash([]);setF(ctx,20,600);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';ctx.fillText(d.label,x,y+rh/2+8);const vs=String(d.value)+'%',vw=mw(ctx,vs);setF(ctx,20,700);ctx.fillStyle=CYAN;ctx.fillText(vs,x+MAXW-vw,y+rh/2+8);y+=rh;}return y;}
 
-function leading(sz){return Math.round(sz*1.24)}
+// ── RENDER FUNCTIONS ──────────────────────────────────────────────────────────
 
-function yStart(fo1,nLines,sz,extra=0,nudge=0){
-  const bot=H-110,avail=bot-fo1,bh=(nLines-1)*leading(sz)+sz+extra;
-  return fo1+Math.max(40,Math.floor((avail-bh)/2))+extra+nudge;
-}
-
-// ── GRADIENT ──────────────────────────────────────────────────────────────────
-function doGrad(ctx,photoH,fo0f,fo1f){
-  const fo0=photoH*fo0f, fo1=photoH*fo1f;
-  const g=ctx.createLinearGradient(0,fo0,0,fo1);
-  for(let i=0;i<=20;i++){const t=i/20,a=t*t*(3-2*t);g.addColorStop(t,`rgba(${NAVYr},${NAVYg},${NAVYb},${a.toFixed(4)})`);}
-  ctx.fillStyle=g; ctx.fillRect(0,fo0,W,fo1-fo0);
-  ctx.fillStyle=NAVY; ctx.fillRect(0,fo1,W,H-fo1);
-}
-
-async function drawPhoto(ctx,img,fo0,fo1){
-  if(!img)return Math.floor(H*0.30);
-  const sc=W/img.naturalWidth, ih=Math.round(img.naturalHeight*sc);
-  const off=document.createElement('canvas'); off.width=W; off.height=Math.min(ih,H);
-  const oc=off.getContext('2d');
-  oc.filter='contrast(1.12) saturate(1.06)';
-  oc.drawImage(img,0,0,W,ih);
-  ctx.drawImage(off,0,0);
-  const ph=Math.min(ih,H);
-  doGrad(ctx,ph,fo0,fo1);
-  return Math.min(Math.floor(ph*fo1),H-200);
-}
-
-// ── COMPONENTS ────────────────────────────────────────────────────────────────
-function drawEyebrow(ctx,x,y,text){
-  const sz=24;setF(ctx,sz,600);
-  ctx.fillStyle=CYAN;
-  ctx.fillRect(x,y+sz*0.42,22,4);
-  ctx.textBaseline='alphabetic';
-  spaced(ctx,x+34,y+sz*0.82,text.toUpperCase(),3);
-}
-
-function drawWM(ctx){
-  setF(ctx,19,400); ctx.fillStyle=MUTED;
-  const t='Matěj Jankovič', w=mw(ctx,t);
-  ctx.textBaseline='alphabetic';
-  ctx.fillText(t,W-LX-w,1316);
-}
-
-function drawArrows(ctx){
-  const cy=675,sz=20,g=22;
-  for(const ox of[-g,0,g]){
-    const bx=1018+ox;
-    ctx.beginPath();ctx.moveTo(bx-sz/2,cy-sz);ctx.lineTo(bx+sz/2,cy);ctx.lineTo(bx-sz/2,cy+sz);
-    ctx.strokeStyle=BLACK;ctx.lineWidth=7;ctx.lineJoin='round';ctx.stroke();
-    ctx.strokeStyle=WHITE;ctx.lineWidth=4;ctx.stroke();
-  }
-}
-
-// ── TYPE A: INFO ──────────────────────────────────────────────────────────────
+// 1. INFO
 async function renderInfo(canvas,opts){
   const{headline='',eyebrow='',cyanPhrases=[],fo0=.72,fo1=.96,fontSize=0,yNudge=0,photo=null,arrows=false}=opts;
-  const ctx=canvas.getContext('2d');
-  canvas.width=W; canvas.height=H;
-  ctx.fillStyle=NAVY; ctx.fillRect(0,0,W,H);
-
-  let f1=Math.floor(H*.30);
-  if(photo) f1=await drawPhoto(ctx,photo,fo0,fo1);
-
-  const sz=fontSize||autoSz(ctx,headline||' ');
-  setF(ctx,sz,700); ctx.textBaseline='alphabetic';
-  const lines=wrapT(ctx,headline||' ');
-  const lead=leading(sz);
-  const eyH=eyebrow?24+26:0;
-  let y=yStart(f1,lines.length,sz,eyH,yNudge);
-
-  if(eyebrow) drawEyebrow(ctx,LX,y-eyH,eyebrow);
-  setF(ctx,sz,700);
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  const sz=fontSize||autoSz(ctx,headline||' ');setF(ctx,sz,700);ctx.textBaseline='alphabetic';
+  const lines=wrapT(ctx,headline||' '),lead=leading(sz),eyH=eyebrow?50:0;
+  const bh=(lines.length-1)*lead+sz+eyH,avail=H-110-f1;
+  let y=f1+Math.max(44,Math.floor((avail-bh)/2))+eyH+yNudge;
+  if(eyebrow){drawEyebrow(ctx,LX,y-eyH,eyebrow);setF(ctx,sz,700);}
   for(const ln of lines){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrases);y+=lead;}
-
-  if(arrows) drawArrows(ctx);
-  drawWM(ctx);
+  if(arrows)drawArrows(ctx);drawWM(ctx);
 }
 
-// ── TYPE B: CITATION ──────────────────────────────────────────────────────────
+// 2. CITATION
 async function renderCitation(canvas,opts){
   const{quote='',cyanPhrase='',authorName='',authorRole='',fo0=.6,fo1=.92,fontSize=0,yNudge=0,photo=null}=opts;
-  const ctx=canvas.getContext('2d');
-  canvas.width=W; canvas.height=H;
-  ctx.fillStyle=NAVY; ctx.fillRect(0,0,W,H);
-
-  let f1=Math.floor(H*.35);
-  if(photo) f1=await drawPhoto(ctx,photo,fo0,fo1);
-
-  const full=`„${quote}“`;
-  const sz=fontSize||autoSzMax(ctx,full,5);
-  setF(ctx,sz,700); ctx.textBaseline='alphabetic';
-  const lines=wrapT(ctx,full);
-  const lead=leading(sz);
-  const attrH=authorName?32+8+21+40:0;
-  const blockH=(lines.length-1)*lead+sz+attrH+20;
-  const bot=H-110,avail=bot-f1;
-  let y=f1+Math.max(40,Math.floor((avail-blockH)/2))+yNudge;
-
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  const full=`„${quote}"`,sz=fontSize||autoSzMax(ctx,full,5);
+  setF(ctx,sz,700);ctx.textBaseline='alphabetic';
+  const lines=wrapT(ctx,full),lead=leading(sz),attrH=authorName?80:0;
+  const bh=(lines.length-1)*lead+sz+attrH+20,avail=H-110-f1;
+  let y=f1+Math.max(44,Math.floor((avail-bh)/2))+yNudge;
   for(const ln of lines){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrase?[cyanPhrase]:[]);y+=lead;}
-
-  if(authorName){
-    const by=y+36;
-    ctx.fillStyle=CYAN; ctx.fillRect(LX,by,4,32+8+21);
-    setF(ctx,32,700); ctx.fillStyle=WHITE; ctx.fillText(authorName,LX+18,by+32*.82);
-    if(authorRole){setF(ctx,21,600); ctx.fillStyle=MUTED; ctx.fillText(authorRole,LX+18,by+40+21*.82);}
-  }
+  if(authorName){const by=y+30;ctx.fillStyle=CYAN;ctx.fillRect(LX,by,4,60);setF(ctx,30,700);ctx.fillStyle=WHITE;ctx.fillText(authorName,LX+16,by+30*.82);if(authorRole){setF(ctx,20,600);ctx.fillStyle=MUTED;ctx.fillText(authorRole,LX+16,by+46+20*.82);}}
   drawWM(ctx);
 }
 
-// ── TYPE D: DATA ──────────────────────────────────────────────────────────────
+// 3. DATA
 async function renderData(canvas,opts){
   const{headline='',eyebrow='',cyanPhrases=[],chartType='bar',chartData=[],footnote='',fo0=.55,fo1=.85,fontSize=0,yNudge=0,photo=null}=opts;
-  const ctx=canvas.getContext('2d');
-  canvas.width=W; canvas.height=H;
-  ctx.fillStyle=NAVY; ctx.fillRect(0,0,W,H);
-
-  let f1=380;
-  if(photo) f1=await drawPhoto(ctx,photo,fo0,fo1);
-
-  let y=f1+40+yNudge;
-
-  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=24+26;}
-
-  const sz=fontSize||autoSz(ctx,headline||' ');
-  setF(ctx,sz,700); ctx.textBaseline='alphabetic';
-  const lines=wrapT(ctx,headline||' ');
-  for(const ln of lines){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrases);y+=leading(sz);}
-  y+=20;
-
-  if(chartData.length){
-    if(chartType==='bar'){
-      const ch=Math.min(300,H-130-y-(footnote?30:0));
-      if(ch>60) drawBarChart(ctx,LX,y,MAXW,ch,chartData);
-      y+=ch+20;
-    } else {
-      y=drawTable(ctx,LX,y,chartData);
-    }
-  }
-
-  if(footnote){setF(ctx,15,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText(footnote,LX,H-96);}
+  const ctx=setup(canvas);let f1=380;if(photo)f1=await drawPhoto(ctx,photo,fo0,fo1);
+  let y=f1+44+yNudge;
+  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=50;}
+  const sz=fontSize||autoSz(ctx,headline||' ');setF(ctx,sz,700);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,headline||' ')){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrases);y+=leading(sz);}y+=20;
+  if(chartData.length){if(chartType==='bar'){const ch=Math.min(280,H-130-y);if(ch>60)drawBarChart(ctx,LX,y,MAXW,ch,chartData);y+=ch+20;}else y=drawTable(ctx,LX,y,chartData);}
+  if(footnote){setF(ctx,15,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText(footnote,LX,H-56);}
   drawWM(ctx);
 }
 
-function drawBarChart(ctx,x,y,w,h,data){
-  const n=data.length; if(!n)return;
-  const maxV=Math.max(...data.map(d=>d.value))||1;
-  const lblH=40,barH=h-lblH;
-  // Grid
-  ctx.globalAlpha=.18;
-  for(const f of[.25,.5,.75,1]){
-    const gy=y+barH-barH*f;
-    ctx.strokeStyle=MUTED; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(x,gy); ctx.lineTo(x+w,gy); ctx.stroke();
-  }
-  ctx.globalAlpha=1;
-  const slot=w/n, bw=slot*.62, bg=(slot-bw)/2;
-  setF(ctx,14,700); ctx.textBaseline='alphabetic';
-  for(let i=0;i<n;i++){
-    const d=data[i];
-    const bx=x+i*slot+bg, bht=Math.round(barH*d.value/maxV), by=y+barH-bht;
-    ctx.fillStyle=d.color; ctx.fillRect(bx,by,bw,bht);
-    const vs=`${d.value}%`, vw=mw(ctx,vs);
-    ctx.fillStyle=WHITE; ctx.fillText(vs,bx+bw/2-vw/2,by-6);
-    setF(ctx,15,600); ctx.fillStyle=MUTED;
-    const lw=mw(ctx,d.label); ctx.fillText(d.label,bx+bw/2-lw/2,y+barH+lblH*.7);
-    setF(ctx,14,700);
-  }
-}
-
-function drawTable(ctx,x,y,data){
-  const rh=76;
-  for(const d of data){
-    ctx.strokeStyle='rgba(30,48,96,.8)'; ctx.lineWidth=2; ctx.setLineDash([6,6]);
-    ctx.beginPath(); ctx.moveTo(x,y+rh-2); ctx.lineTo(x+MAXW,y+rh-2); ctx.stroke();
-    ctx.setLineDash([]);
-    setF(ctx,20,600); ctx.fillStyle=WHITE; ctx.textBaseline='alphabetic';
-    ctx.fillText(d.label,x,y+rh/2+8);
-    const vs=String(d.value)+'%', vw=mw(ctx,vs);
-    setF(ctx,20,700); ctx.fillStyle=CYAN;
-    ctx.fillText(vs,x+MAXW-vw,y+rh/2+8);
-    y+=rh;
-  }
-  return y;
-}
-
+// 4. CLEAN
 function renderClean(canvas){
-  const ctx=canvas.getContext('2d'); canvas.width=W; canvas.height=H;
-  ctx.fillStyle=document.getElementById('clean-color').value==='black'?'#000000':NAVY;
-  ctx.fillRect(0,0,W,H);
-  showCanvas(canvas);
+  const ctx=setup(canvas);
+  const cv=document.getElementById('clean-color').value;
+  ctx.fillStyle=cv==='black'?'#000':cv==='dark'?'#050D20':NAVY;ctx.fillRect(0,0,W,H);
+  drawWM(ctx);
 }
 
-// ── OPTS BUILDERS ──────────────────────────────────────────────────────────────
-function parseCyan(s){return(s||'').split('|').map(x=>x.trim()).filter(Boolean)}
+// 5. BREAKING
+async function renderBreaking(canvas,opts){
+  const{headline='',cyanPhrases=[],ticker='',fo0=.7,fo1=.95,yNudge=0,photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  ctx.fillStyle='#CC0000';ctx.fillRect(0,0,W,60);
+  setF(ctx,30,700);ctx.fillStyle=WHITE;ctx.textBaseline='middle';ctx.fillText('● BREAKING',LX,30);
+  const sz=autoSz(ctx,headline||' ');setF(ctx,sz,700);ctx.textBaseline='alphabetic';
+  let y=Math.max(f1+50,90)+yNudge;
+  for(const ln of wrapT(ctx,headline||' ')){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrases);y+=leading(sz);}
+  if(ticker){ctx.fillStyle='rgba(180,0,0,.9)';ctx.fillRect(0,H-70,W,36);setF(ctx,17,600);ctx.fillStyle=WHITE;ctx.textBaseline='middle';ctx.fillText('⬛ '+ticker,LX,H-52);}
+  drawWM(ctx);
+}
 
-function getInfoOpts(){return{
-  headline:v('info-hl'),
-  eyebrow:document.getElementById('info-eyebrow-on').checked?v('info-eyebrow'):'',
-  cyanPhrases:parseCyan(v('info-cyan')),
-  fo0:+document.getElementById('info-fo0').value,fo1:+document.getElementById('info-fo1').value,
-  fontSize:+document.getElementById('info-fs').value,yNudge:+document.getElementById('info-yn').value,
-  photo:S.photos.info
-}}
-function getCitOpts(){return{
-  quote:v('cit-q'),cyanPhrase:v('cit-cyan').trim(),
-  authorName:v('cit-name'),authorRole:v('cit-role'),
-  fo0:+document.getElementById('cit-fo0').value,fo1:+document.getElementById('cit-fo1').value,
-  fontSize:+document.getElementById('cit-fs').value,yNudge:+document.getElementById('cit-yn').value,
-  photo:S.photos.citation
-}}
-function getDataOpts(){return{
-  headline:v('data-hl'),eyebrow:v('data-eyebrow'),cyanPhrases:parseCyan(v('data-cyan')),
-  chartType:document.getElementById('data-ct').value,chartData:getChartData(),
-  footnote:v('data-fn'),
-  fo0:+document.getElementById('data-fo0').value,fo1:+document.getElementById('data-fo1').value,
-  fontSize:+document.getElementById('data-fs').value,yNudge:+document.getElementById('data-yn').value,
-  photo:S.photos.data
-}}
-function v(id){return document.getElementById(id)?.value?.trim()||''}
+// 6. STAT
+async function renderStat(canvas,opts){
+  const{eyebrow='',bigNum='',ctx_text='',cyanPhrases=[],footnote='',photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,.5,.75);
+  let y=Math.max(f1+50,H*.28);
+  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=54;}
+  const numSz=124;setF(ctx,numSz,700);ctx.textBaseline='alphabetic';
+  const nw=mw(ctx,bigNum);ctx.fillStyle=CYAN;ctx.fillText(bigNum,W/2-nw/2,y+numSz*.82);y+=numSz+40;
+  if(ctx_text){const csz=40;setF(ctx,csz,600);ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,ctx_text)){colorLine(ctx,LX,y+csz*.78,ln,cyanPhrases);y+=leading(csz);}}
+  if(footnote){setF(ctx,16,600);ctx.fillStyle=MUTED;ctx.fillText(footnote,LX,H-56);}
+  drawWM(ctx);
+}
 
-// ── EXPORT ─────────────────────────────────────────────────────────────────────
+// 7. VERDICT
+async function renderVerdict(canvas,opts){
+  const{person='',charge='',verdict='guilty',ctx_text='',fo0=.65,fo1=.9,photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  let y=f1+44;
+  if(person){setF(ctx,34,700);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';ctx.fillText(person,LX,y+34*.82);y+=52;}
+  if(charge){setF(ctx,22,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,charge)){ctx.fillText(ln,LX,y+22*.82);y+=30;}y+=20;}
+  const labels={guilty:'VINNÝ',not:'NEVINNNÝ',pending:'VYŠETŘUJE SE'};
+  const colors={guilty:'#CC0000',not:'#00A651',pending:MUTED};
+  const vtext=labels[verdict]||verdict,vcolor=colors[verdict]||MUTED;
+  const stampSz=88;setF(ctx,stampSz,700);ctx.textBaseline='alphabetic';const sw=mw(ctx,vtext);
+  ctx.save();ctx.translate(W/2,y+stampSz*.5+30);ctx.rotate(-0.12);
+  ctx.strokeStyle=vcolor;ctx.lineWidth=9;ctx.strokeRect(-sw/2-20,-stampSz*.65,sw+40,stampSz+24);
+  ctx.fillStyle=vcolor;ctx.globalAlpha=.92;ctx.fillText(vtext,-sw/2,stampSz*.3);
+  ctx.restore();ctx.globalAlpha=1;
+  if(ctx_text){setF(ctx,22,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText(ctx_text,LX,y+stampSz+120);}
+  drawWM(ctx);
+}
+
+// 8. WARNING
+function renderWarning(canvas,opts){
+  const{headline='',cyanPhrases=[],items=[],src=''}=opts;
+  const ctx=setup(canvas);
+  ctx.fillStyle='#E65C00';ctx.fillRect(0,0,W,70);
+  setF(ctx,34,700);ctx.fillStyle='#000';ctx.textBaseline='middle';ctx.fillText('⚠  VAROVÁNÍ',LX,35);
+  let y=110;const sz=autoSz(ctx,headline||' ');setF(ctx,sz,700);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,headline||' ')){colorLine(ctx,LX,y+sz*.78,ln,cyanPhrases);y+=leading(sz);}y+=36;
+  setF(ctx,26,600);ctx.textBaseline='alphabetic';
+  for(const item of items){if(y>H-100)break;ctx.fillStyle='#E65C00';ctx.fillText('▶',LX,y+26*.82);ctx.fillStyle=WHITE;ctx.fillText(item,LX+30,y+26*.82);y+=44;}
+  if(src){setF(ctx,16,600);ctx.fillStyle=MUTED;ctx.fillText(src,LX,H-56);}
+  drawWM(ctx);
+}
+
+// 9. ROAST
+async function renderRoast(canvas,opts){
+  const{person='',quote='',text='',cyanPhrases=[],fo0=.6,fo1=.9,photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  let y=f1+36;
+  if(person){setF(ctx,22,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';ctx.fillText(person.toUpperCase(),LX,y+22*.82);y+=38;}
+  if(quote){
+    const qlines=wrapT(ctx,`„${quote}"`,MAXW-24);const qh=qlines.length*34+28;
+    ctx.fillStyle='rgba(255,255,255,.07)';ctx.strokeStyle='rgba(255,255,255,.2)';ctx.lineWidth=1;
+    ctx.fillRect(LX,y,MAXW,qh);ctx.strokeRect(LX,y,MAXW,qh);
+    setF(ctx,28,600);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';let qy=y+34;
+    for(const ln of qlines){ctx.fillText(ln,LX+12,qy);qy+=34;}y+=qh+30;
+  }
+  if(text){const tsz=38;setF(ctx,tsz,700);ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,text)){colorLine(ctx,LX,y+tsz*.78,ln,cyanPhrases);y+=leading(tsz);}}
+  drawWM(ctx);
+}
+
+// 10. THREAD
+function renderThread(canvas,opts){
+  const{topic='',hook='',cyanPhrases=[],cta='→ Vlákno níže ↓'}=opts;
+  const ctx=setup(canvas);
+  setF(ctx,100,700);ctx.textBaseline='middle';ctx.fillText('🧵',W/2-50,260);
+  let y=420;if(topic){drawEyebrow(ctx,LX,y,topic);y+=50;}
+  const hsz=autoSzMax(ctx,hook||' ',5);setF(ctx,hsz,700);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,hook||' ')){colorLine(ctx,LX,y+hsz*.78,ln,cyanPhrases);y+=leading(hsz);}
+  y+=50;setF(ctx,28,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';ctx.fillText(cta||'→ Vlákno níže ↓',LX,y);
+  drawWM(ctx);
+}
+
+// 11. LISTICLE
+async function renderListicle(canvas,opts){
+  const{title='',eyebrow='',cyanPhrases=[],items=[],photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,.65,.88);
+  let y=f1+44;
+  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=50;}
+  if(title){const tsz=autoSz(ctx,title,1,2);setF(ctx,tsz,700);ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,title)){colorLine(ctx,LX,y+tsz*.78,ln,cyanPhrases);y+=leading(tsz);}y+=24;}
+  const isz=26,ilead=54;
+  for(let i=0;i<items.length&&y+ilead<H-80;i++){
+    ctx.fillStyle=CYAN;ctx.beginPath();ctx.arc(LX+16,y+isz*.4,16,0,Math.PI*2);ctx.fill();
+    setF(ctx,16,700);ctx.fillStyle=NAVY;ctx.textBaseline='middle';ctx.fillText(String(i+1),LX+10,y+isz*.4);
+    setF(ctx,isz,600);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';ctx.fillText(items[i],LX+42,y+isz*.78);
+    y+=ilead;if(i<items.length-1){ctx.strokeStyle='rgba(100,132,182,.25)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(LX,y-5);ctx.lineTo(LX+MAXW,y-5);ctx.stroke();}
+  }
+  drawWM(ctx);
+}
+
+// 12. CHECKLIST
+function renderChecklist(canvas,opts){
+  const{title='',eyebrow='',cyanPhrases=[],items=[]}=opts;
+  const ctx=setup(canvas);let y=100;
+  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=50;}
+  if(title){const tsz=autoSz(ctx,title,1,2);setF(ctx,tsz,700);ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,title)){colorLine(ctx,LX,y+tsz*.78,ln,cyanPhrases);y+=leading(tsz);}y+=28;}
+  const isz=26,ilead=58;
+  for(const item of items){
+    if(y+ilead>H-80)break;
+    const ok=item.check,ic=ok?'#00A651':'#CC0000';
+    ctx.fillStyle=ok?'rgba(0,166,81,.18)':'rgba(204,0,0,.18)';ctx.strokeStyle=ic;ctx.lineWidth=2;
+    ctx.beginPath();ctx.roundRect(LX,y,36,36,6);ctx.fill();ctx.stroke();
+    setF(ctx,22,700);ctx.fillStyle=ic;ctx.textBaseline='middle';ctx.fillText(ok?'✓':'✗',LX+9,y+18);
+    setF(ctx,isz,600);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';ctx.fillText(item.text,LX+50,y+isz*.82);
+    y+=ilead;
+  }
+  drawWM(ctx);
+}
+
+// 13. TIMELINE
+function renderTimeline(canvas,opts){
+  const{title='',cyanPhrases=[],events=[]}=opts;
+  const ctx=setup(canvas);let y=100;
+  if(title){const tsz=autoSz(ctx,title,1,2);setF(ctx,tsz,700);ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,title)){colorLine(ctx,LX,y+tsz*.78,ln,cyanPhrases);y+=leading(tsz);}y+=36;}
+  const lx=LX+16;
+  ctx.strokeStyle=CYAN;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(lx,y);ctx.lineTo(lx,Math.min(y+events.length*120,H-90));ctx.stroke();
+  for(let i=0;i<events.length&&y<H-80;i++){
+    const ev=events[i],sy=y;
+    ctx.fillStyle=NAVY;ctx.strokeStyle=CYAN;ctx.lineWidth=3;
+    ctx.beginPath();ctx.arc(lx,sy+12,10,0,Math.PI*2);ctx.fill();ctx.stroke();
+    setF(ctx,18,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';ctx.fillText(ev.date,lx+22,sy+18*.82);
+    setF(ctx,24,600);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';
+    const lines=wrapT(ctx,ev.text,MAXW-50);let ty=sy+32;
+    for(const ln of lines){ctx.fillText(ln,lx+22,ty+24*.82);ty+=32;}
+    y=Math.max(sy+110,ty+20);
+  }
+  drawWM(ctx);
+}
+
+// 14. FLASHCARD
+function renderFlashcard(canvas,opts){
+  const{cat='',question='',answer=''}=opts;
+  const ctx=setup(canvas);
+  ctx.fillStyle='#0D1A3A';ctx.fillRect(0,0,W,H/2-4);
+  if(cat){setF(ctx,18,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';ctx.fillText(cat.toUpperCase(),LX,80);}
+  setF(ctx,20,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText('OTÁZKA',LX,124);
+  const qsz=autoSzMax(ctx,question,4);setF(ctx,qsz,700);ctx.textBaseline='alphabetic';
+  let y=170;for(const ln of wrapT(ctx,question)){ctx.fillStyle=WHITE;ctx.fillText(ln,LX,y+qsz*.78);y+=leading(qsz);}
+  ctx.fillStyle=CYAN;ctx.fillRect(0,H/2-4,W,8);
+  ctx.fillStyle='#070F28';ctx.fillRect(0,H/2+4,W,H);
+  setF(ctx,20,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText('ODPOVĚĎ',LX,H/2+52);
+  const asz=autoSzMax(ctx,answer,5);setF(ctx,asz,700);ctx.textBaseline='alphabetic';
+  let ay=H/2+94;for(const ln of wrapT(ctx,answer)){ctx.fillStyle=WHITE;ctx.fillText(ln,LX,ay+asz*.78);ay+=leading(asz);}
+  drawWM(ctx);
+}
+
+// 15. MANIFESTO
+function renderManifesto(canvas,opts){
+  const{statement='',cyanPhrases=[],points=[]}=opts;
+  const ctx=setup(canvas);
+  ctx.fillStyle=CYAN;ctx.fillRect(LX,90,90,5);
+  let y=130;const ssz=autoSz(ctx,statement,1,3);setF(ctx,ssz,700);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,statement)){colorLine(ctx,LX,y+ssz*.78,ln,cyanPhrases);y+=leading(ssz);}
+  y+=36;ctx.fillStyle=CYAN;ctx.fillRect(LX,y,MAXW,2);y+=28;
+  for(const pt of points){
+    if(!pt||y>H-100)continue;
+    setF(ctx,24,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText('—',LX,y+24*.82);
+    ctx.fillStyle=WHITE;ctx.fillText(pt,LX+28,y+24*.82);y+=42;
+  }
+  drawWM(ctx);
+}
+
+// 16. POLL
+function renderPoll(canvas,opts){
+  const{question='',items=[],src=''}=opts;
+  const ctx=setup(canvas);let y=100;
+  setF(ctx,22,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';ctx.fillText('ANKETA',LX,y);y+=44;
+  const qsz=autoSz(ctx,question,1,2);setF(ctx,qsz,700);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,question)){ctx.fillStyle=WHITE;ctx.fillText(ln,LX,y+qsz*.78);y+=leading(qsz);}y+=44;
+  const maxPct=Math.max(...items.map(i=>i.pct),1);
+  for(const item of items){
+    if(y>H-120)break;
+    const bw=Math.round(MAXW*(item.pct/100)),isWinner=item.pct===maxPct;
+    ctx.fillStyle=isWinner?CYAN:'rgba(92,225,230,.28)';ctx.fillRect(LX,y,bw,54);
+    setF(ctx,24,700);ctx.textBaseline='middle';
+    ctx.fillStyle=isWinner?NAVY:WHITE;ctx.fillText(item.label,LX+12,y+27);
+    const pstr=`${item.pct}%`;ctx.fillStyle=isWinner?NAVY:CYAN;ctx.fillText(pstr,LX+MAXW-mw(ctx,pstr)-10,y+27);
+    y+=68;
+  }
+  if(src){setF(ctx,16,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';ctx.fillText(src,LX,H-56);}
+  drawWM(ctx);
+}
+
+// 17. COUNTDOWN
+function renderCountdown(canvas,opts){
+  const{event:'ev'='',date='',sub=''}=opts;
+  const ctx=setup(canvas);
+  let days=0;if(date){const d=new Date(date),now=new Date();days=Math.max(0,Math.ceil((d-now)/86400000));}
+  setF(ctx,170,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';
+  const ds=String(days),dw=mw(ctx,ds);ctx.fillText(ds,W/2-dw/2,580);
+  setF(ctx,36,600);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';
+  const dlbl='DNÍ DO',dlw=mw(ctx,dlbl);ctx.fillText(dlbl,W/2-dlw/2,650);
+  if(ev){const esz=autoSzMax(ctx,ev,3);setF(ctx,esz,700);ctx.textBaseline='alphabetic';let y=720;for(const ln of wrapT(ctx,ev)){const lw=mw(ctx,ln);ctx.fillStyle=WHITE;ctx.fillText(ln,W/2-lw/2,y+esz*.78);y+=leading(esz);}}
+  if(sub){setF(ctx,24,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';const sw=mw(ctx,sub);ctx.fillText(sub,W/2-sw/2,980);}
+  drawWM(ctx);
+}
+
+// 18. RANKING
+function renderRanking(canvas,opts){
+  const{title='',eyebrow='',cyanPhrases=[],items=[]}=opts;
+  const ctx=setup(canvas);const MEDALS=['🥇','🥈','🥉'];let y=100;
+  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=50;}
+  if(title){const tsz=autoSz(ctx,title,1,2);setF(ctx,tsz,700);ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,title)){colorLine(ctx,LX,y+tsz*.78,ln,cyanPhrases);y+=leading(tsz);}y+=28;}
+  const isz=28,ilead=68;
+  for(let i=0;i<items.length&&y<H-80;i++){
+    const item=items[i];
+    ctx.fillStyle=i%2===0?'rgba(19,32,69,.8)':'rgba(13,26,58,.5)';ctx.fillRect(LX-10,y-6,MAXW+20,ilead-2);
+    if(i<3){setF(ctx,28,700);ctx.textBaseline='middle';ctx.fillText(MEDALS[i],LX+4,y+isz*.5);}
+    else{ctx.fillStyle=MUTED;ctx.beginPath();ctx.arc(LX+14,y+isz*.5,14,0,Math.PI*2);ctx.fill();setF(ctx,15,700);ctx.fillStyle=WHITE;ctx.textBaseline='middle';ctx.fillText(String(i+1),LX+8,y+isz*.5);}
+    setF(ctx,isz,700);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';ctx.fillText(item.name,LX+42,y+isz*.82);
+    setF(ctx,22,700);ctx.fillStyle=CYAN;const vw=mw(ctx,item.val);ctx.fillText(item.val,LX+MAXW-vw-50,y+isz*.82);
+    if(item.chg){const up=item.chg.startsWith('+');setF(ctx,18,600);ctx.fillStyle=up?'#00A651':'#CC0000';ctx.fillText(item.chg,LX+MAXW-38,y+isz*.82);}
+    y+=ilead;
+  }
+  drawWM(ctx);
+}
+
+// 19. MYTH/FACT
+async function renderMythFact(canvas,opts){
+  const{eyebrow='',myth='',fact='',photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,.5,.75);
+  const mid=Math.max(f1+80,H*.48);
+  ctx.fillStyle='rgba(204,0,0,.1)';ctx.fillRect(0,f1,W,mid-f1);
+  if(eyebrow){drawEyebrow(ctx,LX,f1+44,eyebrow);}
+  setF(ctx,24,700);ctx.fillStyle='#CC0000';ctx.textBaseline='alphabetic';ctx.fillText('❌  MÝTUS',LX,f1+100);
+  const msz=autoSzMax(ctx,myth,3);setF(ctx,msz,700);ctx.textBaseline='alphabetic';
+  let my=f1+138;for(const ln of wrapT(ctx,myth)){ctx.fillStyle=WHITE;ctx.fillText(ln,LX,my+msz*.78);my+=leading(msz);}
+  ctx.fillStyle=CYAN;ctx.fillRect(0,mid-3,W,6);
+  ctx.fillStyle='rgba(0,166,81,.1)';ctx.fillRect(0,mid+3,W,H-mid-3);
+  setF(ctx,24,700);ctx.fillStyle='#00A651';ctx.textBaseline='alphabetic';ctx.fillText('✅  FAKT',LX,mid+58);
+  const fsz=autoSzMax(ctx,fact,3);setF(ctx,fsz,700);ctx.textBaseline='alphabetic';
+  let fy=mid+96;for(const ln of wrapT(ctx,fact)){ctx.fillStyle=WHITE;ctx.fillText(ln,LX,fy+fsz*.78);fy+=leading(fsz);}
+  drawWM(ctx);
+}
+
+// 20. PROMISE/REALITY
+async function renderPromiseReality(canvas,opts){
+  const{person='',promise='',reality='',cyanPhrases=[],fo0=.6,fo1=.85,photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  let y=f1+44;
+  if(person){setF(ctx,20,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';ctx.fillText(person,LX,y+20*.82);y+=38;}
+  const bw=MAXW+24,bx=LX-12;
+  ctx.fillStyle='rgba(92,225,230,.1)';ctx.fillRect(bx,y-8,bw,140);
+  setF(ctx,18,700);ctx.fillStyle=CYAN;ctx.textBaseline='alphabetic';ctx.fillText('🗣  SLIB:',LX,y+18*.82);y+=30;
+  const psz=autoSzMax(ctx,promise,3);setF(ctx,psz,600);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,promise)){ctx.fillStyle=WHITE;ctx.fillText(ln,LX,y+psz*.78);y+=leading(psz);}y+=30;
+  ctx.fillStyle='rgba(204,0,0,.1)';ctx.fillRect(bx,y-8,bw,140);
+  setF(ctx,18,700);ctx.fillStyle='#CC0000';ctx.textBaseline='alphabetic';ctx.fillText('😬  REALITA:',LX,y+18*.82);y+=30;
+  const rsz=autoSzMax(ctx,reality,3);setF(ctx,rsz,700);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,reality)){colorLine(ctx,LX,y+rsz*.78,ln,cyanPhrases);y+=leading(rsz);}
+  drawWM(ctx);
+}
+
+// 21. VS
+function renderVs(canvas,opts){
+  const{topic='',labA='A',labB='B',rows=[]}=opts;
+  const ctx=setup(canvas);
+  if(topic){setF(ctx,20,700);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';const tw=mw(ctx,topic);ctx.fillText(topic,W/2-tw/2,82);}
+  const colW=(MAXW/2)-10,ax=LX,bx=LX+colW+20;
+  setF(ctx,44,700);ctx.textBaseline='alphabetic';
+  ctx.fillStyle=CYAN;ctx.fillText(labA,ax+colW/2-mw(ctx,labA)/2,150);
+  ctx.fillStyle=WHITE;ctx.fillText(labB,bx+colW/2-mw(ctx,labB)/2,150);
+  ctx.strokeStyle=CYAN;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W/2,100);ctx.lineTo(W/2,H-80);ctx.stroke();
+  ctx.fillStyle=NAVY;ctx.fillRect(W/2-32,170,64,40);ctx.strokeStyle=CYAN;ctx.lineWidth=2;ctx.strokeRect(W/2-32,170,64,40);
+  setF(ctx,26,700);ctx.fillStyle=CYAN;ctx.textBaseline='middle';ctx.fillText('VS',W/2-mw(ctx,'VS')/2,190);
+  let y=230;const rowH=82;
+  for(const row of rows){
+    if(y+rowH>H-80)break;
+    ctx.fillStyle=y%164===82?'rgba(30,48,96,.4)':'rgba(19,32,69,.3)';ctx.fillRect(LX,y,MAXW,rowH);
+    setF(ctx,18,600);ctx.fillStyle=MUTED;ctx.textBaseline='middle';const lw=mw(ctx,row.label);ctx.fillText(row.label,W/2-lw/2,y+rowH*.32);
+    setF(ctx,30,700);ctx.textBaseline='middle';
+    ctx.fillStyle=CYAN;ctx.fillText(row.a,ax+colW/2-mw(ctx,row.a)/2,y+rowH*.7);
+    ctx.fillStyle=WHITE;ctx.fillText(row.b,bx+colW/2-mw(ctx,row.b)/2,y+rowH*.7);
+    y+=rowH;
+  }
+  drawWM(ctx);
+}
+
+// 22. PROFILE
+async function renderProfile(canvas,opts){
+  const{name='',role='',party='',facts=[],fo0=.45,fo1=.72,photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  let y=f1+40;
+  if(party){setF(ctx,15,700);ctx.textBaseline='alphabetic';const pw=mw(ctx,party)+20;ctx.fillStyle=CYAN;ctx.fillRect(LX,y,pw,28);ctx.fillStyle=NAVY;ctx.textBaseline='middle';ctx.fillText(party,LX+10,y+14);y+=42;}
+  if(name){setF(ctx,52,700);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';ctx.fillText(name,LX,y+52*.82);y+=66;}
+  if(role){setF(ctx,22,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,role)){ctx.fillText(ln,LX,y+22*.82);y+=30;}y+=20;}
+  ctx.fillStyle=CYAN;ctx.fillRect(LX,y,MAXW,2);y+=24;
+  for(const f of facts){if(!f||y>H-80)continue;ctx.fillStyle='rgba(92,225,230,.18)';ctx.fillRect(LX,y-2,6,36);setF(ctx,22,600);ctx.fillStyle=WHITE;ctx.textBaseline='alphabetic';ctx.fillText(f,LX+18,y+22*.82);y+=46;}
+  drawWM(ctx);
+}
+
+// 23. ANNOUNCEMENT
+async function renderAnnouncement(canvas,opts){
+  const{eyebrow='',event_name='',cyanPhrases=[],date='',loc='',fo0=.65,fo1=.9,photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  let y=f1+44;
+  if(eyebrow){drawEyebrow(ctx,LX,y,eyebrow);y+=50;}
+  const esz=autoSz(ctx,event_name||' ');setF(ctx,esz,700);ctx.textBaseline='alphabetic';
+  for(const ln of wrapT(ctx,event_name||' ')){colorLine(ctx,LX,y+esz*.78,ln,cyanPhrases);y+=leading(esz);}y+=28;
+  if(date){ctx.fillStyle='rgba(92,225,230,.18)';ctx.fillRect(LX,y,MAXW,52);setF(ctx,24,700);ctx.fillStyle=CYAN;ctx.textBaseline='middle';ctx.fillText('📅  '+date,LX+16,y+26);y+=66;}
+  if(loc){ctx.fillStyle='rgba(100,132,182,.18)';ctx.fillRect(LX,y,MAXW,52);setF(ctx,22,600);ctx.fillStyle=WHITE;ctx.textBaseline='middle';ctx.fillText('📍  '+loc,LX+16,y+26);}
+  drawWM(ctx);
+}
+
+// 24. REACTION
+async function renderReaction(canvas,opts){
+  const{situation='',emoji='😂',text='',cyanPhrases=[],fo0=.6,fo1=.88,photo=null}=opts;
+  const ctx=setup(canvas);let f1=await drawPhoto(ctx,photo,fo0,fo1);
+  let y=f1+44;
+  if(situation){setF(ctx,24,600);ctx.fillStyle=MUTED;ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,situation)){ctx.fillText(ln,LX,y+24*.82);y+=32;}y+=20;}
+  setF(ctx,110,700);ctx.textBaseline='middle';ctx.fillText(emoji||'😂',LX,y+55);y+=130;
+  if(text){const tsz=autoSz(ctx,text,1,3);setF(ctx,tsz,700);ctx.textBaseline='alphabetic';for(const ln of wrapT(ctx,text)){colorLine(ctx,LX,y+tsz*.78,ln,cyanPhrases);y+=leading(tsz);}}
+  drawWM(ctx);
+}
+
+// ── OPTS BUILDERS ─────────────────────────────────────────────────────────────
+function getInfoOpts(){return{headline:v('info-hl'),eyebrow:document.getElementById('info-eyebrow-on').checked?v('info-eyebrow'):'',cyanPhrases:parseCyan(v('info-cyan')),fo0:vn('info-fo0',.72),fo1:vn('info-fo1',.96),fontSize:vn('info-fs',0),yNudge:vn('info-yn',0),photo:S.photos['info']};}
+function getCitOpts(){return{quote:v('cit-q'),cyanPhrase:v('cit-cyan').trim(),authorName:v('cit-name'),authorRole:v('cit-role'),fo0:vn('cit-fo0',.6),fo1:vn('cit-fo1',.92),fontSize:vn('cit-fs',0),yNudge:vn('cit-yn',0),photo:S.photos['citation']};}
+function getDataOpts(){return{headline:v('data-hl'),eyebrow:v('data-eyebrow'),cyanPhrases:parseCyan(v('data-cyan')),chartType:document.getElementById('data-ct').value,chartData:getChartData(),footnote:v('data-fn'),fo0:vn('data-fo0',.55),fo1:vn('data-fo1',.85),yNudge:vn('data-yn',0),photo:S.photos['data']};}
+function getBrOpts(){return{headline:v('br-hl'),cyanPhrases:parseCyan(v('br-cyan')),ticker:v('br-ticker'),fo0:vn('br-fo0',.7),fo1:vn('br-fo1',.95),yNudge:vn('br-yn',0),photo:S.photos['breaking']};}
+function getStOpts(){return{eyebrow:v('st-eyebrow'),bigNum:v('st-num'),ctx_text:v('st-ctx'),cyanPhrases:parseCyan(v('st-cyan')),footnote:v('st-fn'),photo:S.photos['stat']};}
+function getVeOpts(){return{person:v('ve-person'),charge:v('ve-charge'),verdict:document.getElementById('ve-verdict').value,ctx_text:v('ve-ctx'),fo0:vn('ve-fo0',.65),fo1:vn('ve-fo1',.9),photo:S.photos['verdict']};}
+function getWaOpts(){return{headline:v('wa-hl'),cyanPhrases:parseCyan(v('wa-cyan')),items:getListItems('wa-rows'),src:v('wa-src')};}
+function getRoOpts(){return{person:v('ro-person'),quote:v('ro-quote'),text:v('ro-text'),cyanPhrases:parseCyan(v('ro-cyan')),fo0:vn('ro-fo0',.6),fo1:vn('ro-fo1',.9),photo:S.photos['roast']};}
+function getThOpts(){return{topic:v('th-topic'),hook:v('th-hook'),cyanPhrases:parseCyan(v('th-cyan')),cta:v('th-cta')||'→ Vlákno níže ↓'};}
+function getLiOpts(){return{title:v('li-title'),eyebrow:v('li-eyebrow'),cyanPhrases:parseCyan(v('li-cyan')),items:getListItems('li-rows'),photo:S.photos['listicle']};}
+function getCkOpts(){return{title:v('ck-title'),eyebrow:v('ck-eyebrow'),cyanPhrases:parseCyan(v('ck-cyan')),items:getCkItems('ck-rows')};}
+function getTlOpts(){return{title:v('tl-title'),cyanPhrases:parseCyan(v('tl-cyan')),events:getTlItems('tl-rows')};}
+function getFcOpts(){return{cat:v('fc-cat'),question:v('fc-q'),answer:v('fc-a')};}
+function getMaOpts(){return{statement:v('ma-stmt'),cyanPhrases:parseCyan(v('ma-cyan')),points:[v('ma-p1'),v('ma-p2'),v('ma-p3')].filter(Boolean)};}
+function getPlOpts(){return{question:v('pl-question'),items:getPollItems('pl-rows'),src:v('pl-src')};}
+function getCdOpts(){return{event:v('cd-event'),date:v('cd-date'),sub:v('cd-sub')};}
+function getRkOpts(){return{title:v('rk-title'),eyebrow:v('rk-eyebrow'),cyanPhrases:parseCyan(v('rk-cyan')),items:getRkItems('rk-rows')};}
+function getMfOpts(){return{eyebrow:v('mf-eyebrow'),myth:v('mf-myth'),fact:v('mf-fact'),photo:S.photos['mythFact']};}
+function getPrOpts(){return{person:v('pr-person'),promise:v('pr-promise'),reality:v('pr-reality'),cyanPhrases:parseCyan(v('pr-cyan')),photo:S.photos['promiseReality']};}
+function getVsOpts(){return{topic:v('vs-topic'),labA:v('vs-labA')||'A',labB:v('vs-labB')||'B',rows:getVsRows('vs-rows')};}
+function getPfOpts(){return{name:v('pf-name'),role:v('pf-role'),party:v('pf-party'),facts:[v('pf-f1'),v('pf-f2'),v('pf-f3')].filter(Boolean),fo0:.45,fo1:.72,photo:S.photos['profile']};}
+function getAnOpts(){return{eyebrow:v('an-eyebrow'),event_name:v('an-event'),cyanPhrases:parseCyan(v('an-cyan')),date:v('an-date'),loc:v('an-loc'),photo:S.photos['announcement']};}
+function getReOpts(){return{situation:v('re-sit'),emoji:v('re-emoji')||'😂',text:v('re-text'),cyanPhrases:parseCyan(v('re-cyan')),photo:S.photos['reaction']};}
+
+// ── EXPORT ────────────────────────────────────────────────────────────────────
 async function exportPost(){
-  const btn=document.getElementById('btn-exp');
-  btn.disabled=true; btn.textContent='⏳ Generuji…';
+  const btn=document.getElementById('btn-exp');btn.disabled=true;btn.textContent='⏳ Generuji…';
   try{
     if(S.type==='carousel'){
       for(let i=0;i<S.carousel.slides.length;i++){
@@ -931,66 +1282,49 @@ async function exportPost(){
         await dlCanvas(c,`slide_${String(i+1).padStart(2,'0')}.png`);
         await new Promise(r=>setTimeout(r,200));
       }
-    } else {
-      const c=document.createElement('canvas');
-      c.width=W; c.height=H;
-      await renderType(c);
-      await dlCanvas(c,S.type==='citation'?'citation.png':S.type==='data'?'data_post.png':S.type==='clean'?'clean_bg.png':'info_post.png');
+    }else{
+      const c=document.createElement('canvas');c.width=W;c.height=H;
+      await renderType(c);await dlCanvas(c,S.type+'_post.png');
     }
-    toast('Staženo!','success');
-  }catch(e){toast(e.message,'error');}
+    toast('Staženo!','ok');
+  }catch(e){toast(e.message,'err');}
   finally{btn.disabled=false;btn.textContent='⬇ Export PNG';}
 }
-
-function dlCanvas(canvas,name){
-  return new Promise(res=>{
-    canvas.toBlob(blob=>{
-      const u=URL.createObjectURL(blob),a=document.createElement('a');
-      a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);res();
-    },'image/png');
-  });
-}
+function dlCanvas(canvas,name){return new Promise(res=>{canvas.toBlob(blob=>{const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);res();},'image/png');});}
 
 // ── LIGHTBOX ──────────────────────────────────────────────────────────────────
-document.getElementById('main-canvas').addEventListener('click',()=>{
-  const mc=document.getElementById('main-canvas');
-  if(mc.style.display==='none')return;
-  const lb=document.getElementById('lb'),img=document.getElementById('lb-img');
-  img.src=mc.toDataURL('image/png');
-  lb.style.display='flex'; document.body.style.overflow='hidden';
+document.getElementById('mc').addEventListener('click',()=>{
+  const mc=document.getElementById('mc');if(mc.style.display==='none')return;
+  document.getElementById('lb-img').src=mc.toDataURL('image/png');
+  document.getElementById('lb').style.display='flex';document.body.style.overflow='hidden';
 });
 function closeLb(){document.getElementById('lb').style.display='none';document.body.style.overflow='';}
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
 
 // ── CAPTION ───────────────────────────────────────────────────────────────────
 document.getElementById('btn-cap').addEventListener('click',()=>{
-  const text=v('cap-text');
-  if(!text){toast('Vyplňte hlavní věty','error');return;}
+  const text=v('cap-text');if(!text){toast('Vyplňte hlavní věty','err');return;}
   const today=new Date().toLocaleDateString('cs-CZ');
   const src=v('cap-src'),tags=v('cap-tags');
-  const parts=[text,'','Zajímá mě váš názor, proto mi ho prosím napište do komentářů!','','👆Nezapomeňte mě sledovat pro váš větší přehled!'];
+  const parts=[text,'','Zajímá mě váš názor — napište ho do komentářů!','','👆 Sledujte @matejjankovic pro denní přehled.'];
   if(src)parts.push('',`Zdroj: ${src} · ${today}`);
   if(tags)parts.push('',tags);
-  document.getElementById('cap-out').textContent=parts.join('\n');
-  toast('Caption vygenerován','success');
+  document.getElementById('cap-out').textContent=parts.join('\n');toast('Caption vygenerován','ok');
 });
 document.getElementById('btn-cpcap').addEventListener('click',()=>{
   const t=document.getElementById('cap-out').textContent;
-  if(t.startsWith('Caption se zobrazí')){toast('Nejdřív vygenerujte caption','error');return;}
-  navigator.clipboard.writeText(t).then(()=>toast('Zkopírováno','success'));
+  if(t.startsWith('Caption se'))return;
+  navigator.clipboard.writeText(t).then(()=>toast('Zkopírováno','ok'));
 });
 
-// ── BUTTONS ───────────────────────────────────────────────────────────────────
+// ── BUTTONS / TOAST ───────────────────────────────────────────────────────────
 function initButtons(){
   document.getElementById('btn-exp').addEventListener('click',exportPost);
   document.getElementById('btn-ref').addEventListener('click',()=>{clearTimeout(S.deb);doRender();});
 }
-
-// ── TOAST ─────────────────────────────────────────────────────────────────────
 function toast(msg,type=''){
-  const c=document.getElementById('toasts');
-  const el=document.createElement('div'); el.className=`toast ${type}`; el.textContent=msg;
-  c.appendChild(el); setTimeout(()=>el.remove(),3200);
+  const c=document.getElementById('toasts'),el=document.createElement('div');
+  el.className=`toast ${type}`;el.textContent=msg;c.appendChild(el);setTimeout(()=>el.remove(),3200);
 }
 </script>
 </body>
