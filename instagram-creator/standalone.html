@@ -132,11 +132,99 @@ details[open].tech summary::before{transform:rotate(90deg)}
 #lb img{max-height:96vh;max-width:96vw;border-radius:6px;box-shadow:0 0 60px rgba(0,0,0,.9)}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .hidden{display:none!important}
+
+/* ── MOBILE ──────────────────────────────────────────────────────────────── */
+.mob-bar{display:none;background:var(--sf);border-top:1px solid var(--bd)}
+.mob-tab{flex:1;padding:10px 4px 8px;border:none;background:transparent;color:var(--mu);font-family:inherit;font-size:9px;font-weight:700;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;letter-spacing:.4px;transition:color .15s}
+.mob-tab .mi{font-size:19px;line-height:1}
+.mob-tab.active{color:var(--cy)}
+@media(max-width:700px){
+  html,body{overflow:auto}
+  .app{min-height:100dvh;padding-top:46px;padding-bottom:58px}
+  header{position:fixed;top:0;left:0;right:0;z-index:300;height:46px;padding:0 14px}
+  header h1{font-size:12px}
+  header .badge{display:none}
+  .workspace{flex-direction:column;overflow:visible;flex:none}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--bd);display:none;max-height:70vh;overflow:hidden}
+  .sidebar.mob-show{display:flex}
+  .preview-panel{flex:none}
+  .prev-tb{padding:6px 12px}
+  .prev-area{padding:10px}
+  .cap-panel{width:100%;border-left:none;border-top:1px solid var(--bd);display:none;max-height:55vh}
+  .cap-panel.mob-show{display:flex}
+  .mob-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:300}
+}
+
+/* ── PHOTO LIBRARY MODAL ─────────────────────────────────────────────────── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:8000;align-items:flex-end;justify-content:center;animation:fadeIn .18s}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--sf);border:1px solid var(--bd);border-radius:16px 16px 0 0;width:100%;max-width:680px;max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-head{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-head h2{font-size:13px;font-weight:700;color:var(--cy)}
+.modal-close{background:none;border:none;color:var(--mu);font-size:18px;cursor:pointer;padding:0 4px;line-height:1}
+.ph-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;padding:14px;overflow-y:auto;flex:1}
+.ph-thumb{position:relative;cursor:pointer;border-radius:var(--rs);overflow:hidden;aspect-ratio:4/5;border:2px solid transparent;transition:border-color .15s,transform .1s}
+.ph-thumb:hover{border-color:var(--cy);transform:scale(1.03)}
+.ph-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ph-thumb-name{position:absolute;bottom:0;left:0;right:0;padding:3px 4px;background:rgba(7,15,40,.8);font-size:8px;color:var(--mu);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-thumb-del{position:absolute;top:3px;right:3px;width:19px;height:19px;background:rgba(0,0,0,.75);border:none;color:white;border-radius:50%;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:1;transition:background .15s}
+.ph-thumb-del:hover{background:var(--er)}
+.ph-empty{padding:40px;text-align:center;color:var(--mu);font-size:13px;line-height:1.8}
+
+/* ── QUALITY SETTINGS DROPDOWN ───────────────────────────────────────────── */
+.qs-drop{position:absolute;top:calc(100% + 6px);right:0;background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px;min-width:230px;z-index:5000;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.qs-section{font-size:9px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.qs-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px}
+.qs-row:last-child{margin-bottom:0}
+.qs-lbl{font-size:11px;font-weight:600;color:var(--wh);white-space:nowrap}
+.qs-seg{display:flex;border:1px solid var(--bd);border-radius:var(--rs);overflow:hidden}
+.qs-seg button{background:none;border:none;color:var(--mu);padding:4px 9px;font-family:inherit;font-size:10px;font-weight:700;cursor:pointer;transition:all .15s}
+.qs-seg button.active{background:var(--cy);color:var(--bg)}
+.qs-q-wrap{display:none;margin-bottom:12px}
+.qs-q-wrap.show{display:flex;align-items:center;gap:6px}
+.qs-q-wrap input[type=range]{flex:1}
+.qs-q-wrap span{font-size:11px;font-weight:700;color:var(--cy);width:28px;text-align:right}
+.hdr-right{display:flex;align-items:center;gap:8px;position:relative}
+
+/* ── ARCHIVE BUTTON ON DROPZONE ──────────────────────────────────────────── */
+.dz-libBtn{position:absolute;bottom:5px;right:5px;background:rgba(7,15,40,.9);border:1px solid var(--bd);color:var(--mu);border-radius:var(--rs);font-size:9px;font-weight:700;padding:2px 6px;cursor:pointer;z-index:3;white-space:nowrap;transition:all .15s;line-height:1.6}
+.dz-libBtn:hover{color:var(--cy);border-color:var(--cy)}
+.dz.has-photo .dz-libBtn{display:none}
 </style>
 </head>
 <body>
 <div class="app">
-<header><h1>@matejjankovic · Post Creator v2</h1><span class="badge">1080 × 1350 px · 25 typů · Canvas · Offline</span></header>
+<header>
+  <h1>@matejjankovic · Post Creator v2</h1>
+  <div class="hdr-right">
+    <span class="badge">1080 × 1350 px · 25 typů</span>
+    <button class="btn btn-g" id="btn-qs" style="font-size:14px;padding:5px 10px" title="Nastavení kvality">⚙ Kvalita</button>
+    <div id="qs-drop" class="qs-drop hidden">
+      <div class="qs-section">Export formát</div>
+      <div class="qs-row">
+        <span class="qs-lbl">Formát</span>
+        <div class="qs-seg">
+          <button id="qs-png" class="active">PNG</button>
+          <button id="qs-jpg">JPEG</button>
+        </div>
+      </div>
+      <div class="qs-q-wrap" id="qs-quality-row">
+        <input type="range" id="qs-q" min="0.65" max="1" step="0.01" value="0.9">
+        <span id="v-qs-q">90%</span>
+      </div>
+      <div class="qs-section" style="margin-top:4px">Rozlišení exportu</div>
+      <div class="qs-row">
+        <span class="qs-lbl">Měřítko</span>
+        <div class="qs-seg">
+          <button id="qs-1x" class="active">1× std</button>
+          <button id="qs-2x">2× HD</button>
+          <button id="qs-3x">3× 4K</button>
+        </div>
+      </div>
+      <div style="font-size:9px;color:var(--mu);margin-top:4px">PNG 1× = 1080×1350 px · 2× = 2160×2700 px</div>
+    </div>
+  </div>
+</header>
 <div class="workspace">
 
 <!-- SIDEBAR -->
@@ -539,6 +627,27 @@ details[open].tech summary::before{transform:rotate(90deg)}
 
 </div></div><!-- end workspace / app -->
 
+<!-- MOBILE TAB BAR -->
+<nav class="mob-bar" id="mob-bar">
+  <button class="mob-tab active" data-tab="edit"><span class="mi">📝</span>EDITACE</button>
+  <button class="mob-tab" data-tab="prev"><span class="mi">🖼️</span>NÁHLED</button>
+  <button class="mob-tab" data-tab="cap"><span class="mi">📋</span>CAPTION</button>
+</nav>
+
+<!-- PHOTO LIBRARY MODAL -->
+<div id="ph-modal" class="modal-bg">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2>📚 Archiv fotek</h2>
+      <div style="display:flex;align-items:center;gap:10px">
+        <button class="btn btn-g" id="ph-clear-all" style="font-size:10px;padding:4px 10px">🗑 Vše smazat</button>
+        <button class="modal-close" id="ph-modal-close">✕</button>
+      </div>
+    </div>
+    <div class="ph-grid" id="ph-grid"></div>
+  </div>
+</div>
+
 <div class="toasts" id="toasts"></div>
 <div id="lb" onclick="closeLb()"><img id="lb-img" src="" alt=""></div>
 <script>
@@ -567,12 +676,14 @@ const TMETA={
 };
 const PCOLS=['#2255A4','#034D9B','#FF0000','#1C1C1C','#00A651','#FFD700','#971B2F','#FF6600','#6600CC'];
 
-const S={type:'info',cat:'hlavni',photos:{},carousel:{slides:[],cur:0},carCanvases:[],deb:null};
+const S={type:'info',cat:'hlavni',photos:{},carousel:{slides:[],cur:0},carCanvases:[],deb:null,
+  settings:{fmt:'png',jpegQ:0.9,scale:1}};
 
 window.addEventListener('load',async()=>{
   await document.fonts.load('700 80px Montserrat');
   await document.fonts.load('600 20px Montserrat');
   initCats();initDZ();initSliders();initCarousel();initChart();initItemLists();watchAll();initButtons();
+  initQS();initMobTabs();initPhLib();
   addSlide();redraw();
 });
 
@@ -615,6 +726,10 @@ function initDZ(){
     dz.addEventListener('dragleave',()=>dz.classList.remove('dragover'));
     dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('dragover');const f=e.dataTransfer?.files?.[0];if(f&&f.type.startsWith('image/'))loadPhoto(zone,f);});
     dz.querySelector('.ph-clear')?.addEventListener('click',e=>{e.stopPropagation();clearPhoto(zone);});
+    const lb=document.createElement('button');
+    lb.className='dz-libBtn';lb.textContent='📚 Archiv';
+    lb.addEventListener('click',e=>{e.stopPropagation();openPhLib(zone);});
+    dz.appendChild(lb);
   });
 }
 function loadPhoto(zone,file){
@@ -622,12 +737,13 @@ function loadPhoto(zone,file){
   const url=URL.createObjectURL(file),img=new Image();
   img.onload=()=>{
     S.photos[zone]=img;
+    addToLib(img,file.name);
     const dz=document.querySelector(`.dz[data-zone="${zone}"]`); if(!dz)return;
     dz.classList.add('has-photo');
     let pi=dz.querySelector('img.dz-pi');
     if(!pi){pi=document.createElement('img');pi.className='dz-pi';dz.insertBefore(pi,dz.firstChild);}
     pi.src=url;
-    dz.querySelectorAll('.dz-icon,.dz-lbl').forEach(x=>x.style.display='none');
+    dz.querySelectorAll('.dz-icon,.dz-lbl,.dz-libBtn').forEach(x=>x.style.display='none');
     redraw();
   };
   img.src=url;
@@ -637,7 +753,7 @@ function clearPhoto(zone){
   const dz=document.querySelector(`.dz[data-zone="${zone}"]`); if(!dz)return;
   dz.classList.remove('has-photo');
   const pi=dz.querySelector('img.dz-pi');if(pi)pi.remove();
-  dz.querySelectorAll('.dz-icon,.dz-lbl').forEach(x=>x.style.display='');
+  dz.querySelectorAll('.dz-icon,.dz-lbl,.dz-libBtn').forEach(x=>x.style.display='');
   dz.querySelector('.dz-inp')?.setAttribute('value','');
   redraw();
 }
@@ -860,7 +976,17 @@ function drawWM(ctx){setF(ctx,19,400);ctx.fillStyle=MUTED;const t='Matěj Jankov
 function drawArrows(ctx){const cy=675,sz=18,g=20;for(const ox of[-g,0,g]){const bx=1018+ox;ctx.beginPath();ctx.moveTo(bx-sz/2,cy-sz);ctx.lineTo(bx+sz/2,cy);ctx.lineTo(bx-sz/2,cy+sz);ctx.strokeStyle=BLACK;ctx.lineWidth=7;ctx.lineJoin='round';ctx.stroke();ctx.strokeStyle=WHITE;ctx.lineWidth=4;ctx.stroke();}}
 function doGrad(ctx,ph,fo0f,fo1f){const fo0=ph*fo0f,fo1=ph*fo1f;const g=ctx.createLinearGradient(0,fo0,0,fo1);for(let i=0;i<=20;i++){const t=i/20,a=t*t*(3-2*t);g.addColorStop(t,`rgba(${Nr},${Ng},${Nb},${a.toFixed(4)})`);}ctx.fillStyle=g;ctx.fillRect(0,fo0,W,fo1-fo0);ctx.fillStyle=NAVY;ctx.fillRect(0,fo1,W,H-fo1);}
 async function drawPhoto(ctx,img,fo0,fo1){if(!img)return Math.floor(H*.3);const sc=W/img.naturalWidth,ih=Math.round(img.naturalHeight*sc);const off=document.createElement('canvas');off.width=W;off.height=Math.min(ih,H);const oc=off.getContext('2d');oc.filter='contrast(1.12) saturate(1.06)';oc.drawImage(img,0,0,W,ih);ctx.drawImage(off,0,0);const ph=Math.min(ih,H);doGrad(ctx,ph,fo0,fo1);return Math.min(Math.floor(ph*fo1),H-200);}
-function showCanvas(c){const mc=document.getElementById('mc');if(c!==mc){mc.width=c.width;mc.height=c.height;mc.getContext('2d').drawImage(c,0,0);}mc.style.display='block';document.getElementById('pempty').style.display='none';const maxH=window.innerHeight-160;const scale=Math.min(maxH/H,1);mc.style.width=(W*scale)+'px';mc.style.height=(H*scale)+'px';}
+function showCanvas(c){
+  const mc=document.getElementById('mc');
+  if(c!==mc){mc.width=c.width;mc.height=c.height;mc.getContext('2d').drawImage(c,0,0);}
+  mc.style.display='block';
+  document.getElementById('pempty').style.display='none';
+  const area=document.querySelector('.prev-area');
+  const aw=area.clientWidth-28,ah=area.clientHeight-28;
+  const scale=Math.min(aw/W,ah/H,1);
+  mc.style.width=(W*scale)+'px';
+  mc.style.height=(H*scale)+'px';
+}
 function setLoading(on){document.getElementById('pload').style.display=on?'flex':'none';}
 function v(id){return document.getElementById(id)?.value?.trim()||'';}
 function vn(id,def=0){return parseFloat(document.getElementById(id)?.value)||def;}
@@ -1275,22 +1401,39 @@ function getReOpts(){return{situation:v('re-sit'),emoji:v('re-emoji')||'😂',te
 // ── EXPORT ────────────────────────────────────────────────────────────────────
 async function exportPost(){
   const btn=document.getElementById('btn-exp');btn.disabled=true;btn.textContent='⏳ Generuji…';
+  const {fmt,jpegQ,scale}=S.settings;
+  const mime=fmt==='jpg'?'image/jpeg':'image/png';
+  const qual=fmt==='jpg'?jpegQ:undefined;
+  const ext=fmt==='jpg'?'jpg':'png';
   try{
     if(S.type==='carousel'){
       for(let i=0;i<S.carousel.slides.length;i++){
         const c=S.carCanvases[i];if(!c)continue;
-        await dlCanvas(c,`slide_${String(i+1).padStart(2,'0')}.png`);
+        await dlCanvas(c,`slide_${String(i+1).padStart(2,'0')}.${ext}`,scale,mime,qual);
         await new Promise(r=>setTimeout(r,200));
       }
     }else{
       const c=document.createElement('canvas');c.width=W;c.height=H;
-      await renderType(c);await dlCanvas(c,S.type+'_post.png');
+      await renderType(c);await dlCanvas(c,S.type+'_post.'+ext,scale,mime,qual);
     }
-    toast('Staženo!','ok');
+    const label=scale>1?` (${scale}×)`:'';toast(`Staženo${label}!`,'ok');
   }catch(e){toast(e.message,'err');}
-  finally{btn.disabled=false;btn.textContent='⬇ Export PNG';}
+  finally{btn.disabled=false;btn.textContent='⬇ Export';}
 }
-function dlCanvas(canvas,name){return new Promise(res=>{canvas.toBlob(blob=>{const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);res();},'image/png');});}
+function dlCanvas(canvas,name,scale=1,mime='image/png',qual=undefined){
+  return new Promise(res=>{
+    let ec=canvas;
+    if(scale>1){
+      ec=document.createElement('canvas');
+      ec.width=canvas.width*scale;ec.height=canvas.height*scale;
+      ec.getContext('2d').drawImage(canvas,0,0,ec.width,ec.height);
+    }
+    ec.toBlob(blob=>{
+      const u=URL.createObjectURL(blob),a=document.createElement('a');
+      a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);res();
+    },mime,qual);
+  });
+}
 
 // ── LIGHTBOX ──────────────────────────────────────────────────────────────────
 document.getElementById('mc').addEventListener('click',()=>{
@@ -1325,6 +1468,139 @@ function initButtons(){
 function toast(msg,type=''){
   const c=document.getElementById('toasts'),el=document.createElement('div');
   el.className=`toast ${type}`;el.textContent=msg;c.appendChild(el);setTimeout(()=>el.remove(),3200);
+}
+
+// ── QUALITY SETTINGS ──────────────────────────────────────────────────────────
+function initQS(){
+  const drop=document.getElementById('qs-drop');
+  const btn=document.getElementById('btn-qs');
+  btn.addEventListener('click',e=>{e.stopPropagation();drop.classList.toggle('hidden');});
+  document.addEventListener('click',()=>drop.classList.add('hidden'));
+  drop.addEventListener('click',e=>e.stopPropagation());
+  function setFmt(f){
+    S.settings.fmt=f;
+    document.getElementById('qs-png').classList.toggle('active',f==='png');
+    document.getElementById('qs-jpg').classList.toggle('active',f==='jpg');
+    document.getElementById('qs-quality-row').classList.toggle('show',f==='jpg');
+  }
+  document.getElementById('qs-png').addEventListener('click',()=>setFmt('png'));
+  document.getElementById('qs-jpg').addEventListener('click',()=>setFmt('jpg'));
+  const qSlider=document.getElementById('qs-q'),qVal=document.getElementById('v-qs-q');
+  qSlider.addEventListener('input',()=>{
+    S.settings.jpegQ=parseFloat(qSlider.value);
+    qVal.textContent=Math.round(qSlider.value*100)+'%';
+  });
+  [1,2,3].forEach(sc=>{
+    document.getElementById('qs-'+sc+'x').addEventListener('click',()=>{
+      S.settings.scale=sc;
+      [1,2,3].forEach(x=>document.getElementById('qs-'+x+'x').classList.toggle('active',x===sc));
+    });
+  });
+}
+
+// ── MOBILE TABS ───────────────────────────────────────────────────────────────
+function initMobTabs(){
+  document.querySelectorAll('.mob-tab').forEach(t=>{
+    t.addEventListener('click',()=>switchMobTab(t.dataset.tab));
+  });
+}
+function switchMobTab(tab){
+  document.querySelectorAll('.mob-tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
+  document.querySelector('.sidebar').classList.toggle('mob-show',tab==='edit');
+  document.querySelector('.cap-panel').classList.toggle('mob-show',tab==='cap');
+  if(tab==='prev'){setTimeout(()=>{clearTimeout(S.deb);doRender();},80);}
+}
+
+// ── PHOTO LIBRARY ─────────────────────────────────────────────────────────────
+const PH_KEY='phlib_v1',PH_MAX=20;
+function loadLib(){try{return JSON.parse(localStorage.getItem(PH_KEY)||'[]');}catch{return[];}}
+function saveLib(lib){try{localStorage.setItem(PH_KEY,JSON.stringify(lib));}catch(e){
+  // if full, drop oldest half and retry
+  const l2=lib.slice(0,Math.floor(lib.length/2));
+  try{localStorage.setItem(PH_KEY,JSON.stringify(l2));}catch{}
+  toast('Archiv plný – smazány starší fotky','err');
+}}
+
+function addToLib(img,name){
+  try{
+    const lib=loadLib();
+    // compress to JPEG at ≤540px wide
+    const sc=Math.min(540/img.naturalWidth,1);
+    const fw=Math.round(img.naturalWidth*sc),fh=Math.round(img.naturalHeight*sc);
+    const fc=document.createElement('canvas');fc.width=fw;fc.height=fh;
+    fc.getContext('2d').drawImage(img,0,0,fw,fh);
+    const full=fc.toDataURL('image/jpeg',0.82);
+    // thumbnail cover-crop 108×135
+    const tc=document.createElement('canvas');tc.width=108;tc.height=135;
+    const tx=tc.getContext('2d');
+    const tr=Math.max(108/img.naturalWidth,135/img.naturalHeight);
+    const tw=img.naturalWidth*tr,th=img.naturalHeight*tr;
+    tx.drawImage(img,(108-tw)/2,(135-th)/2,tw,th);
+    const thumb=tc.toDataURL('image/jpeg',0.75);
+    const cleanName=(name||'foto').replace(/\.[^.]+$/,'');
+    const id=Date.now();
+    // don't add duplicates of same size in quick succession
+    if(lib[0]&&lib[0].full===full)return;
+    lib.unshift({id,name:cleanName,date:new Date().toLocaleDateString('cs-CZ'),thumb,full});
+    if(lib.length>PH_MAX)lib.length=PH_MAX;
+    saveLib(lib);
+  }catch(e){console.warn('addToLib failed',e);}
+}
+
+let _phZone='';
+function openPhLib(zone){
+  _phZone=zone;
+  const lib=loadLib();
+  const grid=document.getElementById('ph-grid');
+  if(!lib.length){
+    grid.innerHTML='<div class="ph-empty">Archiv je prázdný.<br>Nahrajte fotku přes dropzónu a automaticky se sem uloží.</div>';
+  }else{
+    grid.innerHTML=lib.map(it=>`
+      <div class="ph-thumb" data-id="${it.id}">
+        <img src="${it.thumb}" alt="${it.name}" loading="lazy">
+        <div class="ph-thumb-name">${it.name}</div>
+        <button class="ph-thumb-del" data-id="${it.id}" title="Smazat z archivu">✕</button>
+      </div>`).join('');
+    grid.querySelectorAll('.ph-thumb img').forEach(img=>{
+      img.addEventListener('click',()=>{
+        const id=parseInt(img.closest('.ph-thumb').dataset.id);
+        const item=loadLib().find(x=>x.id===id);
+        if(item)pickFromLib(_phZone,item);
+      });
+    });
+    grid.querySelectorAll('.ph-thumb-del').forEach(btn=>{
+      btn.addEventListener('click',e=>{
+        e.stopPropagation();
+        const id=parseInt(btn.dataset.id);
+        saveLib(loadLib().filter(x=>x.id!==id));
+        openPhLib(_phZone);
+      });
+    });
+  }
+  document.getElementById('ph-modal').classList.add('open');
+}
+function closePhLib(){document.getElementById('ph-modal').classList.remove('open');}
+function pickFromLib(zone,item){
+  const img=new Image();
+  img.onload=()=>{
+    S.photos[zone]=img;
+    const dz=document.querySelector(`.dz[data-zone="${zone}"]`);if(!dz)return;
+    dz.classList.add('has-photo');
+    let pi=dz.querySelector('img.dz-pi');
+    if(!pi){pi=document.createElement('img');pi.className='dz-pi';dz.insertBefore(pi,dz.firstChild);}
+    pi.src=item.thumb;
+    dz.querySelectorAll('.dz-icon,.dz-lbl,.dz-libBtn').forEach(x=>x.style.display='none');
+    closePhLib();redraw();toast('Foto načteno z archivu','ok');
+  };
+  img.src=item.full;
+}
+function initPhLib(){
+  document.getElementById('ph-modal-close').addEventListener('click',closePhLib);
+  document.getElementById('ph-modal').addEventListener('click',e=>{if(e.target===e.currentTarget)closePhLib();});
+  document.getElementById('ph-clear-all').addEventListener('click',()=>{
+    if(!confirm('Smazat celý archiv fotek?'))return;
+    localStorage.removeItem(PH_KEY);openPhLib(_phZone);
+  });
 }
 </script>
 </body>
