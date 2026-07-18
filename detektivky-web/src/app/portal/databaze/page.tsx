@@ -16,7 +16,7 @@ export default async function DatabazePage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h2 className="text-xl font-semibold text-amber-500">
+      <h2 className="text-xl font-semibold text-accent">
         Databáze osob v případu
       </h2>
       <PersonSearch persons={persons} />

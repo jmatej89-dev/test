@@ -10,6 +10,7 @@ const TABS = [
   { href: "/portal/odposlechy", label: "Odposlechy" },
   { href: "/portal/emaily", label: "E-maily" },
   { href: "/portal/databaze", label: "Databáze osob" },
+  { href: "/portal/casova-osa", label: "Časová osa" },
   { href: "/portal/reseni", label: "Řešení" },
 ];
 
@@ -17,7 +18,7 @@ export function PortalNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="flex flex-wrap items-center gap-1 border-b border-neutral-800 px-4 py-2">
+    <nav className="flex flex-wrap items-center gap-1 border-b border-line px-4 py-2">
       {TABS.map((tab) => {
         const active = pathname === tab.href;
         return (
@@ -26,8 +27,8 @@ export function PortalNav() {
             href={tab.href}
             className={`rounded px-3 py-1.5 text-sm transition ${
               active
-                ? "bg-amber-600 text-neutral-950 font-medium"
-                : "text-neutral-400 hover:bg-neutral-800 hover:text-neutral-100"
+                ? "bg-white text-navy-950 font-medium"
+                : "text-ink-muted hover:bg-navy-800 hover:text-white"
             }`}
           >
             {tab.label}
@@ -37,7 +38,7 @@ export function PortalNav() {
       <form action={logout} className="ml-auto">
         <button
           type="submit"
-          className="rounded px-3 py-1.5 text-sm text-neutral-500 hover:bg-neutral-800 hover:text-neutral-100"
+          className="rounded px-3 py-1.5 text-sm text-ink-faint hover:bg-navy-800 hover:text-white"
         >
           Odhlásit se
         </button>

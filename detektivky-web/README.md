@@ -10,6 +10,12 @@ Tailwind CSS v4. Žádná externí auth služba — přihlašování je vlastní
 šité na míru modelu "jméno a heslo na krabici", postavené podle
 [doporučeného vzoru Next.js pro autentizaci](https://nextjs.org/docs/app/guides/authentication).
 
+Vizuální styl: tmavě modré pozadí, ostře bílý text, jeden modrý akcent
+(žádná barevná paleta navíc) — tokeny jsou v `src/app/globals.css`
+(`--color-navy-*`, `--color-ink*`, `--color-accent`, `--color-success`,
+`--color-danger`) a používají se jako Tailwind utility (`bg-navy-950`,
+`text-accent`, …).
+
 ## Jak to běží
 
 ```
@@ -22,13 +28,17 @@ src/
       dukazy/                fotky, dokumenty, poznámky
       odposlechy/             audio + přepisy
       emaily/                 zachycená komunikace
-      databaze/               vyhledávání v osobách (client-side filtr)
+      databaze/               databáze osob (adresa, alibi, vztahy, výpověď) —
+                              client-side vyhledávání napříč všemi poli
+      casova-osa/              časová osa případu (kdo, kde, kdy — pro
+                              odhalování rozporů v alibi)
       reseni/                 podání obvinění, historie pokusů
     admin/
       prihlaseni/             přihlášení administrátora
       (protected)/            dashboard: případy, generování krabic
-        pripady/[caseId]/      správa obsahu případu — osoby (vč. pachatele),
-                                důkazy, odposlechy, e-maily (create/edit/delete)
+        pripady/[caseId]/      správa obsahu případu — osoby (vč. pachatele
+                                a vyšetřovacích údajů), důkazy, odposlechy,
+                                e-maily, časová osa (create/edit/delete)
     actions/                 Server Actions (přihlášení, obvinění, admin)
   lib/
     session.ts               šifrované session cookies (jose, JWE)

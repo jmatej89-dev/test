@@ -8,6 +8,7 @@ import { PersonsManager } from "./PersonsManager";
 import { DocumentsManager } from "./DocumentsManager";
 import { WiretapsManager } from "./WiretapsManager";
 import { EmailsManager } from "./EmailsManager";
+import { TimelineManager } from "./TimelineManager";
 
 export const metadata: Metadata = {
   title: "Případ — Detektivky.cz administrace",
@@ -28,6 +29,7 @@ export default async function CaseDetailPage({
       documents: { orderBy: { sortOrder: "asc" } },
       wiretaps: { orderBy: { sortOrder: "asc" } },
       emails: { orderBy: { sortOrder: "asc" } },
+      timelineEvents: { orderBy: { sortOrder: "asc" } },
       _count: { select: { boxes: true } },
     },
   });
@@ -39,25 +41,25 @@ export default async function CaseDetailPage({
   return (
     <div className="mx-auto max-w-3xl space-y-10">
       <div>
-        <Link href="/admin" className="text-sm text-neutral-500 hover:text-neutral-300">
+        <Link href="/admin" className="text-sm text-ink-faint hover:text-white">
           ← Zpět na přehled
         </Link>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="text-xl font-semibold text-amber-500">{record.title}</h1>
-            <p className="text-sm text-neutral-500">
+            <h1 className="text-xl font-semibold text-accent">{record.title}</h1>
+            <p className="text-sm text-ink-faint">
               /{record.slug} · {record._count.boxes} krabic ·{" "}
               {record.isPublished ? (
-                <span className="text-green-400">publikováno</span>
+                <span className="text-success">publikováno</span>
               ) : (
-                <span className="text-neutral-500">koncept</span>
+                <span className="text-ink-faint">koncept</span>
               )}
             </p>
           </div>
           <form action={togglePublishCase.bind(null, record.id)}>
             <button
               type="submit"
-              className="rounded border border-neutral-700 px-3 py-1.5 text-sm hover:border-amber-500 hover:text-amber-500"
+              className="rounded border border-line px-3 py-1.5 text-sm hover:border-accent hover:text-accent"
             >
               {record.isPublished ? "Skrýt případ" : "Publikovat případ"}
             </button>
@@ -66,36 +68,43 @@ export default async function CaseDetailPage({
       </div>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">Základní údaje</h2>
+        <h2 className="mb-3 text-lg font-semibold text-accent">Základní údaje</h2>
         <CaseEditForm record={record} />
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">
+        <h2 className="mb-3 text-lg font-semibold text-accent">
           Osoby ({record.persons.length})
         </h2>
         <PersonsManager caseId={record.id} persons={record.persons} />
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">
+        <h2 className="mb-3 text-lg font-semibold text-accent">
           Důkazy ({record.documents.length})
         </h2>
         <DocumentsManager caseId={record.id} documents={record.documents} />
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">
+        <h2 className="mb-3 text-lg font-semibold text-accent">
           Odposlechy ({record.wiretaps.length})
         </h2>
         <WiretapsManager caseId={record.id} wiretaps={record.wiretaps} />
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">
+        <h2 className="mb-3 text-lg font-semibold text-accent">
           E-maily ({record.emails.length})
         </h2>
         <EmailsManager caseId={record.id} emails={record.emails} persons={personOptions} />
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-lg font-semibold text-accent">
+          Časová osa ({record.timelineEvents.length})
+        </h2>
+        <TimelineManager caseId={record.id} events={record.timelineEvents} />
       </section>
     </div>
   );

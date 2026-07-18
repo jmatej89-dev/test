@@ -11,12 +11,12 @@ export default function AdminLoginPage() {
     <main className="flex flex-1 items-center justify-center px-4 py-16">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
-          <p className="font-mono text-sm tracking-widest text-neutral-500 uppercase">
+          <p className="font-mono text-sm tracking-widest text-ink-faint uppercase">
             Detektivky.cz
           </p>
           <h1 className="mt-2 text-2xl font-semibold">Administrace</h1>
         </div>
-        <div className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-6">
+        <div className="rounded-lg border border-line bg-navy-900/60 p-6">
           <AdminLoginForm />
         </div>
       </div>

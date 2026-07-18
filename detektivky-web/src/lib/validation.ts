@@ -55,6 +55,10 @@ export const personSchema = z.object({
   occupation: z.string().max(200).optional(),
   bio: z.string().trim().min(1).max(3000),
   photoUrl: z.string().trim().max(500).optional(),
+  address: z.string().max(300).optional(),
+  relationship: z.string().max(300).optional(),
+  alibi: z.string().max(2000).optional(),
+  statement: z.string().max(3000).optional(),
   isCulprit: z.coerce.boolean().default(false),
   sortOrder: z.coerce.number().int().default(0),
 });
@@ -105,4 +109,18 @@ export const emailSchema = z.object({
 
 export const updateEmailSchema = emailSchema.extend({
   emailId: z.string().min(1),
+});
+
+export const timelineEventSchema = z.object({
+  caseId: z.string().min(1),
+  timeLabel: z.string().trim().min(1).max(100),
+  title: z.string().trim().min(1).max(200),
+  description: z.string().max(2000).optional(),
+  locationLabel: z.string().max(200).optional(),
+  involvedLabel: z.string().max(300).optional(),
+  sortOrder: z.coerce.number().int().default(0),
+});
+
+export const updateTimelineEventSchema = timelineEventSchema.extend({
+  timelineEventId: z.string().min(1),
 });

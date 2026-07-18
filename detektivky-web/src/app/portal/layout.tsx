@@ -10,8 +10,8 @@ export default async function PortalLayout({
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <header className="border-b border-neutral-800 px-4 py-3">
-        <p className="font-mono text-xs tracking-widest text-amber-500 uppercase">
+      <header className="border-b border-line px-4 py-3">
+        <p className="font-mono text-xs tracking-widest text-accent uppercase">
           Detektivky.cz — případ
         </p>
         <h1 className="text-lg font-semibold">{box.case.title}</h1>

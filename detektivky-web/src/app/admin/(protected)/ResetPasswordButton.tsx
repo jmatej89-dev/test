@@ -9,7 +9,7 @@ export function ResetPasswordButton({ boxId }: { boxId: string }) {
 
   if (result) {
     return (
-      <span className="font-mono text-xs text-amber-400">
+      <span className="font-mono text-xs text-accent">
         Nové heslo: {result}
       </span>
     );
@@ -26,7 +26,7 @@ export function ResetPasswordButton({ boxId }: { boxId: string }) {
           setResult("password" in res ? res.password : `Chyba: ${res.error}`);
         });
       }}
-      className="text-xs text-neutral-500 hover:text-neutral-200 disabled:opacity-60"
+      className="text-xs text-ink-faint hover:text-white disabled:opacity-60"
     >
       {isPending ? "…" : "Reset hesla"}
     </button>

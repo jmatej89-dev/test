@@ -2,30 +2,30 @@
 
 import { useActionState, useEffect } from "react";
 import {
-  createWiretap,
-  updateWiretap,
+  createTimelineEvent,
+  updateTimelineEvent,
   type ContentFormState,
 } from "@/app/actions/admin-content";
 
-export type WiretapRecord = {
+export type TimelineEventRecord = {
   id: string;
+  timeLabel: string;
   title: string;
-  audioUrl: string;
-  transcript: string | null;
-  participants: string | null;
-  dateLabel: string | null;
+  description: string | null;
+  locationLabel: string | null;
+  involvedLabel: string | null;
 };
 
-export function WiretapForm({
+export function TimelineEventForm({
   caseId,
-  wiretap,
+  event,
   onDone,
 }: {
   caseId: string;
-  wiretap?: WiretapRecord;
+  event?: TimelineEventRecord;
   onDone?: () => void;
 }) {
-  const action = wiretap ? updateWiretap : createWiretap;
+  const action = event ? updateTimelineEvent : createTimelineEvent;
   const [state, formAction, pending] = useActionState<
     ContentFormState,
     FormData
@@ -39,61 +39,62 @@ export function WiretapForm({
   return (
     <form action={formAction} className="flex flex-col gap-3">
       <input type="hidden" name="caseId" value={caseId} />
-      {wiretap && <input type="hidden" name="wiretapId" value={wiretap.id} />}
+      {event && (
+        <input type="hidden" name="timelineEventId" value={event.id} />
+      )}
 
-      <div className="flex flex-col gap-1">
-        <label className="text-xs text-ink-muted">Název</label>
-        <input
-          name="title"
-          required
-          defaultValue={wiretap?.title}
-          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
-        />
-      </div>
-
-      <div className="flex flex-col gap-1">
-        <label className="text-xs text-ink-muted">
-          URL audio souboru (musí být na stejné doméně kvůli CSP)
-        </label>
-        <input
-          name="audioUrl"
-          required
-          defaultValue={wiretap?.audioUrl}
-          placeholder="/audio/soubor.mp3"
-          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
-        />
+      <div className="grid gap-3 sm:grid-cols-[8rem_1fr]">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-ink-muted">Čas</label>
+          <input
+            name="timeLabel"
+            required
+            placeholder="22:00"
+            defaultValue={event?.timeLabel}
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-ink-muted">Událost</label>
+          <input
+            name="title"
+            required
+            defaultValue={event?.title}
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
+          />
+        </div>
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="flex flex-col gap-1">
           <label className="text-xs text-ink-muted">
-            Účastníci (nepovinné)
+            Místo (nepovinné)
           </label>
           <input
-            name="participants"
-            defaultValue={wiretap?.participants ?? ""}
+            name="locationLabel"
+            defaultValue={event?.locationLabel ?? ""}
             className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
           />
         </div>
         <div className="flex flex-col gap-1">
           <label className="text-xs text-ink-muted">
-            Datum/čas popisek (nepovinné)
+            Zúčastněné osoby (nepovinné)
           </label>
           <input
-            name="dateLabel"
-            defaultValue={wiretap?.dateLabel ?? ""}
+            name="involvedLabel"
+            defaultValue={event?.involvedLabel ?? ""}
             className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
           />
         </div>
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-ink-muted">Přepis (nepovinné)</label>
+        <label className="text-xs text-ink-muted">Popis (nepovinné)</label>
         <textarea
-          name="transcript"
-          rows={4}
-          defaultValue={wiretap?.transcript ?? ""}
-          className="rounded border border-line bg-navy-900 px-2 py-1.5 font-mono text-sm focus:border-accent focus:outline-none"
+          name="description"
+          rows={2}
+          defaultValue={event?.description ?? ""}
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
         />
       </div>
 
@@ -105,7 +106,7 @@ export function WiretapForm({
           disabled={pending}
           className="rounded bg-white px-3 py-1.5 text-sm font-semibold text-navy-950 hover:bg-white/90 disabled:opacity-60"
         >
-          {pending ? "Ukládám…" : wiretap ? "Uložit změny" : "Přidat odposlech"}
+          {pending ? "Ukládám…" : event ? "Uložit změny" : "Přidat událost"}
         </button>
         {onDone && (
           <button

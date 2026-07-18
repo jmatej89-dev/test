@@ -13,6 +13,8 @@ import {
   updateWiretapSchema,
   emailSchema,
   updateEmailSchema,
+  timelineEventSchema,
+  updateTimelineEventSchema,
 } from "@/lib/validation";
 
 export type ContentFormState = { error?: string; ok?: boolean } | undefined;
@@ -45,6 +47,10 @@ export async function createPerson(
     occupation: str(formData, "occupation"),
     bio: formData.get("bio"),
     photoUrl: str(formData, "photoUrl"),
+    address: str(formData, "address"),
+    relationship: str(formData, "relationship"),
+    alibi: str(formData, "alibi"),
+    statement: str(formData, "statement"),
     isCulprit: formData.get("isCulprit") === "on",
     sortOrder: formData.get("sortOrder") || 0,
   });
@@ -74,6 +80,10 @@ export async function updatePerson(
     occupation: str(formData, "occupation"),
     bio: formData.get("bio"),
     photoUrl: str(formData, "photoUrl"),
+    address: str(formData, "address"),
+    relationship: str(formData, "relationship"),
+    alibi: str(formData, "alibi"),
+    statement: str(formData, "statement"),
     isCulprit: formData.get("isCulprit") === "on",
     sortOrder: formData.get("sortOrder") || 0,
   });
@@ -287,5 +297,75 @@ export async function deleteEmail(caseId: string, emailId: string): Promise<void
   const admin = await getAuthorizedAdmin();
   await prisma.email.delete({ where: { id: emailId } });
   await logAudit("admin", admin.id, "email_deleted", { emailId });
+  revalidatePath(`/admin/pripady/${caseId}`);
+}
+
+// ---- Timeline event -----------------------------------------------------
+
+export async function createTimelineEvent(
+  _prevState: ContentFormState,
+  formData: FormData,
+): Promise<ContentFormState> {
+  const admin = await getAuthorizedAdmin();
+  const caseId = String(formData.get("caseId") ?? "");
+  await assertCaseExists(caseId);
+
+  const parsed = timelineEventSchema.safeParse({
+    caseId,
+    timeLabel: formData.get("timeLabel"),
+    title: formData.get("title"),
+    description: str(formData, "description"),
+    locationLabel: str(formData, "locationLabel"),
+    involvedLabel: str(formData, "involvedLabel"),
+    sortOrder: formData.get("sortOrder") || 0,
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Neplatná data." };
+  }
+
+  const created = await prisma.timelineEvent.create({ data: parsed.data });
+  await logAudit("admin", admin.id, "timeline_event_created", {
+    timelineEventId: created.id,
+  });
+  revalidatePath(`/admin/pripady/${caseId}`);
+  return { ok: true };
+}
+
+export async function updateTimelineEvent(
+  _prevState: ContentFormState,
+  formData: FormData,
+): Promise<ContentFormState> {
+  const admin = await getAuthorizedAdmin();
+  const caseId = String(formData.get("caseId") ?? "");
+  await assertCaseExists(caseId);
+
+  const parsed = updateTimelineEventSchema.safeParse({
+    timelineEventId: formData.get("timelineEventId"),
+    caseId,
+    timeLabel: formData.get("timeLabel"),
+    title: formData.get("title"),
+    description: str(formData, "description"),
+    locationLabel: str(formData, "locationLabel"),
+    involvedLabel: str(formData, "involvedLabel"),
+    sortOrder: formData.get("sortOrder") || 0,
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Neplatná data." };
+  }
+  const { timelineEventId, ...data } = parsed.data;
+
+  await prisma.timelineEvent.update({ where: { id: timelineEventId }, data });
+  await logAudit("admin", admin.id, "timeline_event_updated", { timelineEventId });
+  revalidatePath(`/admin/pripady/${caseId}`);
+  return { ok: true };
+}
+
+export async function deleteTimelineEvent(
+  caseId: string,
+  timelineEventId: string,
+): Promise<void> {
+  const admin = await getAuthorizedAdmin();
+  await prisma.timelineEvent.delete({ where: { id: timelineEventId } });
+  await logAudit("admin", admin.id, "timeline_event_deleted", { timelineEventId });
   revalidatePath(`/admin/pripady/${caseId}`);
 }

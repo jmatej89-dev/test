@@ -26,17 +26,17 @@ export default async function ReseniPage() {
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <div>
-        <h2 className="text-xl font-semibold text-amber-500">
+        <h2 className="text-xl font-semibold text-accent">
           Kdo je pachatel?
         </h2>
-        <p className="mt-1 text-sm text-neutral-400">
+        <p className="mt-1 text-sm text-ink-muted">
           Až budete mít jasno, vyberte podezřelého a odešlete své obvinění.
           Počet pokusů není omezen.
         </p>
       </div>
 
       {alreadySolved ? (
-        <div className="rounded-lg border border-green-800 bg-green-950/40 p-6">
+        <div className="rounded-lg border border-success/40 bg-success-bg p-6">
           <p className="text-lg font-semibold">
             Případ je již vyřešen — gratulujeme!
           </p>
@@ -47,14 +47,14 @@ export default async function ReseniPage() {
 
       {history.length > 0 && (
         <div>
-          <h3 className="mb-2 text-sm font-semibold text-neutral-400">
+          <h3 className="mb-2 text-sm font-semibold text-ink-muted">
             Historie pokusů
           </h3>
           <ul className="space-y-1 text-sm">
             {history.map((h) => (
               <li
                 key={h.id}
-                className={h.isCorrect ? "text-green-400" : "text-neutral-500"}
+                className={h.isCorrect ? "text-success" : "text-ink-faint"}
               >
                 {new Date(h.submittedAt).toLocaleString("cs-CZ")} —{" "}
                 {h.suspectedPerson.name} —{" "}

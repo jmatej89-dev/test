@@ -20,23 +20,23 @@ export function WiretapsManager({
         editingId === w.id ? (
           <div
             key={w.id}
-            className="rounded-lg border border-amber-800 bg-neutral-900/50 p-4"
+            className="rounded-lg border border-accent bg-navy-900/60 p-4"
           >
             <WiretapForm caseId={caseId} wiretap={w} onDone={() => setEditingId(null)} />
           </div>
         ) : (
           <div
             key={w.id}
-            className="flex items-start justify-between gap-3 rounded-lg border border-neutral-800 bg-neutral-900/50 p-4"
+            className="flex items-start justify-between gap-3 rounded-lg border border-line bg-navy-900/60 p-4"
           >
             <div>
               <span className="font-medium">{w.title}</span>
-              <p className="mt-1 text-sm text-neutral-500">
+              <p className="mt-1 text-sm text-ink-faint">
                 {w.audioUrl}
                 {w.dateLabel ? ` · ${w.dateLabel}` : ""}
               </p>
               {w.participants && (
-                <p className="mt-1 text-sm text-neutral-500">{w.participants}</p>
+                <p className="mt-1 text-sm text-ink-faint">{w.participants}</p>
               )}
             </div>
             <div className="flex shrink-0 gap-2 text-xs">
@@ -44,7 +44,7 @@ export function WiretapsManager({
                 type="button"
                 onClick={() => setEditingId(w.id)}
                 aria-label={`Upravit ${w.title}`}
-                className="text-neutral-400 hover:text-neutral-100"
+                className="text-ink-muted hover:text-white"
               >
                 Upravit
               </button>
@@ -52,7 +52,7 @@ export function WiretapsManager({
                 <button
                   type="submit"
                   aria-label={`Smazat ${w.title}`}
-                  className="text-red-400 hover:text-red-300"
+                  className="text-danger hover:text-danger/80"
                 >
                   Smazat
                 </button>
@@ -63,14 +63,14 @@ export function WiretapsManager({
       )}
 
       {adding ? (
-        <div className="rounded-lg border border-amber-800 bg-neutral-900/50 p-4">
+        <div className="rounded-lg border border-accent bg-navy-900/60 p-4">
           <WiretapForm caseId={caseId} onDone={() => setAdding(false)} />
         </div>
       ) : (
         <button
           type="button"
           onClick={() => setAdding(true)}
-          className="rounded border border-dashed border-neutral-700 px-3 py-2 text-sm text-neutral-400 hover:border-amber-500 hover:text-amber-500"
+          className="rounded border border-dashed border-line px-3 py-2 text-sm text-ink-muted hover:border-accent hover:text-accent"
         >
           + Přidat odposlech
         </button>

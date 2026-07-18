@@ -13,9 +13,9 @@ export default async function OdposlechyPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      <h2 className="text-xl font-semibold text-amber-500">Odposlechy</h2>
+      <h2 className="text-xl font-semibold text-accent">Odposlechy</h2>
       {wiretaps.length === 0 && (
-        <p className="text-sm text-neutral-500">
+        <p className="text-sm text-ink-faint">
           K tomuto případu zatím nejsou nahrány žádné odposlechy.
         </p>
       )}
@@ -23,16 +23,16 @@ export default async function OdposlechyPage() {
         {wiretaps.map((w) => (
           <div
             key={w.id}
-            className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4"
+            className="rounded-lg border border-line bg-navy-900/60 p-4"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <span className="font-medium">{w.title}</span>
               {w.dateLabel && (
-                <span className="text-xs text-neutral-500">{w.dateLabel}</span>
+                <span className="text-xs text-ink-faint">{w.dateLabel}</span>
               )}
             </div>
             {w.participants && (
-              <p className="mt-1 text-sm text-neutral-500">
+              <p className="mt-1 text-sm text-ink-faint">
                 Účastníci: {w.participants}
               </p>
             )}
@@ -41,10 +41,10 @@ export default async function OdposlechyPage() {
             </audio>
             {w.transcript && (
               <details className="mt-3">
-                <summary className="cursor-pointer text-sm text-amber-500">
+                <summary className="cursor-pointer text-sm text-accent">
                   Zobrazit přepis
                 </summary>
-                <p className="mt-2 whitespace-pre-line text-sm text-neutral-300">
+                <p className="mt-2 whitespace-pre-line text-sm text-white/85">
                   {w.transcript}
                 </p>
               </details>

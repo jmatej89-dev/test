@@ -47,11 +47,11 @@ export function EmailForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-400">Od</label>
+          <label className="text-xs text-ink-muted">Od</label>
           <select
             name="fromPersonId"
             defaultValue={email?.fromPersonId ?? ""}
-            className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
           >
             <option value="">— neznámý —</option>
             {persons.map((p) => (
@@ -62,11 +62,11 @@ export function EmailForm({
           </select>
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-400">Komu</label>
+          <label className="text-xs text-ink-muted">Komu</label>
           <select
             name="toPersonId"
             defaultValue={email?.toPersonId ?? ""}
-            className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
           >
             <option value="">— neznámý —</option>
             {persons.map((p) => (
@@ -79,44 +79,44 @@ export function EmailForm({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">Předmět</label>
+        <label className="text-xs text-ink-muted">Předmět</label>
         <input
           name="subject"
           required
           defaultValue={email?.subject}
-          className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">Text e-mailu</label>
+        <label className="text-xs text-ink-muted">Text e-mailu</label>
         <textarea
           name="body"
           required
           rows={4}
           defaultValue={email?.body}
-          className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
         />
       </div>
 
       <div className="flex flex-col gap-1 sm:w-48">
-        <label className="text-xs text-neutral-400">
+        <label className="text-xs text-ink-muted">
           Datum popisek (nepovinné)
         </label>
         <input
           name="dateLabel"
           defaultValue={email?.dateLabel ?? ""}
-          className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
         />
       </div>
 
-      {state?.error && <p className="text-sm text-red-400">{state.error}</p>}
+      {state?.error && <p className="text-sm text-danger">{state.error}</p>}
 
       <div className="flex gap-2">
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-amber-600 px-3 py-1.5 text-sm font-semibold text-neutral-950 hover:bg-amber-500 disabled:opacity-60"
+          className="rounded bg-white px-3 py-1.5 text-sm font-semibold text-navy-950 hover:bg-white/90 disabled:opacity-60"
         >
           {pending ? "Ukládám…" : email ? "Uložit změny" : "Přidat e-mail"}
         </button>
@@ -124,7 +124,7 @@ export function EmailForm({
           <button
             type="button"
             onClick={onDone}
-            className="rounded border border-neutral-700 px-3 py-1.5 text-sm hover:border-neutral-500"
+            className="rounded border border-line px-3 py-1.5 text-sm hover:border-ink-faint"
           >
             Zrušit
           </button>

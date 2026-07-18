@@ -27,17 +27,17 @@ export default async function AdminDashboard() {
   return (
     <div className="mx-auto max-w-4xl space-y-10">
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">
+        <h2 className="mb-3 text-lg font-semibold text-accent">
           Nový případ
         </h2>
         <CreateCaseForm />
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">Případy</h2>
-        <div className="overflow-x-auto rounded-lg border border-neutral-800">
+        <h2 className="mb-3 text-lg font-semibold text-accent">Případy</h2>
+        <div className="overflow-x-auto rounded-lg border border-line">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-900 text-left text-neutral-400">
+            <thead className="bg-navy-900 text-left text-ink-muted">
               <tr>
                 <th className="px-3 py-2">Název</th>
                 <th className="px-3 py-2">Slug</th>
@@ -48,38 +48,38 @@ export default async function AdminDashboard() {
             </thead>
             <tbody>
               {cases.map((c) => (
-                <tr key={c.id} className="border-t border-neutral-800">
+                <tr key={c.id} className="border-t border-line">
                   <td className="px-3 py-2">
                     <Link
                       href={`/admin/pripady/${c.id}`}
-                      className="hover:text-amber-500 hover:underline"
+                      className="hover:text-accent hover:underline"
                     >
                       {c.title}
                     </Link>
                   </td>
-                  <td className="px-3 py-2 font-mono text-xs text-neutral-500">
+                  <td className="px-3 py-2 font-mono text-xs text-ink-faint">
                     {c.slug}
                   </td>
                   <td className="px-3 py-2">{c._count.boxes}</td>
                   <td className="px-3 py-2">
                     {c.isPublished ? (
-                      <span className="text-green-400">publikováno</span>
+                      <span className="text-success">publikováno</span>
                     ) : (
-                      <span className="text-neutral-500">koncept</span>
+                      <span className="text-ink-faint">koncept</span>
                     )}
                   </td>
                   <td className="px-3 py-2 text-right">
                     <div className="flex items-center justify-end gap-3">
                       <Link
                         href={`/admin/pripady/${c.id}`}
-                        className="text-xs text-amber-500 hover:underline"
+                        className="text-xs text-accent hover:underline"
                       >
                         Spravovat obsah
                       </Link>
                       <form action={togglePublishCase.bind(null, c.id)}>
                         <button
                           type="submit"
-                          className="text-xs text-neutral-400 hover:text-neutral-100"
+                          className="text-xs text-ink-muted hover:text-white"
                         >
                           {c.isPublished ? "Skrýt" : "Publikovat"}
                         </button>
@@ -90,7 +90,7 @@ export default async function AdminDashboard() {
               ))}
               {cases.length === 0 && (
                 <tr>
-                  <td colSpan={5} className="px-3 py-4 text-neutral-500">
+                  <td colSpan={5} className="px-3 py-4 text-ink-faint">
                     Zatím žádné případy.
                   </td>
                 </tr>
@@ -101,17 +101,17 @@ export default async function AdminDashboard() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">
+        <h2 className="mb-3 text-lg font-semibold text-accent">
           Nová krabice (přihlašovací údaje pro zákazníka)
         </h2>
         <CreateBoxForm cases={cases.map((c) => ({ id: c.id, title: c.title }))} />
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold text-amber-500">Krabice</h2>
-        <div className="overflow-x-auto rounded-lg border border-neutral-800">
+        <h2 className="mb-3 text-lg font-semibold text-accent">Krabice</h2>
+        <div className="overflow-x-auto rounded-lg border border-line">
           <table className="w-full text-sm">
-            <thead className="bg-neutral-900 text-left text-neutral-400">
+            <thead className="bg-navy-900 text-left text-ink-muted">
               <tr>
                 <th className="px-3 py-2">Kód</th>
                 <th className="px-3 py-2">Případ</th>
@@ -123,23 +123,23 @@ export default async function AdminDashboard() {
             </thead>
             <tbody>
               {boxes.map((b) => (
-                <tr key={b.id} className="border-t border-neutral-800">
+                <tr key={b.id} className="border-t border-line">
                   <td className="px-3 py-2 font-mono text-xs">{b.code}</td>
                   <td className="px-3 py-2">{b.case.title}</td>
-                  <td className="px-3 py-2 text-neutral-500">
+                  <td className="px-3 py-2 text-ink-faint">
                     {b.customerLabel ?? "—"}
                   </td>
                   <td className="px-3 py-2">
                     {b.status === "ACTIVE" ? (
-                      <span className="text-green-400">aktivní</span>
+                      <span className="text-success">aktivní</span>
                     ) : (
-                      <span className="text-red-400">zablokováno</span>
+                      <span className="text-danger">zablokováno</span>
                     )}
                     {b.lockedUntil && b.lockedUntil > new Date() && (
-                      <span className="ml-1 text-amber-400">(uzamčeno)</span>
+                      <span className="ml-1 text-accent">(uzamčeno)</span>
                     )}
                   </td>
-                  <td className="px-3 py-2 text-neutral-500">
+                  <td className="px-3 py-2 text-ink-faint">
                     {b.lastLoginAt
                       ? new Date(b.lastLoginAt).toLocaleString("cs-CZ")
                       : "nikdy"}
@@ -151,7 +151,7 @@ export default async function AdminDashboard() {
                         <form action={revokeBox.bind(null, b.id)}>
                           <button
                             type="submit"
-                            className="text-xs text-red-400 hover:text-red-300"
+                            className="text-xs text-danger hover:text-danger/80"
                           >
                             Zablokovat
                           </button>
@@ -160,7 +160,7 @@ export default async function AdminDashboard() {
                         <form action={reactivateBox.bind(null, b.id)}>
                           <button
                             type="submit"
-                            className="text-xs text-green-400 hover:text-green-300"
+                            className="text-xs text-success hover:text-success/80"
                           >
                             Obnovit
                           </button>
@@ -172,7 +172,7 @@ export default async function AdminDashboard() {
               ))}
               {boxes.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-3 py-4 text-neutral-500">
+                  <td colSpan={6} className="px-3 py-4 text-ink-faint">
                     Zatím žádné krabice.
                   </td>
                 </tr>

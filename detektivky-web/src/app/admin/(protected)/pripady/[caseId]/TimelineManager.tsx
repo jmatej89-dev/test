@@ -1,67 +1,74 @@
 "use client";
 
 import { useState } from "react";
-import { deleteDocument } from "@/app/actions/admin-content";
-import { DocumentForm, type DocumentRecord } from "./DocumentForm";
+import { deleteTimelineEvent } from "@/app/actions/admin-content";
+import { TimelineEventForm, type TimelineEventRecord } from "./TimelineEventForm";
 
-export function DocumentsManager({
+export function TimelineManager({
   caseId,
-  documents,
+  events,
 }: {
   caseId: string;
-  documents: DocumentRecord[];
+  events: TimelineEventRecord[];
 }) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
   return (
     <div className="space-y-3">
-      {documents.map((doc) =>
-        editingId === doc.id ? (
+      {events.map((event) =>
+        editingId === event.id ? (
           <div
-            key={doc.id}
+            key={event.id}
             className="rounded-lg border border-accent bg-navy-900/60 p-4"
           >
-            <DocumentForm
+            <TimelineEventForm
               caseId={caseId}
-              document={doc}
+              event={event}
               onDone={() => setEditingId(null)}
             />
           </div>
         ) : (
           <div
-            key={doc.id}
+            key={event.id}
             className="flex items-start justify-between gap-3 rounded-lg border border-line bg-navy-900/60 p-4"
           >
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-medium">{doc.title}</span>
-                <span className="rounded bg-navy-800 px-2 py-0.5 text-xs text-ink-muted">
-                  {doc.type}
+                <span className="font-mono text-sm text-accent">
+                  {event.timeLabel}
                 </span>
+                <span className="font-medium">{event.title}</span>
               </div>
-              {doc.description && (
-                <p className="mt-1 text-sm text-ink-faint">{doc.description}</p>
+              {event.locationLabel && (
+                <p className="mt-1 text-sm text-ink-faint">
+                  {event.locationLabel}
+                </p>
               )}
-              {doc.content && (
-                <p className="mt-1 line-clamp-2 text-sm text-ink-muted">
-                  {doc.content}
+              {event.involvedLabel && (
+                <p className="mt-1 text-sm text-ink-faint">
+                  Zúčastnění: {event.involvedLabel}
+                </p>
+              )}
+              {event.description && (
+                <p className="mt-1 text-sm text-ink-muted">
+                  {event.description}
                 </p>
               )}
             </div>
             <div className="flex shrink-0 gap-2 text-xs">
               <button
                 type="button"
-                onClick={() => setEditingId(doc.id)}
-                aria-label={`Upravit ${doc.title}`}
+                onClick={() => setEditingId(event.id)}
+                aria-label={`Upravit ${event.title}`}
                 className="text-ink-muted hover:text-white"
               >
                 Upravit
               </button>
-              <form action={deleteDocument.bind(null, caseId, doc.id)}>
+              <form action={deleteTimelineEvent.bind(null, caseId, event.id)}>
                 <button
                   type="submit"
-                  aria-label={`Smazat ${doc.title}`}
+                  aria-label={`Smazat ${event.title}`}
                   className="text-danger hover:text-danger/80"
                 >
                   Smazat
@@ -74,7 +81,7 @@ export function DocumentsManager({
 
       {adding ? (
         <div className="rounded-lg border border-accent bg-navy-900/60 p-4">
-          <DocumentForm caseId={caseId} onDone={() => setAdding(false)} />
+          <TimelineEventForm caseId={caseId} onDone={() => setAdding(false)} />
         </div>
       ) : (
         <button
@@ -82,7 +89,7 @@ export function DocumentsManager({
           onClick={() => setAdding(true)}
           className="rounded border border-dashed border-line px-3 py-2 text-sm text-ink-muted hover:border-accent hover:text-accent"
         >
-          + Přidat důkaz
+          + Přidat událost
         </button>
       )}
     </div>

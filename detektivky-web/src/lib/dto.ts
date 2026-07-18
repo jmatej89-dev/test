@@ -12,4 +12,8 @@ export const PERSON_PUBLIC_SELECT = {
   occupation: true,
   bio: true,
   photoUrl: true,
+  address: true,
+  relationship: true,
+  alibi: true,
+  statement: true,
 } as const;

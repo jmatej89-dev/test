@@ -49,20 +49,20 @@ export function DocumentForm({
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-400">Název</label>
+          <label className="text-xs text-ink-muted">Název</label>
           <input
             name="title"
             required
             defaultValue={document?.title}
-            className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label className="text-xs text-neutral-400">Typ</label>
+          <label className="text-xs text-ink-muted">Typ</label>
           <select
             name="type"
             defaultValue={document?.type ?? "NOTE"}
-            className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
           >
             {TYPE_OPTIONS.map((t) => (
               <option key={t.value} value={t.value}>
@@ -74,46 +74,46 @@ export function DocumentForm({
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">
+        <label className="text-xs text-ink-muted">
           URL souboru (pro fotografii/PDF, musí být na stejné doméně kvůli CSP)
         </label>
         <input
           name="url"
           defaultValue={document?.url ?? ""}
-          className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">
+        <label className="text-xs text-ink-muted">
           Text (pro poznámku/protokol)
         </label>
         <textarea
           name="content"
           rows={4}
           defaultValue={document?.content ?? ""}
-          className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 font-mono text-sm focus:border-amber-500 focus:outline-none"
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 font-mono text-sm focus:border-accent focus:outline-none"
         />
       </div>
 
       <div className="flex flex-col gap-1">
-        <label className="text-xs text-neutral-400">
+        <label className="text-xs text-ink-muted">
           Krátký popisek (nepovinné)
         </label>
         <input
           name="description"
           defaultValue={document?.description ?? ""}
-          className="rounded border border-neutral-700 bg-neutral-900 px-2 py-1.5 text-sm focus:border-amber-500 focus:outline-none"
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
         />
       </div>
 
-      {state?.error && <p className="text-sm text-red-400">{state.error}</p>}
+      {state?.error && <p className="text-sm text-danger">{state.error}</p>}
 
       <div className="flex gap-2">
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-amber-600 px-3 py-1.5 text-sm font-semibold text-neutral-950 hover:bg-amber-500 disabled:opacity-60"
+          className="rounded bg-white px-3 py-1.5 text-sm font-semibold text-navy-950 hover:bg-white/90 disabled:opacity-60"
         >
           {pending ? "Ukládám…" : document ? "Uložit změny" : "Přidat důkaz"}
         </button>
@@ -121,7 +121,7 @@ export function DocumentForm({
           <button
             type="button"
             onClick={onDone}
-            className="rounded border border-neutral-700 px-3 py-1.5 text-sm hover:border-neutral-500"
+            className="rounded border border-line px-3 py-1.5 text-sm hover:border-ink-faint"
           >
             Zrušit
           </button>

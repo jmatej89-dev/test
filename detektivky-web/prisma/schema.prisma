@@ -59,11 +59,12 @@ model Case {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  persons   Person[]
-  documents Document[]
-  wiretaps  Wiretap[]
-  emails    Email[]
-  boxes     Box[]
+  persons        Person[]
+  documents      Document[]
+  wiretaps       Wiretap[]
+  emails         Email[]
+  boxes          Box[]
+  timelineEvents TimelineEvent[]
 }
 
 model Box {
@@ -85,20 +86,38 @@ model Box {
 }
 
 model Person {
-  id         String     @id @default(cuid())
-  caseId     String
-  case       Case       @relation(fields: [caseId], references: [id], onDelete: Cascade)
-  name       String
-  role       PersonRole @default(OTHER)
-  occupation String?
-  bio        String
-  photoUrl   String?
-  isCulprit  Boolean    @default(false)
-  sortOrder  Int        @default(0)
+  id           String     @id @default(cuid())
+  caseId       String
+  case         Case       @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  name         String
+  role         PersonRole @default(OTHER)
+  occupation   String?
+  bio          String
+  photoUrl     String?
+  address      String?
+  relationship String?
+  alibi        String?
+  statement    String?
+  isCulprit    Boolean    @default(false)
+  sortOrder    Int        @default(0)
 
   sentEmails     Email[]       @relation("EmailFrom")
   receivedEmails Email[]       @relation("EmailTo")
   accusedAs      Accusation[]
+
+  @@index([caseId])
+}
+
+model TimelineEvent {
+  id            String   @id @default(cuid())
+  caseId        String
+  case          Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  timeLabel     String
+  title         String
+  description   String?
+  locationLabel String?
+  involvedLabel String?
+  sortOrder     Int      @default(0)
 
   @@index([caseId])
 }
