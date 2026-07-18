@@ -3,7 +3,11 @@
 import { getAuthorizedAdmin } from "@/lib/dal";
 import { prisma } from "@/lib/db";
 import { generateBoxCode, generateBoxPassword, hashSecret } from "@/lib/auth";
-import { createCaseSchema, createBoxSchema } from "@/lib/validation";
+import {
+  createCaseSchema,
+  updateCaseSchema,
+  createBoxSchema,
+} from "@/lib/validation";
 import { logAudit } from "@/lib/audit";
 import { revalidatePath } from "next/cache";
 
@@ -40,6 +44,36 @@ export async function createCase(
   return undefined;
 }
 
+export type UpdateCaseFormState = { error?: string; ok?: boolean } | undefined;
+
+export async function updateCase(
+  _prevState: UpdateCaseFormState,
+  formData: FormData,
+): Promise<UpdateCaseFormState> {
+  const admin = await getAuthorizedAdmin();
+
+  const parsed = updateCaseSchema.safeParse({
+    caseId: formData.get("caseId"),
+    title: formData.get("title"),
+    subtitle: formData.get("subtitle") || undefined,
+    description: formData.get("description"),
+    difficulty: formData.get("difficulty"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Neplatná data." };
+  }
+
+  const { caseId, ...data } = parsed.data;
+  const existing = await prisma.case.findUnique({ where: { id: caseId } });
+  if (!existing) return { error: "Případ nenalezen." };
+
+  await prisma.case.update({ where: { id: caseId }, data });
+  await logAudit("admin", admin.id, "case_updated", { caseId });
+  revalidatePath(`/admin/pripady/${caseId}`);
+
+  return { ok: true };
+}
+
 export async function togglePublishCase(caseId: string): Promise<void> {
   const admin = await getAuthorizedAdmin();
   const record = await prisma.case.findUnique({ where: { id: caseId } });
@@ -54,6 +88,7 @@ export async function togglePublishCase(caseId: string): Promise<void> {
     isPublished: !record.isPublished,
   });
   revalidatePath("/admin");
+  revalidatePath(`/admin/pripady/${caseId}`);
 }
 
 export type CreateBoxFormState =

@@ -27,6 +27,8 @@ src/
     admin/
       prihlaseni/             přihlášení administrátora
       (protected)/            dashboard: případy, generování krabic
+        pripady/[caseId]/      správa obsahu případu — osoby (vč. pachatele),
+                                důkazy, odposlechy, e-maily (create/edit/delete)
     actions/                 Server Actions (přihlášení, obvinění, admin)
   lib/
     session.ts               šifrované session cookies (jose, JWE)
@@ -100,9 +102,10 @@ Toto je funkční kostra, ne hotový produkt. Než půjde web zákazníkům:
 - **E-mail zákazníkovi** s přihlašovacími údaji po objednávce (teď je vidí
   jen admin v UI po vytvoření krabice) — napojení na objednávkový/e-shop
   systém.
-- **Rozšíření admin CMS** o editaci osob/dokumentů/odposlechů/e-mailů přímo
-  z UI (teď se plní přes `prisma/seed.ts` nebo Prisma Studio — funkční, ale
-  ne pohodlné pro netechnického admina).
+- **Nahrávání souborů z UI**: admin panel (`/admin/pripady/[id]`) už umí
+  spravovat osoby, důkazy, odposlechy i e-maily bez zásahu do databáze —
+  chybí jen upload fotek/PDF/audia přímo z prohlížeče (teď se zadává URL,
+  viz bod o ukládání médií výše).
 - **Zálohy databáze** a monitoring/alerting na neobvyklé množství
   neúspěšných přihlášení.
 - **GDPR**: cookie lišta / privacy policy stránka, retention politika pro

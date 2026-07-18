@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { togglePublishCase, revokeBox, reactivateBox } from "@/app/actions/admin";
 import { CreateCaseForm } from "./CreateCaseForm";
@@ -48,7 +49,14 @@ export default async function AdminDashboard() {
             <tbody>
               {cases.map((c) => (
                 <tr key={c.id} className="border-t border-neutral-800">
-                  <td className="px-3 py-2">{c.title}</td>
+                  <td className="px-3 py-2">
+                    <Link
+                      href={`/admin/pripady/${c.id}`}
+                      className="hover:text-amber-500 hover:underline"
+                    >
+                      {c.title}
+                    </Link>
+                  </td>
                   <td className="px-3 py-2 font-mono text-xs text-neutral-500">
                     {c.slug}
                   </td>
@@ -61,14 +69,22 @@ export default async function AdminDashboard() {
                     )}
                   </td>
                   <td className="px-3 py-2 text-right">
-                    <form action={togglePublishCase.bind(null, c.id)}>
-                      <button
-                        type="submit"
-                        className="text-xs text-neutral-400 hover:text-neutral-100"
+                    <div className="flex items-center justify-end gap-3">
+                      <Link
+                        href={`/admin/pripady/${c.id}`}
+                        className="text-xs text-amber-500 hover:underline"
                       >
-                        {c.isPublished ? "Skrýt" : "Publikovat"}
-                      </button>
-                    </form>
+                        Spravovat obsah
+                      </Link>
+                      <form action={togglePublishCase.bind(null, c.id)}>
+                        <button
+                          type="submit"
+                          className="text-xs text-neutral-400 hover:text-neutral-100"
+                        >
+                          {c.isPublished ? "Skrýt" : "Publikovat"}
+                        </button>
+                      </form>
+                    </div>
                   </td>
                 </tr>
               ))}
