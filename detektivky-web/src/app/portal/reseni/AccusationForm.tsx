@@ -104,7 +104,7 @@ export function AccusationForm({ suspects }: { suspects: SuspectOption[] }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded bg-white px-4 py-2 font-semibold text-navy-950 transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="rounded bg-accent px-4 py-2 font-semibold text-navy-950 transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Odesílám obvinění…" : "Obvinit"}
       </button>

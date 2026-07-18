@@ -116,7 +116,7 @@ export function EmailForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded bg-white px-3 py-1.5 text-sm font-semibold text-navy-950 hover:bg-white/90 disabled:opacity-60"
+          className="rounded bg-accent px-3 py-1.5 text-sm font-semibold text-navy-950 hover:bg-accent/90 disabled:opacity-60"
         >
           {pending ? "Ukládám…" : email ? "Uložit změny" : "Přidat e-mail"}
         </button>

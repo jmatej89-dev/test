@@ -23,8 +23,11 @@ export async function createCase(
     slug: formData.get("slug"),
     title: formData.get("title"),
     subtitle: formData.get("subtitle") || undefined,
+    teaser: formData.get("teaser") || undefined,
     description: formData.get("description"),
     difficulty: formData.get("difficulty"),
+    priceCzk: formData.get("priceCzk") || undefined,
+    coverImageUrl: formData.get("coverImageUrl") || undefined,
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Neplatná data." };
@@ -56,8 +59,11 @@ export async function updateCase(
     caseId: formData.get("caseId"),
     title: formData.get("title"),
     subtitle: formData.get("subtitle") || undefined,
+    teaser: formData.get("teaser") || undefined,
     description: formData.get("description"),
     difficulty: formData.get("difficulty"),
+    priceCzk: formData.get("priceCzk") || undefined,
+    coverImageUrl: formData.get("coverImageUrl") || undefined,
   });
   if (!parsed.success) {
     return { error: parsed.error.issues[0]?.message ?? "Neplatná data." };
@@ -185,4 +191,14 @@ export async function resetBoxPassword(
   revalidatePath("/admin");
 
   return { password };
+}
+
+export async function markInquiryStatus(
+  inquiryId: string,
+  status: "CONTACTED" | "CLOSED",
+): Promise<void> {
+  const admin = await getAuthorizedAdmin();
+  await prisma.orderInquiry.update({ where: { id: inquiryId }, data: { status } });
+  await logAudit("admin", admin.id, "inquiry_status_changed", { inquiryId, status });
+  revalidatePath("/admin");
 }

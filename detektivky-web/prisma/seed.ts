@@ -37,9 +37,12 @@ async function main() {
       slug: "vrazda-na-zamku-hrabalov",
       title: "Vražda na zámku Hrabalov",
       subtitle: "Fiktivní případ pro demonstraci portálu",
+      teaser:
+        "Hrabě je mrtev, policie případ uzavřela. Rodina najala vás. Máte 20 hodin stop, alibi a jednu šanci najít pravdu.",
       description:
         "V noci z 12. na 13. října byl ve své pracovně na zámku Hrabalov nalezen mrtvý hrabě Bedřich Hrabal. Policie případ uzavřela jako nešťastnou náhodu, ale rodina najala soukromého vyšetřovatele — vás. Prostudujte spis, vyslechněte odposlechy, pročtěte zachycené e-maily a najděte skutečného vraha.",
       difficulty: 2,
+      priceCzk: 1490,
       isPublished: true,
     },
   });
@@ -258,6 +261,59 @@ async function main() {
         sortOrder: 7,
       },
     ],
+  });
+
+  // Second catalog case — lighter content, mainly to show the homepage
+  // catalog with more than one card.
+  const secondCase = await prisma.case.upsert({
+    where: { slug: "zmizeni-v-krkonosich" },
+    update: {},
+    create: {
+      slug: "zmizeni-v-krkonosich",
+      title: "Zmizení v Krkonoších",
+      subtitle: "Fiktivní případ pro demonstraci portálu",
+      teaser:
+        "Zkušený horský vůdce zmizel beze stopy na túře, kterou vedl už stokrát. Jeho telefon našli o den později — v jiném pohoří.",
+      description:
+        "Horský vůdce Petr Šindelář se během vedené túry ztratil beze stopy. Jeho skupina tvrdí, že jim v mlze zmizel z dohledu. O den později se jeho telefon objevil v odpadkovém koši na vlakovém nádraží ve zcela jiném kraji. Zmizel dobrovolně, nebo se stal obětí?",
+      difficulty: 3,
+      priceCzk: 1690,
+      isPublished: true,
+    },
+  });
+
+  await prisma.person.deleteMany({ where: { caseId: secondCase.id } });
+  await prisma.person.createMany({
+    data: [
+      {
+        caseId: secondCase.id,
+        name: "Petr Šindelář",
+        role: "VICTIM",
+        occupation: "Horský vůdce",
+        bio: "41 let, vedl túry v Krkonoších přes 15 let. Poslední dobou měl finanční potíže.",
+        sortOrder: 0,
+      },
+      {
+        caseId: secondCase.id,
+        name: "Jana Malá",
+        role: "WITNESS",
+        occupation: "Účastnice túry",
+        bio: "34 let. Jako poslední s Petrem mluvila těsně předtím, než zmizel v mlze.",
+        sortOrder: 1,
+      },
+    ],
+  });
+
+  await prisma.document.deleteMany({ where: { caseId: secondCase.id } });
+  await prisma.document.create({
+    data: {
+      caseId: secondCase.id,
+      title: "Hlášení o pohřešované osobě",
+      type: "NOTE",
+      content:
+        "Petr Šindelář nahlášen jako pohřešovaný 14. srpna v 18:20. Poslední kontakt s klienty proběhl kolem 15:00 v oblasti Sněžky.",
+      sortOrder: 0,
+    },
   });
 
   await prisma.box.deleteMany({ where: { customerLabel: "Demo objednávka" } });

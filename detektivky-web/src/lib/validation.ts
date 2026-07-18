@@ -34,16 +34,31 @@ export const createCaseSchema = z.object({
     .regex(/^[a-z0-9-]+$/, "Slug smí obsahovat jen malá písmena, čísla a pomlčky."),
   title: z.string().trim().min(2).max(200),
   subtitle: z.string().max(300).optional(),
+  teaser: z.string().max(300).optional(),
   description: z.string().trim().min(2).max(5000),
   difficulty: z.coerce.number().int().min(1).max(5).default(1),
+  priceCzk: z.coerce.number().int().min(0).max(1000000).optional(),
+  coverImageUrl: z.string().trim().max(500).optional(),
 });
 
 export const updateCaseSchema = z.object({
   caseId: z.string().min(1),
   title: z.string().trim().min(2).max(200),
   subtitle: z.string().max(300).optional(),
+  teaser: z.string().max(300).optional(),
   description: z.string().trim().min(2).max(5000),
   difficulty: z.coerce.number().int().min(1).max(5).default(1),
+  priceCzk: z.coerce.number().int().min(0).max(1000000).optional(),
+  coverImageUrl: z.string().trim().max(500).optional(),
+});
+
+export const orderInquirySchema = z.object({
+  caseId: z.string().min(1),
+  name: z.string().trim().min(1, "Zadejte prosím jméno.").max(200),
+  email: z.email("Zadejte platný e-mail.").max(200),
+  message: z.string().max(2000).optional(),
+  // Honeypot: real visitors never fill this hidden field, bots often do.
+  website: z.string().max(0, "").optional(),
 });
 
 const personRole = z.enum(["VICTIM", "SUSPECT", "WITNESS", "OTHER"]);

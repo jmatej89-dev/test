@@ -27,7 +27,7 @@ export function PortalNav() {
             href={tab.href}
             className={`rounded px-3 py-1.5 text-sm transition ${
               active
-                ? "bg-white text-navy-950 font-medium"
+                ? "bg-accent text-navy-950 font-medium"
                 : "text-ink-muted hover:bg-navy-800 hover:text-white"
             }`}
           >

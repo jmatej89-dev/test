@@ -7,8 +7,11 @@ export type CaseRecord = {
   id: string;
   title: string;
   subtitle: string | null;
+  teaser: string | null;
   description: string;
   difficulty: number;
+  priceCzk: number | null;
+  coverImageUrl: string | null;
 };
 
 export function CaseEditForm({ record }: { record: CaseRecord }) {
@@ -51,6 +54,16 @@ export function CaseEditForm({ record }: { record: CaseRecord }) {
         />
       </div>
       <div className="flex flex-col gap-1">
+        <label className="text-xs text-ink-muted">
+          Krátký popisek na kartu v nabídce
+        </label>
+        <input
+          name="teaser"
+          defaultValue={record.teaser ?? ""}
+          className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
         <label className="text-xs text-ink-muted">Úvod (Spis)</label>
         <textarea
           name="description"
@@ -60,12 +73,32 @@ export function CaseEditForm({ record }: { record: CaseRecord }) {
           className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
         />
       </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-ink-muted">Cena v Kč</label>
+          <input
+            name="priceCzk"
+            type="number"
+            min={0}
+            defaultValue={record.priceCzk ?? ""}
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-xs text-ink-muted">URL obrázku na kartu</label>
+          <input
+            name="coverImageUrl"
+            defaultValue={record.coverImageUrl ?? ""}
+            className="rounded border border-line bg-navy-900 px-2 py-1.5 text-sm focus:border-accent focus:outline-none"
+          />
+        </div>
+      </div>
       {state?.error && <p className="text-sm text-danger">{state.error}</p>}
       {state?.ok && <p className="text-sm text-success">Uloženo.</p>}
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded bg-white px-4 py-1.5 text-sm font-semibold text-navy-950 hover:bg-white/90 disabled:opacity-60"
+        className="self-start rounded bg-accent px-4 py-1.5 text-sm font-semibold text-navy-950 hover:bg-accent/90 disabled:opacity-60"
       >
         {pending ? "Ukládám…" : "Uložit"}
       </button>

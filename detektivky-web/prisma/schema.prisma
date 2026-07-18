@@ -53,7 +53,9 @@ model Case {
   title         String
   subtitle      String?
   description   String
+  teaser        String?
   difficulty    Int      @default(1)
+  priceCzk      Int?
   coverImageUrl String?
   isPublished   Boolean  @default(false)
   createdAt     DateTime @default(now())
@@ -65,6 +67,7 @@ model Case {
   emails         Email[]
   boxes          Box[]
   timelineEvents TimelineEvent[]
+  orderInquiries OrderInquiry[]
 }
 
 model Box {
@@ -164,6 +167,26 @@ model Email {
   sortOrder    Int      @default(0)
 
   @@index([caseId])
+}
+
+enum InquiryStatus {
+  NEW
+  CONTACTED
+  CLOSED
+}
+
+model OrderInquiry {
+  id        String        @id @default(cuid())
+  caseId    String
+  case      Case          @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  name      String
+  email     String
+  message   String?
+  status    InquiryStatus @default(NEW)
+  createdAt DateTime      @default(now())
+
+  @@index([caseId])
+  @@index([status, createdAt])
 }
 
 model Accusation {

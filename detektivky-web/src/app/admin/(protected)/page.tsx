@@ -1,7 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { togglePublishCase, revokeBox, reactivateBox } from "@/app/actions/admin";
+import {
+  togglePublishCase,
+  revokeBox,
+  reactivateBox,
+  markInquiryStatus,
+} from "@/app/actions/admin";
 import { CreateCaseForm } from "./CreateCaseForm";
 import { CreateBoxForm } from "./CreateBoxForm";
 import { ResetPasswordButton } from "./ResetPasswordButton";
@@ -12,12 +17,17 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminDashboard() {
-  const [cases, boxes] = await Promise.all([
+  const [cases, boxes, inquiries] = await Promise.all([
     prisma.case.findMany({
       orderBy: { createdAt: "desc" },
       include: { _count: { select: { boxes: true } } },
     }),
     prisma.box.findMany({
+      orderBy: { createdAt: "desc" },
+      include: { case: { select: { title: true } } },
+      take: 50,
+    }),
+    prisma.orderInquiry.findMany({
       orderBy: { createdAt: "desc" },
       include: { case: { select: { title: true } } },
       take: 50,
@@ -92,6 +102,85 @@ export default async function AdminDashboard() {
                 <tr>
                   <td colSpan={5} className="px-3 py-4 text-ink-faint">
                     Zatím žádné případy.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-lg font-semibold text-accent">
+          Poptávky ({inquiries.filter((i) => i.status === "NEW").length} nových)
+        </h2>
+        <div className="overflow-x-auto rounded-lg border border-line">
+          <table className="w-full text-sm">
+            <thead className="bg-navy-900 text-left text-ink-muted">
+              <tr>
+                <th className="px-3 py-2">Případ</th>
+                <th className="px-3 py-2">Jméno</th>
+                <th className="px-3 py-2">E-mail</th>
+                <th className="px-3 py-2">Zpráva</th>
+                <th className="px-3 py-2">Přijato</th>
+                <th className="px-3 py-2">Stav</th>
+                <th className="px-3 py-2" />
+              </tr>
+            </thead>
+            <tbody>
+              {inquiries.map((inq) => (
+                <tr key={inq.id} className="border-t border-line">
+                  <td className="px-3 py-2">{inq.case.title}</td>
+                  <td className="px-3 py-2">{inq.name}</td>
+                  <td className="px-3 py-2">
+                    <a
+                      href={`mailto:${inq.email}`}
+                      className="text-accent hover:underline"
+                    >
+                      {inq.email}
+                    </a>
+                  </td>
+                  <td className="max-w-xs px-3 py-2 text-ink-muted">
+                    {inq.message ?? "—"}
+                  </td>
+                  <td className="px-3 py-2 text-ink-faint">
+                    {new Date(inq.createdAt).toLocaleString("cs-CZ")}
+                  </td>
+                  <td className="px-3 py-2">
+                    {inq.status === "NEW" && (
+                      <span className="text-accent">nová</span>
+                    )}
+                    {inq.status === "CONTACTED" && (
+                      <span className="text-ink-muted">kontaktováno</span>
+                    )}
+                    {inq.status === "CLOSED" && (
+                      <span className="text-ink-faint">uzavřeno</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-right">
+                    <div className="flex items-center justify-end gap-3 text-xs">
+                      {inq.status !== "CONTACTED" && (
+                        <form action={markInquiryStatus.bind(null, inq.id, "CONTACTED")}>
+                          <button type="submit" className="text-ink-muted hover:text-white">
+                            Kontaktováno
+                          </button>
+                        </form>
+                      )}
+                      {inq.status !== "CLOSED" && (
+                        <form action={markInquiryStatus.bind(null, inq.id, "CLOSED")}>
+                          <button type="submit" className="text-ink-faint hover:text-white">
+                            Uzavřít
+                          </button>
+                        </form>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+              {inquiries.length === 0 && (
+                <tr>
+                  <td colSpan={7} className="px-3 py-4 text-ink-faint">
+                    Zatím žádné poptávky.
                   </td>
                 </tr>
               )}

@@ -45,7 +45,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={pending}
-        className="mt-2 rounded bg-white px-4 py-2 font-semibold text-navy-950 transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-2 rounded bg-accent px-4 py-2 font-semibold text-navy-950 transition hover:bg-accent/90 disabled:cursor-not-allowed disabled:opacity-60"
       >
         {pending ? "Ověřuji…" : "Otevřít spis"}
       </button>

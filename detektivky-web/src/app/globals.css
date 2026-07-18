@@ -1,24 +1,26 @@
 @import "tailwindcss";
 
 :root {
-  --background: #060912;
+  --background: #0a0a0a;
   --foreground: #ffffff;
 
-  /* Dark navy surfaces, sharp white ink, one signal-blue accent. */
-  --color-navy-950: #060912;
-  --color-navy-900: #0b0f1c;
-  --color-navy-800: #121729;
-  --color-line: #1e2740;
-  --color-line-soft: #141b2e;
+  /* Crime-tape identity: near-black surfaces, sharp white ink, one hard
+     yellow accent. Kept the "navy-*" token names to avoid re-touching
+     every component — only the hex values changed. */
+  --color-navy-950: #0a0a0a;
+  --color-navy-900: #141414;
+  --color-navy-800: #1e1e1e;
+  --color-line: #2c2c2c;
+  --color-line-soft: #1c1c1c;
   --color-ink: #ffffff;
-  --color-ink-muted: #93a0bd;
-  --color-ink-faint: #5b6580;
-  --color-accent: #4d7fff;
-  --color-accent-soft: #4d7fff1a;
-  --color-success: #34d399;
-  --color-success-bg: #0d3b2c;
+  --color-ink-muted: #b3b3b3;
+  --color-ink-faint: #737373;
+  --color-accent: #f7c600;
+  --color-accent-soft: #f7c60026;
+  --color-success: #4ade80;
+  --color-success-bg: #122417;
   --color-danger: #f87171;
-  --color-danger-bg: #431417;
+  --color-danger-bg: #2b1414;
 }
 
 @theme inline {

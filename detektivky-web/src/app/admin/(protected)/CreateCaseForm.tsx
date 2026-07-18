@@ -47,6 +47,17 @@ export function CreateCaseForm() {
         />
       </div>
       <div className="flex flex-col gap-1">
+        <label className="text-sm text-ink-muted" htmlFor="teaser">
+          Krátký popisek na kartu v nabídce (nepovinné)
+        </label>
+        <input
+          id="teaser"
+          name="teaser"
+          placeholder="Jedna nebo dvě věty, které zákazníka nalákají."
+          className="rounded border border-line bg-navy-900 px-3 py-2 focus:border-accent focus:outline-none"
+        />
+      </div>
+      <div className="flex flex-col gap-1">
         <label className="text-sm text-ink-muted" htmlFor="description">
           Úvod případu (zobrazí se ve Spisu)
         </label>
@@ -58,25 +69,50 @@ export function CreateCaseForm() {
           className="rounded border border-line bg-navy-900 px-3 py-2 focus:border-accent focus:outline-none"
         />
       </div>
-      <div className="flex flex-col gap-1 sm:w-40">
-        <label className="text-sm text-ink-muted" htmlFor="difficulty">
-          Obtížnost (1–5)
-        </label>
-        <input
-          id="difficulty"
-          name="difficulty"
-          type="number"
-          min={1}
-          max={5}
-          defaultValue={1}
-          className="rounded border border-line bg-navy-900 px-3 py-2 focus:border-accent focus:outline-none"
-        />
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="flex flex-col gap-1">
+          <label className="text-sm text-ink-muted" htmlFor="difficulty">
+            Obtížnost (1–5)
+          </label>
+          <input
+            id="difficulty"
+            name="difficulty"
+            type="number"
+            min={1}
+            max={5}
+            defaultValue={1}
+            className="rounded border border-line bg-navy-900 px-3 py-2 focus:border-accent focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm text-ink-muted" htmlFor="priceCzk">
+            Cena v Kč (nepovinné)
+          </label>
+          <input
+            id="priceCzk"
+            name="priceCzk"
+            type="number"
+            min={0}
+            placeholder="1490"
+            className="rounded border border-line bg-navy-900 px-3 py-2 focus:border-accent focus:outline-none"
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-sm text-ink-muted" htmlFor="coverImageUrl">
+            URL obrázku na kartu (nepovinné)
+          </label>
+          <input
+            id="coverImageUrl"
+            name="coverImageUrl"
+            className="rounded border border-line bg-navy-900 px-3 py-2 focus:border-accent focus:outline-none"
+          />
+        </div>
       </div>
       {state?.error && <p className="text-sm text-danger">{state.error}</p>}
       <button
         type="submit"
         disabled={pending}
-        className="self-start rounded bg-white px-4 py-2 font-semibold text-navy-950 hover:bg-white/90 disabled:opacity-60"
+        className="self-start rounded bg-accent px-4 py-2 font-semibold text-navy-950 hover:bg-accent/90 disabled:opacity-60"
       >
         {pending ? "Vytvářím…" : "Vytvořit případ"}
       </button>

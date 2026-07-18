@@ -71,7 +71,7 @@ export function CreateBoxForm({ cases }: { cases: CaseOption[] }) {
       <button
         type="submit"
         disabled={pending}
-        className="rounded bg-white px-4 py-2 font-semibold text-navy-950 hover:bg-white/90 disabled:opacity-60"
+        className="rounded bg-accent px-4 py-2 font-semibold text-navy-950 hover:bg-accent/90 disabled:opacity-60"
       >
         {pending ? "Generuji…" : "Vygenerovat novou krabici"}
       </button>

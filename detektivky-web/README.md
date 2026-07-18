@@ -10,18 +10,23 @@ Tailwind CSS v4. Žádná externí auth služba — přihlašování je vlastní
 šité na míru modelu "jméno a heslo na krabici", postavené podle
 [doporučeného vzoru Next.js pro autentizaci](https://nextjs.org/docs/app/guides/authentication).
 
-Vizuální styl: tmavě modré pozadí, ostře bílý text, jeden modrý akcent
-(žádná barevná paleta navíc) — tokeny jsou v `src/app/globals.css`
+Vizuální styl: černé pozadí, ostře bílý text, jeden žlutý akcent (žádná
+barevná paleta navíc) — tokeny jsou v `src/app/globals.css`
 (`--color-navy-*`, `--color-ink*`, `--color-accent`, `--color-success`,
 `--color-danger`) a používají se jako Tailwind utility (`bg-navy-950`,
-`text-accent`, …).
+`text-accent`, …). Homepage je zároveň e-shopová vitrína — publikované
+případy (s cenou a krátkým teaserem) se zobrazují hned nahoře, každý vede
+na `/objednat/[slug]` s poptávkovým formulářem.
 
 ## Jak to běží
 
 ```
 src/
   app/
-    page.tsx                marketingová homepage (/)
+    page.tsx                marketingová homepage (/) — nabídka případů
+                            + info sekce "Jak to funguje"
+    objednat/[slug]/        veřejná stránka případu + poptávkový formulář
+                            (honeypot proti botům, bez plateb — jen lead)
     prihlaseni/              přihlášení zákazníka (kód + heslo z krabice)
     portal/                  chráněná zóna zákazníka
       spis/                  úvod případu, osoby
@@ -109,9 +114,12 @@ Toto je funkční kostra, ne hotový produkt. Než půjde web zákazníkům:
   (aktuální řešení počítá útoky přes Postgres, což je v pořádku pro jeden
   region, ale při horizontálním škálování je rychlejší mít sdílenou
   in-memory store).
+- **Platby**: `/objednat/[slug]` sbírá poptávku (jméno, e-mail, zpráva) do
+  `OrderInquiry`, kterou vidíte v admin dashboardu — zatím žádné skutečné
+  placení. Napojení platební brány (Stripe Checkout apod.) je samostatný
+  krok, ke kterému je potřeba vaše obchodní/Stripe konto.
 - **E-mail zákazníkovi** s přihlašovacími údaji po objednávce (teď je vidí
-  jen admin v UI po vytvoření krabice) — napojení na objednávkový/e-shop
-  systém.
+  jen admin v UI po vytvoření krabice) — navazuje na bod o platbách výše.
 - **Nahrávání souborů z UI**: admin panel (`/admin/pripady/[id]`) už umí
   spravovat osoby, důkazy, odposlechy i e-maily bez zásahu do databáze —
   chybí jen upload fotek/PDF/audia přímo z prohlížeče (teď se zadává URL,
