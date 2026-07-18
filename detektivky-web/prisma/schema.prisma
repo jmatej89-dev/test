@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AdminRole {
+  ADMIN
+  EDITOR
+}
+
+enum BoxStatus {
+  ACTIVE
+  REVOKED
+}
+
+enum PersonRole {
+  VICTIM
+  SUSPECT
+  WITNESS
+  OTHER
+}
+
+enum DocumentType {
+  PHOTO
+  PDF
+  NOTE
+}
+
+model AdminUser {
+  id               String    @id @default(cuid())
+  email            String    @unique
+  passwordHash     String
+  name             String
+  role             AdminRole @default(EDITOR)
+  createdAt        DateTime  @default(now())
+  lastLoginAt      DateTime?
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+}
+
+model Case {
+  id            String   @id @default(cuid())
+  slug          String   @unique
+  title         String
+  subtitle      String?
+  description   String
+  difficulty    Int      @default(1)
+  coverImageUrl String?
+  isPublished   Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  persons   Person[]
+  documents Document[]
+  wiretaps  Wiretap[]
+  emails    Email[]
+  boxes     Box[]
+}
+
+model Box {
+  id               String    @id @default(cuid())
+  code             String    @unique
+  passwordHash     String
+  caseId           String
+  case             Case      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  customerLabel    String?
+  status           BoxStatus @default(ACTIVE)
+  createdAt        DateTime  @default(now())
+  lastLoginAt      DateTime?
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+
+  accusations Accusation[]
+
+  @@index([caseId])
+}
+
+model Person {
+  id         String     @id @default(cuid())
+  caseId     String
+  case       Case       @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  name       String
+  role       PersonRole @default(OTHER)
+  occupation String?
+  bio        String
+  photoUrl   String?
+  isCulprit  Boolean    @default(false)
+  sortOrder  Int        @default(0)
+
+  sentEmails     Email[]       @relation("EmailFrom")
+  receivedEmails Email[]       @relation("EmailTo")
+  accusedAs      Accusation[]
+
+  @@index([caseId])
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  caseId      String
+  case        Case         @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  title       String
+  type        DocumentType @default(NOTE)
+  url         String?
+  content     String?
+  description String?
+  sortOrder   Int          @default(0)
+
+  @@index([caseId])
+}
+
+model Wiretap {
+  id           String   @id @default(cuid())
+  caseId       String
+  case         Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  title        String
+  audioUrl     String
+  transcript   String?
+  participants String?
+  dateLabel    String?
+  sortOrder    Int      @default(0)
+
+  @@index([caseId])
+}
+
+model Email {
+  id           String   @id @default(cuid())
+  caseId       String
+  case         Case     @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  fromPersonId String?
+  fromPerson   Person?  @relation("EmailFrom", fields: [fromPersonId], references: [id])
+  toPersonId   String?
+  toPerson     Person?  @relation("EmailTo", fields: [toPersonId], references: [id])
+  subject      String
+  body         String
+  dateLabel    String?
+  sortOrder    Int      @default(0)
+
+  @@index([caseId])
+}
+
+model Accusation {
+  id                String   @id @default(cuid())
+  boxId             String
+  box               Box      @relation(fields: [boxId], references: [id], onDelete: Cascade)
+  suspectedPersonId String
+  suspectedPerson   Person   @relation(fields: [suspectedPersonId], references: [id])
+  reasoning         String?
+  isCorrect         Boolean
+  submittedAt       DateTime @default(now())
+
+  @@index([boxId])
+}
+
+model LoginAttempt {
+  id        String   @id @default(cuid())
+  actorCode String
+  actorType String
+  ip        String
+  success   Boolean
+  createdAt DateTime @default(now())
+
+  @@index([actorCode, createdAt])
+  @@index([ip, createdAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorType String
+  actorId   String?
+  action    String
+  meta      Json?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([actorType, actorId])
+  @@index([createdAt])
+}
