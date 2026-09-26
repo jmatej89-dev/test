@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 64" width="300" height="64" role="img" aria-label="MJ media">
+  <rect width="64" height="64" rx="10" fill="#FFFFFF"/>
+  <g fill="none" stroke="#111111" stroke-width="6" stroke-linecap="butt" stroke-linejoin="miter">
+    <polyline points="14,46 14,18 24,33 34,18 34,46"/>
+    <path d="M49 18 V37 a7.5 7.5 0 0 1 -15 0"/>
+  </g>
+  <text x="80" y="44" font-family="Inter, Helvetica Neue, Helvetica, Arial, sans-serif" font-size="34" font-weight="700" letter-spacing="-1.5" fill="#FFFFFF">MJ<tspan font-weight="400" fill="#D9D6CF" letter-spacing="-0.5"> media</tspan></text>
+</svg>

@@ -1,0 +1,197 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #fafaf8;
+  --color-surface: #ffffff;
+  --color-ink: #111111;
+  --color-ink-2: #3d3d3d;
+  --color-muted: #6f6f6f;
+  --color-faint: #a3a3a0;
+  --color-line: #e6e4df;
+  --color-line-strong: #cfcdc7;
+  --color-wash: #f2f1ed;
+  --color-accent: #d42b1e;
+  --color-accent-dark: #a81f14;
+  --color-accent-soft: #fbe9e7;
+  --color-ok: #2e6b4f;
+  --color-ok-soft: #e7f1ec;
+  --color-warn: #b8860b;
+  --color-warn-soft: #fbf3dc;
+
+  --font-serif: "Newsreader", "Georgia", "Times New Roman", serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --breakpoint-xs: 30rem;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  background: var(--color-paper);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+/* Titulky */
+.headline {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.12;
+  font-variation-settings: "opsz" 72;
+}
+
+.kicker {
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.meta {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+}
+
+/* Tělo článku */
+.prose-article {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  line-height: 1.65;
+  color: var(--color-ink);
+  font-variation-settings: "opsz" 16;
+}
+.prose-article > * + * { margin-top: 1.25em; }
+.prose-article p:first-child::first-letter { }
+.prose-article h2, .prose-article h3, .prose-article h4 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin-top: 2em;
+}
+.prose-article h2 { font-size: 1.7rem; }
+.prose-article h3 { font-size: 1.35rem; }
+.prose-article h4 { font-size: 1.15rem; }
+.prose-article a { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-accent); text-underline-offset: 3px; text-decoration-thickness: 2px; }
+.prose-article a:hover { color: var(--color-accent); }
+.prose-article strong { font-weight: 700; }
+.prose-article ul, .prose-article ol { padding-left: 1.4em; }
+.prose-article ul { list-style: disc; }
+.prose-article ol { list-style: decimal; }
+.prose-article li + li { margin-top: 0.4em; }
+.prose-article li::marker { color: var(--color-accent); }
+.prose-article blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding: 0.2em 0 0.2em 1.2em;
+  font-style: italic;
+  font-size: 1.35rem;
+  line-height: 1.45;
+  color: var(--color-ink-2);
+}
+.prose-article img { width: 100%; height: auto; border-radius: 4px; }
+.prose-article figure figcaption, .prose-article img + em { font-family: var(--font-sans); font-size: 0.8rem; color: var(--color-muted); }
+.prose-article hr { border: 0; border-top: 1px solid var(--color-line); margin: 2.5em auto; width: 40%; }
+.prose-article code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.85em; background: var(--color-wash); padding: 0.1em 0.35em; border-radius: 3px; }
+.prose-article pre { background: var(--color-ink); color: #f5f5f5; padding: 1em 1.2em; border-radius: 6px; overflow: auto; font-size: 0.9rem; line-height: 1.5; }
+.prose-article pre code { background: none; padding: 0; color: inherit; }
+.prose-article table { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 0.95rem; }
+.prose-article th, .prose-article td { border-bottom: 1px solid var(--color-line); padding: 0.6em 0.5em; text-align: left; }
+.prose-article th { font-weight: 600; border-bottom: 2px solid var(--color-ink); }
+
+/* Náhled v editoru (menší) */
+.prose-preview { font-size: 1.05rem; }
+.prose-preview h2 { font-size: 1.4rem; }
+.prose-preview h3 { font-size: 1.2rem; }
+.prose-preview blockquote { font-size: 1.15rem; }
+
+/* Drobnosti */
+.link-quiet { text-decoration: none; }
+.link-quiet:hover { color: var(--color-accent); }
+.hover-title:hover h2, .hover-title:hover h3, .hover-title:hover .title { color: var(--color-accent); }
+.rule { border-top: 1px solid var(--color-line); }
+.rule-strong { border-top: 2px solid var(--color-ink); }
+
+/* Admin formuláře */
+.field {
+  width: 100%;
+  border: 1px solid var(--color-line-strong);
+  background: #fff;
+  border-radius: 6px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--color-ink);
+  outline: none;
+  transition: border-color 0.12s, box-shadow 0.12s;
+}
+.field:focus { border-color: var(--color-ink); box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08); }
+.field::placeholder { color: var(--color-faint); }
+textarea.field { resize: vertical; }
+.label { display: block; font-size: 0.75rem; font-weight: 600; color: var(--color-ink-2); margin-bottom: 0.3rem; letter-spacing: 0.02em; }
+.hint { font-size: 0.72rem; color: var(--color-muted); margin-top: 0.3rem; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  border-radius: 6px; padding: 0.5rem 0.9rem; font-size: 0.85rem; font-weight: 600; line-height: 1.2;
+  border: 1px solid transparent; cursor: pointer; white-space: nowrap;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
+}
+.btn:disabled { opacity: 0.55; cursor: default; }
+.btn-primary { background: var(--color-ink); color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #2a2a2a; }
+.btn-accent { background: var(--color-accent); color: #fff; }
+.btn-accent:hover:not(:disabled) { background: var(--color-accent-dark); }
+.btn-ghost { background: #fff; color: var(--color-ink); border-color: var(--color-line-strong); }
+.btn-ghost:hover:not(:disabled) { border-color: var(--color-ink); }
+.btn-danger { background: #fff; color: var(--color-accent); border-color: var(--color-line-strong); }
+.btn-danger:hover:not(:disabled) { background: var(--color-accent-soft); border-color: var(--color-accent); }
+.btn-sm { padding: 0.35rem 0.6rem; font-size: 0.78rem; }
+.btn-icon { padding: 0.35rem 0.5rem; }
+
+.card { background: var(--color-surface); border: 1px solid var(--color-line); border-radius: 10px; }
+
+.badge { display: inline-flex; align-items: center; gap: 0.3rem; border-radius: 999px; padding: 0.15rem 0.55rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.02em; }
+.badge-draft { background: var(--color-wash); color: var(--color-ink-2); }
+.badge-published { background: var(--color-ok-soft); color: var(--color-ok); }
+.badge-scheduled { background: var(--color-warn-soft); color: var(--color-warn); }
+.badge-featured { background: var(--color-accent-soft); color: var(--color-accent); }
+
+.admin-nav a { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.875rem; font-weight: 500; color: var(--color-ink-2); }
+.admin-nav a:hover { background: var(--color-wash); color: var(--color-ink); }
+.admin-nav a[aria-current="page"] { background: var(--color-ink); color: #fff; }
+.admin-nav a[aria-current="page"] svg { color: #fff; }
+
+.tbl { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.tbl th { text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-muted); font-weight: 600; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--color-line); }
+.tbl td { padding: 0.7rem 0.75rem; border-bottom: 1px solid var(--color-line); vertical-align: middle; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl tr:hover td { background: #fcfcfb; }
+
+.toolbar-btn { padding: 0.3rem 0.5rem; border-radius: 4px; font-size: 0.78rem; font-weight: 600; color: var(--color-ink-2); border: 1px solid transparent; background: transparent; cursor: pointer; }
+.toolbar-btn:hover { background: var(--color-wash); color: var(--color-ink); }
+
+.editor-textarea { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.9rem; line-height: 1.6; min-height: 480px; tab-size: 2; }
+
+/* Skryté datum: číslo linky pro nejnovější */
+.num { font-variant-numeric: tabular-nums; }
+
+@keyframes fade-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.fade-in { animation: fade-in 0.25s ease-out; }
