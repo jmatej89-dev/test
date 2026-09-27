@@ -13,8 +13,8 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="flex-1 flex flex-col md:flex-row min-h-screen bg-paper">
       <aside className="md:w-56 md:shrink-0 border-b md:border-b-0 md:border-r border-line bg-surface md:sticky md:top-0 md:h-screen flex flex-col">
         <div className="px-4 py-4 flex items-center justify-between border-b border-line">
-          <Link href="/admin" className="link-quiet"><Logo size={28} /></Link>
-          <span className="badge badge-draft">Redakce</span>
+          <Link href="/admin" className="link-quiet"><Logo size={26} /></Link>
+          <span className="text-[0.65rem] font-bold uppercase tracking-[0.12em] text-muted">Redakce</span>
         </div>
         <div className="p-3 flex-1 flex md:flex-col gap-3 md:gap-0 overflow-x-auto">
           <AdminNav />

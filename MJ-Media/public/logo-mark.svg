@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="MJ media">
-  <rect width="64" height="64" rx="10" fill="#D42B1E"/>
+  <rect width="64" height="64" rx="10" fill="#C8202B"/>
   <g fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="butt" stroke-linejoin="miter">
     <polyline points="14,46 14,18 24,33 34,18 34,46"/>
     <path d="M49 18 V37 a7.5 7.5 0 0 1 -15 0"/>

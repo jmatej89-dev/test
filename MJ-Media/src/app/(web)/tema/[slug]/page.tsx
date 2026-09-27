@@ -17,13 +17,14 @@ export default async function TagPage({ params }: Props) {
   if (!tag) notFound();
   const items = listPublished({ tagSlug: slug, limit: 50 });
   return (
-    <div className="py-8">
-      <header className="border-b border-line pb-5 mb-4">
+    <div className="pt-8 sm:pt-12">
+      <header className="mb-8">
         <p className="kicker">Téma</p>
-        <h1 className="headline text-4xl mt-1">{tag.name}</h1>
+        <h1 className="headline text-[2.6rem] sm:text-[3.2rem] mt-2">{tag.name}</h1>
+        <p className="meta mt-3">{items.length} {items.length === 1 ? "článek" : items.length < 5 ? "články" : "článků"}</p>
       </header>
-      <div className="grid gap-x-8 md:grid-cols-2">{items.map((a) => <RowCard key={a.id} article={a} showPerex />)}</div>
-      {items.length === 0 && <p className="text-muted">K tomuto tématu zatím nic nemáme.</p>}
+      <div className="border-t-2 border-ink pt-2 grid gap-x-10 md:grid-cols-2">{items.map((a) => <RowCard key={a.id} article={a} />)}</div>
+      {items.length === 0 && <p className="text-muted py-10">K tomuto tématu zatím nic nemáme.</p>}
     </div>
   );
 }

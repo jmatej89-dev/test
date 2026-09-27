@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { adminStats, listAdmin, topArticles } from "@/lib/articles";
+import { countSubscribers } from "@/lib/newsletter";
 import { formatDate, relativeTime } from "@/lib/format";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 
@@ -14,6 +15,7 @@ export default function DashboardPage() {
     { label: "Koncepty", value: stats.drafts, href: "/admin/clanky?stav=draft" },
     { label: "Naplánováno", value: stats.scheduled, href: "/admin/clanky?stav=scheduled" },
     { label: "Zobrazení celkem", value: stats.views, href: "/admin/clanky" },
+    { label: "Odběratelé", value: countSubscribers(), href: "/admin/odberatele" },
   ];
 
   return (
@@ -26,9 +28,9 @@ export default function DashboardPage() {
         <Link href="/admin/clanky/novy" className="btn btn-accent">+ Nový článek</Link>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
         {tiles.map((t) => (
-          <Link key={t.label} href={t.href} className="card p-4 hover:border-ink transition-colors">
+          <Link key={t.label} href={t.href} className="stat-tile">
             <p className="text-[0.7rem] uppercase tracking-wider text-muted font-semibold">{t.label}</p>
             <p className="num text-3xl font-bold mt-1">{t.value.toLocaleString("cs-CZ")}</p>
           </Link>

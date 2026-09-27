@@ -28,18 +28,21 @@ Databáze (SQLite) se vytvoří automaticky v `data/mjmedia.db` a naplní se uk�
 - Editor: Markdown s nástrojovou lištou, náhled (Psaní / Vedle sebe / Náhled), nahrávání obrázků (tlačítkem, přetažením nebo Ctrl+V), úvodní obrázek, rubrika, štítky, datum publikace (budoucí datum = naplánováno), hlavní článek, SEO titulek a popis, Ctrl/⌘+S uloží
 - Rubriky: `/admin/rubriky` – přidání, přejmenování, pořadí v navigaci, mazání
 - Média: `/admin/media` – knihovna obrázků s popisky (alt) a kopírováním URL
+- Odběratelé: `/admin/odberatele` – e-maily z newsletterových formulářů, export do CSV
 - Nastavení: `/admin/nastaveni` – název webu, slogan, O nás, patička, kontakt a sociální sítě
 
 ## Veřejný web
 
 - `/` úvodní strana: hlavní článek, mřížka, panel „Nejnovější“, další články, sekce rubrik
 - `/clanek/[slug]` článek, `/rubrika/[slug]` rubrika se stránkováním, `/tema/[slug]` štítek
-- `/hledat` fulltextové hledání, `/o-nas`
+- `/hledat` fulltextové hledání, `/o-nas`, `/newsletter` (přihlášení k odběru)
 - `/rss.xml`, `/sitemap.xml`, `/robots.txt`
 
 ## Technologie
 
-Next.js 16 (App Router, server actions), React 19, Tailwind CSS 4, better-sqlite3, marked. Žádné externí služby – běží na jednom serveru s Node.js 20+.
+Next.js 16 (App Router, server actions), React 19, Tailwind CSS 4, better-sqlite3, marked. Fonty jsou self-hostované. Žádné externí služby – běží na jednom serveru s Node.js 20+.
+
+Ukázkové fotografie pocházejí z veřejně dostupné sady scikit-image (public domain / CC0) a jsou sjednocené do černobílého stylu; nahraďte je vlastními.
 
 ## Nasazení
 

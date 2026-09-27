@@ -2,48 +2,57 @@
 
 ## Logo
 
-Značka je tvořena červeným čtvercem se zaoblenými rohy a bílým geometrickým monogramem **MJ**, kde hák písmene J plynule navazuje na pravou nohu M (ligatura). Vedle značky stojí nápis **MJ** (tučně) a **media** (regular, tmavě šedá).
+Značka: červený čtverec se zaoblenými rohy a bílým geometrickým monogramem **MJ**. Hák písmene J plynule navazuje na pravou nohu M (ligatura), takže obě písmena tvoří jeden tah. Vedle značky stojí nápis **MJ** (tučně) a **media** (regular, tmavě šedá).
 
 | Soubor | Použití |
 |---|---|
-| `public/logo.svg` | Plné logo (značka + nápis) na světlém pozadí |
-| `public/logo-inverse.svg` | Plné logo na tmavém pozadí |
+| `public/logo.svg` | Plné logo na světlém pozadí |
+| `public/logo-inverse.svg` | Plné logo na tmavém pozadí (patička) |
 | `public/logo-mark.svg` | Samotná značka (avatar, sociální sítě, aplikace) |
-| `public/favicon.svg` | Favicon / ikona záložky |
+| `public/favicon.svg` | Favicon |
 
-Logo se na webu vykresluje komponentou `src/components/Logo.tsx`, takže barvu a velikost lze měnit na jednom místě. Ochranná zóna: minimálně výška písmene „M“ ze značky na všech stranách. Minimální velikost značky: 16 px.
+Na webu logo vykresluje komponenta `src/components/Logo.tsx` (`inverse` pro tmavé pozadí). Ochranná zóna: výška písmene M ze značky. Minimální velikost značky 16 px.
 
 ## Barvy
 
 | Token | Hex | Použití |
 |---|---|---|
-| paper | `#FAFAF8` | pozadí stránky (teplá bílá) |
+| paper | `#F8F7F4` | pozadí stránky (teplá bílá) |
 | surface | `#FFFFFF` | karty, formuláře |
-| ink | `#111111` | text, titulky, silné linky |
-| ink-2 | `#3D3D3D` | perex, sekundární text |
-| muted | `#6F6F6F` | metadata, datumy |
-| line | `#E6E4DF` | jemné oddělovací linky |
-| accent | `#D42B1E` | značka, názvy rubrik, odkazy v textu, „živé“ prvky |
-| accent-dark | `#A81F14` | hover akcentu |
-| ok / warn | `#2E6B4F` / `#B8860B` | stavy v administraci |
+| ink | `#0F0F0F` | text, titulky, silné linky |
+| ink-2 | `#3A3A3A` | perex, sekundární text |
+| muted | `#6B6B6B` | metadata |
+| line | `#E4E2DC` | oddělovací linky |
+| wash | `#EFEDE8` | podkladové boxy (newsletter, autor) |
+| accent | `#C8202B` | značka, názvy rubrik, časy v panelu Nejnovější, publikační tlačítka, iniciála článku |
+| dark | `#141414` | tmavá sekce Názory a patička |
 
-Akcent se používá střídmě: rubrika nad titulkem, podtržení odkazu, časová značka v panelu Nejnovější, tlačítko Publikovat. Vše ostatní je černobílé.
+Akcent se používá střídmě. Vše ostatní je černobílé, včetně fotografií v ukázkovém obsahu (jednotný monochromatický styl s teplým tónem, 3:2).
 
 ## Typografie
 
-- **Titulky a tělo článku:** Newsreader (Google Fonts, proměnná osa optické velikosti). Titulky váha 600, záporný prostrkání −0,015 em.
+Fonty jsou self-hostované v `public/fonts` (žádné volání Google Fonts, funguje i offline).
+
+- **Titulky, perex, tělo článku:** Newsreader (proměnná osa optické velikosti; titulky `opsz 72`, tělo `opsz 18`).
 - **UI, navigace, metadata, administrace:** Inter.
-- Názvy rubrik: Inter 700, verzálky, prostrkání 0,1 em, akcentová červená.
-- Tělo článku: 1,2 rem / 1,65, šířka sloupce 48 rem (cca 70 znaků).
+- Rubrika nad titulkem: Inter 700, verzálky, prostrkání 0,12 em, akcent.
+- Názvy sekcí: Inter 700, verzálky, 0,8 rem, nad 2px linkou v barvě ink.
+- Tělo článku 1,25 rem / 1,6, sloupec 48 rem, iniciála prvního odstavce v akcentu.
 
-## Rozvržení
+## Struktura úvodní strany
 
-- Hlavička: tenký řádek s datem a servisními odkazy, logo s vyhledáváním, navigace rubrik oddělená silnou linkou nahoře (2 px, ink) a tenkou dole.
-- Úvodní strana: hlavní článek (obrázek + titulek), tři karty, vpravo panel **Nejnovější** s časovými značkami v červené (odkaz na živý tok ČT24), níže dvousloupcový seznam a sekce rubrik ve čtyřech sloupcích.
-- Sekce začínají 2 px linkou v barvě ink a názvem v Interu (odkaz na Deník N).
-- Článek: drobečková navigace, rubrika, velký titulek, perex v serifu, řádek s autorem/datem/dobou čtení, úvodní obrázek přes širší sloupec, tělo v úzkém sloupci, štítky a sdílení, „Mohlo by vás zajímat“.
-- Administrace: levý postranní panel (bílý) s aktivní položkou v ink, obsah na paper, karty s 10 px zaoblením. Primární tlačítko ink, publikační tlačítko accent.
+1. **Hlavička**: 4px červený pruh, servisní řádek (datum, slogan, O nás / RSS / Redakce), logo + hledání + tlačítko Odebírat, lepící navigace rubrik s malou značkou.
+2. **Hlavní blok**: velký článek (foto 3:2 přes 8 sloupců, titulek pod ním) + dvě sekundární karty; vpravo panel **Nejnovější** s časy (červeně) a box Newsletter.
+3. **Další zprávy**: čtyři malé karty + čtyři titulky ve dvou sloupcích.
+4. **Názory a komentáře**: tmavý pás přes celou šířku, tři texty s uvozovkou a jménem autora.
+5. **Z rubrik**: tři sloupce, každý s jednou kartou a třemi titulky.
+6. **Nejčtenější** (číslovaný seznam) + **Témata** (štítky).
+7. **Patička**: tmavá, logo v inverzi, popis, rubriky, odkazy, newsletter.
 
-## Tón
+## Článek
 
-Klidný, věcný, bez křiku. Žádné stíny, gradienty ani dekorace; hierarchii dělá typografie, linky a jedna barva.
+Drobečková navigace, rubrika, titulek do 3,4 rem, perex v serifu, řádek s iniciálami autora, datem, dobou čtení a sdílením, foto 2:1 přes celou šířku, tělo v úzkém sloupci s iniciálou, štítky, box autora, newsletter, „Mohlo by vás zajímat“ + Nejnovější. Nahoře tenký červený ukazatel průběhu čtení.
+
+## Administrace
+
+Levý bílý panel s aktivní položkou v ink, obsah na paper, dlaždice statistik, tabulky s hlavičkou ve verzálkách. Primární tlačítko ink, publikační akce v akcentu.
