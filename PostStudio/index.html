@@ -1,172 +1,218 @@
 <title>Studio příspěvků</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap">
 <style>
-/* Layout: one-screen mobile app. Home = list of posts. Editor = pinned live preview of the
-   1080×1350 slide on top, horizontal slide strip, scrolling field panel beneath. Dark-first,
-   because the slides themselves are navy; the UI stays a half step darker so the artwork reads. */
+/* Layout: one-screen mobile app over a soft, blurred color field. Glass surfaces (top bar, slide strip,
+   field sheet, bottom sheets) float above it. The 1080×1350 slide is the one solid, dark object on screen.
+   Light is the primary theme (the client asked for a light Liquid Glass look); dark mirrors it. */
 :root{
-  --bg:#070B16; --surface:#0D1322; --surface-2:#131A2E; --line:#1C2440; --line-strong:#2A3558;
-  --fg:#E9EEF8; --fg-2:#AAB6D2; --muted:#6E7EA6;
-  --accent:#5CE1E6; --accent-ink:#06121C; --accent-dim:rgba(92,225,230,.14);
-  --warn:#E6B54A; --danger:#E86A6A; --ok:#60CE80;
-  --font-ui:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --font-brand:'Montserrat',system-ui,-apple-system,sans-serif;
-  --r:10px; --gutter:16px;
-  color-scheme:dark;
+  --bg:#E9EDF5; --blob-a:rgba(92,225,230,.55); --blob-b:rgba(120,140,235,.35); --blob-c:rgba(255,214,170,.55);
+  --glass:rgba(255,255,255,.58); --glass-2:rgba(255,255,255,.86); --glass-line:rgba(255,255,255,.85); --glass-edge:rgba(20,30,60,.08);
+  --shadow:0 12px 32px rgba(20,30,60,.12),0 1px 2px rgba(20,30,60,.06);
+  --fg:#0B1226; --fg-2:#3C4866; --muted:#6B7693; --line:rgba(20,30,60,.1);
+  --field:rgba(255,255,255,.7); --field-line:rgba(20,30,60,.12); --card:rgba(255,255,255,.28);
+  --accent:#0A9EA6; --accent-soft:rgba(92,225,230,.28); --accent-ink:#FFFFFF;
+  --warn:#9A6400; --warn-soft:rgba(230,181,74,.22); --danger:#C73A3A; --ok:#1F8A4C; --ok-soft:rgba(96,206,128,.22);
+  --font-ui:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,system-ui,sans-serif;
+  --font-brand:'Montserrat',-apple-system,system-ui,sans-serif;
+  --r-glass:22px; --r-field:14px; --gutter:16px;
+  color-scheme:light;
 }
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    --bg:#F1F3F8; --surface:#FFFFFF; --surface-2:#E8ECF4; --line:#D8DEEA; --line-strong:#C1C9DB;
-    --fg:#0F172B; --fg-2:#3D4A6B; --muted:#6B7899;
-    --accent:#0C949A; --accent-ink:#FFFFFF; --accent-dim:rgba(12,148,154,.12);
-    --warn:#8F6300; --danger:#C53B3B; --ok:#1E8A48; color-scheme:light;
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#090D1A; --blob-a:rgba(92,225,230,.22); --blob-b:rgba(100,120,230,.22); --blob-c:rgba(255,190,120,.14);
+    --glass:rgba(22,30,52,.55); --glass-2:rgba(22,30,52,.8); --glass-line:rgba(255,255,255,.14); --glass-edge:rgba(0,0,0,.3);
+    --shadow:0 12px 32px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);
+    --fg:#EDF1FA; --fg-2:#B3BDD6; --muted:#7D89A8; --line:rgba(255,255,255,.1);
+    --field:rgba(255,255,255,.07); --field-line:rgba(255,255,255,.12); --card:rgba(255,255,255,.03);
+    --accent:#5CE1E6; --accent-soft:rgba(92,225,230,.18); --accent-ink:#06121C;
+    --warn:#E6B54A; --warn-soft:rgba(230,181,74,.16); --danger:#F07878; --ok:#6ED48E; --ok-soft:rgba(96,206,128,.16);
+    color-scheme:dark;
   }
 }
-:root[data-theme="light"]{
-  --bg:#F1F3F8; --surface:#FFFFFF; --surface-2:#E8ECF4; --line:#D8DEEA; --line-strong:#C1C9DB;
-  --fg:#0F172B; --fg-2:#3D4A6B; --muted:#6B7899;
-  --accent:#0C949A; --accent-ink:#FFFFFF; --accent-dim:rgba(12,148,154,.12);
-  --warn:#8F6300; --danger:#C53B3B; --ok:#1E8A48; color-scheme:light;
+:root[data-theme="dark"]{
+  --bg:#090D1A; --blob-a:rgba(92,225,230,.22); --blob-b:rgba(100,120,230,.22); --blob-c:rgba(255,190,120,.14);
+  --glass:rgba(22,30,52,.55); --glass-2:rgba(22,30,52,.8); --glass-line:rgba(255,255,255,.14); --glass-edge:rgba(0,0,0,.3);
+  --shadow:0 12px 32px rgba(0,0,0,.4),0 1px 2px rgba(0,0,0,.3);
+  --fg:#EDF1FA; --fg-2:#B3BDD6; --muted:#7D89A8; --line:rgba(255,255,255,.1);
+  --field:rgba(255,255,255,.07); --field-line:rgba(255,255,255,.12); --card:rgba(255,255,255,.03);
+  --accent:#5CE1E6; --accent-soft:rgba(92,225,230,.18); --accent-ink:#06121C;
+  --warn:#E6B54A; --warn-soft:rgba(230,181,74,.16); --danger:#F07878; --ok:#6ED48E; --ok-soft:rgba(96,206,128,.16);
+  color-scheme:dark;
 }
 
 html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font-ui);font-size:15px;line-height:1.4;
-  -webkit-font-smoothing:antialiased;touch-action:manipulation;overflow:hidden}
+  -webkit-font-smoothing:antialiased;touch-action:manipulation;overflow:hidden;overscroll-behavior:none}
 *{box-sizing:border-box}
 button,input,select,textarea{font:inherit;color:inherit}
 button{background:none;border:0;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 svg{display:block}
 
-#app{height:100%;display:flex;flex-direction:column;max-width:720px;margin:0 auto;position:relative}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg)}
+#bg{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#bg i{position:absolute;border-radius:50%;filter:blur(70px)}
+#bg .a{width:70vw;height:70vw;max-width:520px;max-height:520px;background:var(--blob-a);left:-18vw;top:-10vh}
+#bg .b{width:62vw;height:62vw;max-width:480px;max-height:480px;background:var(--blob-b);right:-20vw;top:30vh}
+#bg .c{width:60vw;height:60vw;max-width:460px;max-height:460px;background:var(--blob-c);left:10vw;bottom:-18vh}
+
+#app{height:100%;display:flex;flex-direction:column;max-width:720px;margin:0 auto;position:relative;z-index:1}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column}
+.glass{background:var(--glass);-webkit-backdrop-filter:blur(26px) saturate(170%);backdrop-filter:blur(26px) saturate(170%);
+  border:1px solid var(--glass-line);box-shadow:var(--shadow),inset 0 0 0 1px var(--glass-edge);border-radius:var(--r-glass)}
 
 /* ---- Top bar ---- */
-.bar{display:flex;align-items:center;gap:10px;min-height:56px;padding:8px var(--gutter);border-bottom:1px solid var(--line);flex:none}
-.bar .ttl{font-family:var(--font-brand);font-weight:700;font-size:17px;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bar input.ttl{background:none;border:0;padding:6px 0;border-radius:0;min-width:0;width:100%}
-.bar input.ttl:focus{outline:none;box-shadow:inset 0 -2px 0 var(--accent)}
-.ib{width:40px;height:40px;display:grid;place-items:center;border-radius:50%;color:var(--fg-2);flex:none}
-.ib:active{background:var(--surface-2)}
+.bar{display:flex;align-items:center;gap:6px;min-height:54px;padding:6px 8px 6px 6px;margin:10px var(--gutter) 0;flex:none;border-radius:999px}
+.bar .ttl{font-family:var(--font-brand);font-weight:700;font-size:16px;letter-spacing:-.01em;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar input.ttl{background:none;border:0;padding:8px 6px;border-radius:10px;min-width:0;width:100%}
+.bar input.ttl:focus{outline:none;background:var(--field)}
+.ib{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;color:var(--fg-2);flex:none}
+.ib:active{background:var(--field)}
 .ib.acc{color:var(--accent)}
-.ib svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ib svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---- Home ---- */
-.home-head{padding:28px var(--gutter) 12px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
-.home-head h1{margin:0;font-family:var(--font-brand);font-weight:700;font-size:28px;letter-spacing:-.02em;line-height:1.1}
-.home-head .sub{color:var(--muted);font-size:13px;margin-top:4px}
-.list{flex:1;overflow:auto;padding:0 var(--gutter) 24px;-webkit-overflow-scrolling:touch}
-.row{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line);width:100%;text-align:left}
-.row .th{width:54px;height:67px;border-radius:5px;background:#070F28;flex:none;overflow:hidden;border:1px solid var(--line-strong)}
-.row .th img{width:100%;height:100%;object-fit:cover;display:block}
-.row .m{flex:1;min-width:0}
-.row .n{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .d{color:var(--muted);font-size:13px;margin-top:2px;font-variant-numeric:tabular-nums}
-.row .more{width:40px;height:40px;display:grid;place-items:center;color:var(--muted);border-radius:50%}
-.row .more svg{width:20px;height:20px;fill:currentColor}
-.empty{padding:48px 0;color:var(--muted);text-align:center;font-size:14px}
-.fab{position:absolute;right:var(--gutter);bottom:calc(20px + env(safe-area-inset-bottom,0px));height:52px;padding:0 22px 0 18px;border-radius:26px;
-  background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15px;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
-.fab svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round}
+.home-head{padding:34px var(--gutter) 14px;display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex:none}
+.home-head h1{margin:0;font-family:var(--font-brand);font-weight:700;font-size:30px;letter-spacing:-.025em;line-height:1.05}
+.home-head .sub{color:var(--muted);font-size:13px;margin-top:5px;font-variant-numeric:tabular-nums}
+.list{flex:1;overflow:auto;padding:4px var(--gutter) calc(110px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;gap:10px}
+.post{display:flex;align-items:center;gap:14px;padding:12px 10px 12px 12px;width:100%;text-align:left}
+.post .th{width:56px;height:70px;border-radius:9px;background:#070F28;flex:none;overflow:hidden;box-shadow:0 2px 8px rgba(7,15,40,.25)}
+.post .th img{width:100%;height:100%;object-fit:cover;display:block}
+.post .m{flex:1;min-width:0}
+.post .n{font-weight:600;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.01em}
+.post .d{color:var(--muted);font-size:13px;margin-top:3px;font-variant-numeric:tabular-nums}
+.post .more{width:40px;height:40px;display:grid;place-items:center;color:var(--muted);border-radius:50%}
+.post .more svg{width:20px;height:20px;fill:currentColor}
+.empty{padding:48px 20px;color:var(--muted);text-align:center;font-size:14px;line-height:1.5}
+.fabs{position:absolute;left:var(--gutter);right:var(--gutter);bottom:calc(18px + env(safe-area-inset-bottom,0px));display:flex;justify-content:space-between;align-items:center;gap:10px;pointer-events:none}
+.fabs>*{pointer-events:auto}
+.fab{height:54px;padding:0 24px 0 18px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:600;font-size:15.5px;display:flex;align-items:center;gap:8px;
+  box-shadow:0 10px 26px rgba(10,158,166,.35),inset 0 1px 0 rgba(255,255,255,.35)}
+.fab svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round}
+.fab.ghost{background:var(--glass);color:var(--fg-2);box-shadow:var(--shadow);border:1px solid var(--glass-line);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);padding:0 16px}
 
 /* ---- Editor ---- */
-.preview{flex:none;padding:12px var(--gutter) 8px;display:flex;flex-direction:column;align-items:center;gap:8px;border-bottom:1px solid var(--line)}
-.canvas-wrap{position:relative;height:min(42vh,420px);aspect-ratio:4/5;max-width:100%}
-.canvas-wrap canvas{width:100%;height:100%;display:block;border-radius:6px;border:1px solid var(--line-strong);background:#070F28}
-.checks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:22px;max-width:100%}
-.chip{font-variant-numeric:tabular-nums;font-size:11.5px;line-height:1;padding:5px 8px;border-radius:4px;background:var(--surface-2);color:var(--fg-2);display:inline-flex;align-items:center;gap:5px}
-.chip.w{color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent)}
-.chip.ok{color:var(--ok)}
+.preview{flex:none;padding:12px var(--gutter) 6px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.canvas-wrap{position:relative;height:min(41vh,420px);aspect-ratio:4/5;max-width:100%;border-radius:16px;box-shadow:0 18px 40px rgba(7,15,40,.28),0 2px 6px rgba(7,15,40,.15)}
+.canvas-wrap canvas{width:100%;height:100%;display:block;border-radius:16px;background:#070F28}
+.canvas-wrap.grab{cursor:grab}
+.canvas-wrap .gest{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);background:rgba(7,15,40,.7);color:#fff;font-size:11px;padding:5px 10px;border-radius:999px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .2s}
+.canvas-wrap.hinting .gest{opacity:1}
+.checks{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:24px;max-width:100%}
+.chip{font-size:11.5px;line-height:1;padding:6px 10px;border-radius:999px;background:var(--glass-2);color:var(--fg-2);display:inline-flex;align-items:center;gap:6px;border:1px solid var(--glass-line);font-variant-numeric:tabular-nums}
+.chip.w{color:var(--warn);background:var(--warn-soft)}
+.chip.ok{color:var(--ok);background:var(--ok-soft)}
 .chip i{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block}
 
-.strip{flex:none;display:flex;gap:8px;padding:10px var(--gutter);overflow-x:auto;border-bottom:1px solid var(--line);scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.strip-wrap{flex:none;padding:4px var(--gutter) 10px}
+.strip{display:flex;gap:8px;padding:8px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;border-radius:18px;align-items:center}
 .strip::-webkit-scrollbar{display:none}
-.th-btn{flex:none;width:48px;height:60px;border-radius:5px;overflow:hidden;border:1.5px solid var(--line-strong);background:#070F28;position:relative;opacity:.72}
+.th-btn{flex:none;width:46px;height:58px;border-radius:9px;overflow:hidden;background:#070F28;position:relative;opacity:.6;transition:opacity .15s,transform .15s}
 .th-btn img{width:100%;height:100%;display:block;object-fit:cover}
-.th-btn.on{border-color:var(--accent);opacity:1}
-.th-btn .k{position:absolute;left:0;bottom:0;right:0;font-size:9px;font-weight:700;letter-spacing:.06em;text-align:center;background:rgba(7,15,40,.8);color:#fff;padding:2px 0}
-.th-add{flex:none;width:48px;height:60px;border-radius:5px;border:1.5px dashed var(--line-strong);display:grid;place-items:center;color:var(--muted)}
+.th-btn.on{opacity:1;box-shadow:0 0 0 2px var(--accent);transform:scale(1.04)}
+.th-btn .k{position:absolute;left:0;bottom:0;right:0;font-size:9px;font-weight:700;letter-spacing:.08em;text-align:center;background:rgba(7,15,40,.78);color:#fff;padding:2px 0;font-family:var(--font-brand)}
+.th-add{flex:none;width:46px;height:58px;border-radius:9px;border:1.5px dashed var(--field-line);display:grid;place-items:center;color:var(--muted)}
 .th-add svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
+.strip .sep{width:1px;height:36px;background:var(--line);flex:none;margin:0 2px}
+.strip .grid-btn{flex:none;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:var(--fg-2)}
+.strip .grid-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-.panel{flex:1;overflow:auto;padding:0 var(--gutter) calc(32px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch}
-.sec{padding:16px 0 6px;display:flex;align-items:center;justify-content:space-between;gap:10px}
-.sec h3{margin:0;font-family:var(--font-brand);font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.sec .lnk{font-size:13px;color:var(--accent);font-weight:500}
-.f{display:flex;flex-direction:column;gap:6px;padding:8px 0}
-.f label{font-size:12.5px;color:var(--fg-2);display:flex;justify-content:space-between;align-items:baseline}
-.f label output{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px}
-.f label .hint{color:var(--muted);font-size:11.5px}
-.in{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:11px 12px;font-size:16px;line-height:1.35;min-width:0}
-.in:focus{outline:none;border-color:var(--accent)}
-textarea.in{resize:none;min-height:88px;font-family:var(--font-brand);font-weight:600}
-textarea.in.plain{font-family:var(--font-ui);font-weight:400}
+.panel-wrap{flex:1;min-height:0;padding:0 var(--gutter);display:flex}
+.panel{flex:1;overflow:auto;padding:4px 16px calc(28px + env(safe-area-inset-bottom,0px));-webkit-overflow-scrolling:touch;border-radius:var(--r-glass) var(--r-glass) 0 0;border-bottom:0}
+.sec{padding:18px 0 6px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sec h3{margin:0;font-family:var(--font-brand);font-size:11px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+.hint{color:var(--muted);font-size:12px}
+.sec .hint{text-align:right}
+.sec .lnk{font-size:13px;color:var(--accent);font-weight:600}
+.f{display:flex;flex-direction:column;gap:6px;padding:7px 0}
+.f label{font-size:12.5px;color:var(--fg-2);display:flex;justify-content:space-between;align-items:baseline;font-weight:500}
+.f label output{color:var(--muted);font-variant-numeric:tabular-nums;font-size:12px;font-weight:400}
+.in{width:100%;background:var(--field);border:1px solid var(--field-line);border-radius:var(--r-field);padding:11px 13px;font-size:16px;line-height:1.35;min-width:0;box-shadow:inset 0 1px 2px rgba(20,30,60,.04)}
+.in:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.in::placeholder{color:var(--muted);opacity:.8}
+textarea.in{resize:none;min-height:92px;font-family:var(--font-brand);font-weight:600}
+textarea.in.plain{font-family:var(--font-ui);font-weight:400;min-height:0}
 select.in{appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
   background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:36px}
-input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0;height:28px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:var(--field-line)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:#fff;margin-top:-11px;box-shadow:0 2px 8px rgba(20,30,60,.25),0 0 0 1px rgba(20,30,60,.08)}
+input[type=range]::-moz-range-track{height:4px;border-radius:2px;background:var(--field-line)}
+input[type=range]::-moz-range-thumb{width:26px;height:26px;border:0;border-radius:50%;background:#fff;box-shadow:0 2px 8px rgba(20,30,60,.25),0 0 0 1px rgba(20,30,60,.08)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
-.grid3{display:grid;grid-template-columns:1.6fr 1fr 1fr;gap:0 10px}
+.grid3{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:0 10px}
 .inline{display:flex;gap:8px;align-items:center}
 .inline .in{flex:1}
 .sw{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);gap:12px}
-.sw .t{font-size:15px}
+.sw:last-child{border-bottom:0}
+.sw .t{font-size:15px;font-weight:500}
 .sw .s{color:var(--muted);font-size:12.5px;margin-top:2px}
-.tg{width:46px;height:28px;border-radius:14px;background:var(--line-strong);position:relative;flex:none;transition:background .15s}
-.tg::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .15s}
+.tg{width:50px;height:30px;border-radius:15px;background:var(--field-line);position:relative;flex:none;transition:background .18s;box-shadow:inset 0 1px 2px rgba(20,30,60,.1)}
+.tg::after{content:"";position:absolute;top:2px;left:2px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .18s;box-shadow:0 2px 6px rgba(20,30,60,.25)}
 .tg[aria-checked="true"]{background:var(--accent)}
-.tg[aria-checked="true"]::after{transform:translateX(18px)}
-@media (prefers-reduced-motion:reduce){.tg,.tg::after,.sheet,.toast{transition:none}}
+.tg[aria-checked="true"]::after{transform:translateX(20px)}
+@media (prefers-reduced-motion:reduce){.tg,.tg::after,.sheet,.toast,.th-btn{transition:none}}
 
-.card-ed{border:1px solid var(--line);border-radius:var(--r);padding:4px 12px 10px;margin:8px 0;background:var(--surface)}
+.card-ed{border:1px solid var(--line);border-radius:16px;padding:4px 12px 10px;margin:8px 0;background:var(--card)}
 .card-ed .hd{display:flex;align-items:center;justify-content:space-between;color:var(--muted);font-size:12px;padding-top:8px}
-.card-ed .hd b{font-weight:600;color:var(--fg-2)}
-.card-ed .in{background:var(--bg)}
-.mini{display:flex;gap:4px}
-.mini button{width:32px;height:32px;display:grid;place-items:center;border-radius:6px;color:var(--muted)}
-.mini button:active{background:var(--surface-2)}
+.card-ed .hd b{font-weight:600;color:var(--fg-2);display:flex;align-items:center}
+.mini{display:flex;gap:2px}
+.mini button{width:34px;height:34px;display:grid;place-items:center;border-radius:50%;color:var(--muted)}
+.mini button:active{background:var(--field)}
+.mini button:disabled{opacity:.3}
 .mini svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.add-line{width:100%;padding:12px;border:1px dashed var(--line-strong);border-radius:var(--r);color:var(--fg-2);font-size:14px;font-weight:500;margin-top:6px}
+.add-line{width:100%;padding:12px;border:1.5px dashed var(--field-line);border-radius:var(--r-field);color:var(--fg-2);font-size:14px;font-weight:600;margin-top:6px}
 
-.photo-box{display:flex;gap:12px;align-items:center;padding:8px 0}
-.photo-box .pv{width:72px;height:72px;border-radius:8px;background:var(--surface-2);overflow:hidden;flex:none;display:grid;place-items:center;color:var(--muted)}
-.photo-box .pv img{width:100%;height:100%;object-fit:cover;display:block}
-.photo-box .pv svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6}
+.photo-box{display:flex;gap:14px;align-items:center;padding:8px 0}
+.photo-box .pv{width:76px;height:76px;border-radius:14px;background:var(--field);overflow:hidden;flex:none;display:grid;place-items:center;color:var(--muted);border:1px solid var(--field-line)}
+.photo-box .pv canvas{width:100%;height:100%;display:block}
+.photo-box .pv svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6}
 .photo-box .acts{display:flex;flex-direction:column;gap:6px;flex:1;min-width:0}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 14px;border-radius:var(--r);font-weight:600;font-size:14.5px;border:1px solid var(--line-strong);color:var(--fg);background:var(--surface);min-height:44px}
-.btn.p{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 16px;border-radius:999px;font-weight:600;font-size:14.5px;border:1px solid var(--field-line);color:var(--fg);background:var(--field);min-height:46px}
+.btn.p{background:var(--accent);color:var(--accent-ink);border-color:transparent;box-shadow:0 6px 18px rgba(10,158,166,.28),inset 0 1px 0 rgba(255,255,255,.3)}
 .btn.d{color:var(--danger)}
-.btn.sm{padding:8px 12px;min-height:38px;font-size:13.5px}
+.btn.sm{padding:8px 14px;min-height:38px;font-size:13.5px}
 .btn:disabled{opacity:.45}
-.btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .tools{display:flex;gap:8px;padding:14px 0 4px;flex-wrap:wrap}
 .tools .btn{flex:1;min-width:0}
 .note{color:var(--muted);font-size:12.5px;line-height:1.45;padding:4px 0 8px}
-.cs{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:6px;border:1px solid rgba(255,255,255,.15)}
+.cs{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-right:7px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
 
 /* ---- Sheets ---- */
-.scrim{position:absolute;inset:0;background:rgba(3,6,14,.6);opacity:0;pointer-events:none;transition:opacity .18s;z-index:20}
+.scrim{position:absolute;inset:0;background:rgba(10,16,36,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
 .scrim.on{opacity:1;pointer-events:auto}
-.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:16px 16px 0 0;border-top:1px solid var(--line-strong);
-  transform:translateY(102%);transition:transform .22s cubic-bezier(.2,.8,.2,1);z-index:21;max-height:88%;display:flex;flex-direction:column;
+.sheet{position:absolute;left:8px;right:8px;bottom:8px;border-radius:26px;background:var(--glass-2);-webkit-backdrop-filter:blur(30px) saturate(170%);backdrop-filter:blur(30px) saturate(170%);border:1px solid var(--glass-line);box-shadow:var(--shadow);
+  transform:translateY(calc(100% + 20px));transition:transform .26s cubic-bezier(.2,.8,.2,1);z-index:21;max-height:calc(90% - 8px);display:flex;flex-direction:column;
   padding-bottom:env(safe-area-inset-bottom,0px)}
 .sheet.on{transform:none}
-.sheet .grab{width:36px;height:4px;border-radius:2px;background:var(--line-strong);margin:10px auto 2px}
-.sheet .sh{padding:10px var(--gutter) 6px;display:flex;align-items:center;justify-content:space-between}
-.sheet .sh h2{margin:0;font-family:var(--font-brand);font-size:16px;font-weight:700}
-.sheet .body{overflow:auto;padding:0 var(--gutter) 20px;-webkit-overflow-scrolling:touch}
-.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:13px 0;border-bottom:1px solid var(--line)}
+.sheet .grab{width:36px;height:5px;border-radius:3px;background:var(--field-line);margin:10px auto 0}
+.sheet .sh{padding:8px 18px 4px;display:flex;align-items:center;justify-content:space-between}
+.sheet .sh h2{margin:0;font-family:var(--font-brand);font-size:17px;font-weight:700;letter-spacing:-.01em}
+.sheet .body{overflow:auto;padding:0 18px 18px;-webkit-overflow-scrolling:touch}
+.opt{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:12px 0;border-bottom:1px solid var(--line)}
 .opt:last-child{border-bottom:0}
-.opt .ic{width:40px;height:50px;border-radius:4px;background:#070F28;flex:none;border:1px solid var(--line-strong);position:relative;overflow:hidden}
+.opt .ic{width:42px;height:52px;border-radius:7px;background:#070F28;flex:none;overflow:hidden;box-shadow:0 2px 6px rgba(7,15,40,.25)}
+.opt .ic img{width:100%;height:100%;display:block}
 .opt .t{font-weight:600;font-size:15px}
 .opt .s{color:var(--muted);font-size:12.5px;margin-top:1px}
 .opt.d .t{color:var(--danger)}
-.opt.ar .t{color:var(--warn)}
-.cap{white-space:pre-wrap;font-size:14px;line-height:1.5;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin:8px 0;word-break:break-word}
+.cap{white-space:pre-wrap;font-size:14px;line-height:1.5;background:var(--field);border:1px solid var(--field-line);border-radius:var(--r-field);padding:12px 14px;margin:8px 0;word-break:break-word}
 .stack{display:flex;flex-direction:column;gap:8px}
-.toast{position:absolute;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--fg);color:var(--bg);
-  padding:10px 14px;border-radius:8px;font-size:13.5px;font-weight:500;z-index:30;transition:all .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
+.gridall{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:6px 0 10px}
+.gridall button{aspect-ratio:4/5;border-radius:10px;overflow:hidden;background:#070F28;position:relative;box-shadow:0 4px 12px rgba(7,15,40,.25)}
+.gridall button.on{box-shadow:0 0 0 2.5px var(--accent),0 4px 12px rgba(7,15,40,.25)}
+.gridall img{width:100%;height:100%;display:block;object-fit:cover}
+.gridall .n{position:absolute;left:6px;top:6px;background:rgba(7,15,40,.75);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:999px}
+.gridall .wb{position:absolute;right:6px;top:6px;width:10px;height:10px;border-radius:50%;background:#E6B54A;box-shadow:0 0 0 2px rgba(7,15,40,.6)}
+.wlist{display:flex;flex-direction:column;gap:6px;padding:4px 0 8px}
+.wlist div{font-size:13px;color:var(--fg-2);display:flex;gap:8px;align-items:flex-start}
+.wlist b{font-variant-numeric:tabular-nums;color:var(--muted);font-weight:600;flex:none;width:20px}
+.toast{position:absolute;left:50%;bottom:calc(26px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--fg);color:var(--bg);
+  padding:11px 16px;border-radius:999px;font-size:13.5px;font-weight:500;z-index:30;transition:all .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;box-shadow:var(--shadow)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 </style>
 
+<div id="bg"><i class="a"></i><i class="b"></i><i class="c"></i></div>
 <div id="app">
   <!-- HOME -->
   <section class="screen" id="scr-home">
@@ -177,24 +223,28 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0;height:28px
       </div>
     </div>
     <div class="list" id="post-list"></div>
-    <button class="fab" id="btn-new"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nový příspěvek</button>
+    <div class="fabs">
+      <button class="fab ghost" id="btn-menu" aria-label="Záloha a nastavení"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+      <button class="fab" id="btn-new"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nový příspěvek</button>
+    </div>
   </section>
 
   <!-- EDITOR -->
   <section class="screen" id="scr-edit" hidden>
-    <div class="bar">
+    <div class="bar glass">
       <button class="ib" id="btn-back" aria-label="Zpět na seznam"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
       <input class="ttl" id="post-title" placeholder="Název příspěvku" autocomplete="off">
       <button class="ib acc" id="btn-export" aria-label="Export"><svg viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14"/></svg></button>
     </div>
     <div class="preview">
-      <div class="canvas-wrap">
+      <div class="canvas-wrap" id="cvw">
         <canvas id="cv" width="1080" height="1350"></canvas>
+        <div class="gest">Tahem posuneš výřez, dvěma prsty přiblížíš</div>
       </div>
       <div class="checks" id="checks"></div>
     </div>
-    <div class="strip" id="strip"></div>
-    <div class="panel" id="panel"></div>
+    <div class="strip-wrap"><div class="strip glass" id="strip"></div></div>
+    <div class="panel-wrap"><div class="panel glass" id="panel"></div></div>
   </section>
 
   <div class="scrim" id="scrim"></div>
@@ -205,6 +255,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:4px 0;height:28px
   </div>
   <div class="toast" id="toast"></div>
   <input type="file" id="file-in" accept="image/*" hidden>
+  <input type="file" id="json-in" accept="application/json,.json" hidden>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -228,77 +279,144 @@ const PARTIES = [
   ['PRO', '#60AC8C'], ['Praha sobě', '#F5D000'], ['SEN pro Prahu', '#CC3C3C'], ['ostatní', '#566276'],
   ['AfD', '#4DA6DE'], ['CDU', '#96969E'], ['Die Linke', '#BA3A74'], ['SPD (DE)', '#D62C2C'], ['Grüne', '#5CB052'], ['BSW', '#E89648'], ['FDP', '#E8CE32'],
 ];
+const TYPE_NAME = { cover: 'Cover', quote: 'Citát', cards: 'Karty', chart: 'Graf', stack: 'Skládané pilulky', compare: 'Srovnání období' };
+const TYPE_K = { cover: 'A', quote: 'B', cards: 'C', chart: 'D', stack: 'E', compare: 'F' };
 
 /* =========================================================
-   STAV A ULOŽIŠTĚ
+   ÚLOŽIŠTĚ: posty v localStorage, fotky v IndexedDB
    ========================================================= */
-const LS_KEY = 'mj-studio-v1';
+const LS_KEY = 'mj-studio-v2';
+const LS_OLD = 'mj-studio-v1';
 let state = { posts: [], currentId: null, slideIdx: 0 };
-const imgCache = new Map();
+const memPhotos = new Map();
+const IDB = (() => {
+  let dbp = null;
+  function open() {
+    if (dbp) return dbp;
+    dbp = new Promise(res => {
+      try {
+        const r = indexedDB.open('mj-studio', 1);
+        r.onupgradeneeded = () => r.result.createObjectStore('photos');
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => res(null); r.onblocked = () => res(null);
+      } catch (e) { res(null); }
+    });
+    return dbp;
+  }
+  async function tx(mode, fn) {
+    const db = await open(); if (!db) return null;
+    return new Promise(res => {
+      try {
+        const t = db.transaction('photos', mode); const rq = fn(t.objectStore('photos'));
+        t.oncomplete = () => res(rq ? rq.result : true); t.onerror = () => res(null); t.onabort = () => res(null);
+      } catch (e) { res(null); }
+    });
+  }
+  return {
+    get: id => tx('readonly', st => st.get(id)),
+    put: (id, v) => tx('readwrite', st => st.put(v, id)),
+    del: id => tx('readwrite', st => st.delete(id)),
+  };
+})();
+async function photoGet(id) { if (memPhotos.has(id)) return memPhotos.get(id); const v = await IDB.get(id); if (v) memPhotos.set(id, v); return v || null; }
+async function photoPut(id, src) { memPhotos.set(id, src); const ok = await IDB.put(id, src); if (ok === null) toast('Fotka se uložila jen do paměti, po zavření zmizí.'); }
+function photoRefs(id) { let n = 0; state.posts.forEach(p => p.slides.forEach(s => { if (s.photo && s.photo.id === id) n++; })); return n; }
+function photoRelease(id) { if (!id) return; if (photoRefs(id) === 0) { memPhotos.delete(id); imgCache.delete(id); IDB.del(id); } }
 
 function uid() { return Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-4); }
 function load() {
   try {
-    const raw = localStorage.getItem(LS_KEY);
+    let raw = localStorage.getItem(LS_KEY);
+    if (!raw) raw = localStorage.getItem(LS_OLD);
     if (raw) { const s = JSON.parse(raw); if (s && Array.isArray(s.posts)) state = Object.assign(state, s); }
   } catch (e) { /* bez úložiště běžíme dál */ }
+  normalize();
   if (!state.posts.length) state.posts = [samplePost()];
+  try { localStorage.removeItem(LS_OLD); } catch (e) {}
+}
+function normalize() {
+  // migrace: fotky vložené přímo v postu (v1) → IndexedDB, chybějící pole doplnit
+  state.posts.forEach(p => {
+    p.caption = Object.assign({ intro: '', source: '', date: '', photo: '', tags: '', short: false }, p.caption || {});
+    p.slides.forEach(s => {
+      if (s.photo && s.photo.src) { const id = uid(); photoPut(id, s.photo.src); s.photo.id = id; delete s.photo.src; }
+      if (s.type === 'cards') s.items = s.items || [];
+      if (s.type === 'chart' || s.type === 'compare') s.rows = s.rows || [];
+      if (s.type === 'stack') { s.rows = s.rows || []; s.segs = s.segs || []; }
+    });
+  });
 }
 let saveT = null;
 function save() {
   clearTimeout(saveT);
   saveT = setTimeout(() => {
     try { localStorage.setItem(LS_KEY, JSON.stringify(state)); }
-    catch (e) { toast('Koncept se nepodařilo uložit (málo místa v prohlížeči). Zmenši nebo odeber fotky.'); }
-  }, 300);
+    catch (e) { toast('Koncept se nepodařilo uložit, prohlížeč nemá místo.'); }
+  }, 250);
 }
 
+/* =========================================================
+   MODEL
+   ========================================================= */
 function newSlide(type) {
   const base = { id: uid(), type, photo: null, arrows: false };
   if (type === 'cover') return Object.assign(base, { headline: 'Nový nadpis, [klíčová fráze] zvýrazněná', size: 0, maxH: 620, crop: 0.1, gs: 0.62, ge: 1.0 });
-  if (type === 'quote') return Object.assign(base, { label: '', text: 'Text citátu, [šťavnatá část] zvýrazněná.', name: 'Jméno Příjmení', role: 'funkce', size: 0, topGap: 110, maxH: 480, crop: 0.1, gs: 0.6, ge: 1.0 });
+  if (type === 'quote') return Object.assign(base, { label: '', text: 'Text citátu, [šťavnatá část] zvýrazněná.', name: 'Jméno Příjmení', role: 'funkce', topGap: 110, maxH: 480, crop: 0.1, gs: 0.6, ge: 1.0 });
   if (type === 'cards') return Object.assign(base, { title: 'Co to znamená', items: [{ title: 'Titulek karty', body: 'Jedna až dvě věty, neutrálně a věcně.' }, { title: 'Druhá karta', body: 'Krátké shrnutí druhého bodu.' }], maxH: 320, crop: 0.1, gs: 0.55, ge: 1.0 });
   if (type === 'chart') return Object.assign(base, { title1: 'Koho by lidé volili,', title2: 'kdyby byly volby teď?', subtitle: 'Agentura, sběr 1. až 15. měsíce 2026', threshold: true, changes: false, barH: 50,
     rows: [{ name: 'ANO', value: 30, change: 0, color: '#704AB8' }, { name: 'SPOLU', value: 20, change: 0, color: '#3B6ED6' }, { name: 'STAN', value: 10, change: 0, color: '#D61E6B' }] });
+  if (type === 'stack') return Object.assign(base, { title1: 'Koho volí', title2: 'muži a ženy?', subtitle: 'Agentura, sběr 1. až 15. měsíce 2026',
+    segs: [{ name: 'ANO', color: '#704AB8' }, { name: 'SPOLU', color: '#3B6ED6' }, { name: 'STAN', color: '#D61E6B' }, { name: 'SPD', color: '#B06E2B' }, { name: 'ostatní', color: '#566276' }],
+    rows: [{ label: 'Celkem', values: '30, 20, 11, 12, 27' }, { label: 'Muži', values: '28, 21, 10, 14, 27' }, { label: 'Ženy', values: '32, 19, 12, 10, 27' }] });
+  if (type === 'compare') return Object.assign(base, { title1: 'Kdo si od léta', title2: 'polepšil a kdo propadl?', subtitle: 'Agentura, září vs červen 2026', threshold: true,
+    rows: [{ name: 'ANO', old: 31, value: 30, color: '#704AB8' }, { name: 'SPOLU', old: 19, value: 20, color: '#3B6ED6' }, { name: 'STAN', old: 9, value: 10, color: '#D61E6B' }] });
   return base;
 }
 function newPost(title) {
-  const s = newSlide('cover'); s.arrows = true;
-  return { id: uid(), title: title || 'Nový příspěvek', created: Date.now(), updated: Date.now(), slides: [s], caption: { intro: '', source: '', date: '', photo: '', tags: '' }, thumb: null };
+  const s = newSlide('cover');
+  return { id: uid(), title: title || '', created: Date.now(), updated: Date.now(), slides: [s], caption: { intro: '', source: '', date: '', photo: '', tags: '', short: false }, thumb: null };
 }
 function samplePost() {
   const p = newPost('Ukázkový příspěvek');
-  const c = p.slides[0];
+  const c = p.slides[0]; c.arrows = true;
   c.headline = 'Takto vypadá [titulní slide] s fotkou a zvýrazněnou frází';
   const q = newSlide('quote'); q.label = 'K ukázkovému výroku'; q.text = 'Tady je ukázkový citát. Část, kterou chceš [zvýraznit, dej do hranatých závorek].'; q.name = 'Jméno Příjmení'; q.role = 'Příklad, nahraď vlastním';
   const k = newSlide('cards'); k.title = 'Jak se s aplikací pracuje'; k.items = [
     { title: 'Text píšeš dole', body: 'Náhled se překresluje průběžně, hranaté závorky obarví frázi.' },
-    { title: 'Fotku nahraješ z telefonu', body: 'Posuvníky řídí výřez, výšku a plynulost přechodu do navy.' },
+    { title: 'Fotku nahraješ z telefonu', body: 'Tahem na náhledu posuneš výřez, dvěma prsty přiblížíš.' },
     { title: 'Export v pravém horním rohu', body: 'PNG v přesném rozměru 1080 × 1350, plus hotový popisek.' }];
   const g = newSlide('chart'); g.subtitle = 'Ukázková data, nahraď vlastními'; g.changes = true;
   g.rows = [{ name: 'ANO', value: 32.5, change: 1.2, color: '#704AB8' }, { name: 'SPOLU', value: 19, change: -0.8, color: '#3B6ED6' }, { name: 'SPD', value: 12.5, change: 0, color: '#B06E2B' },
     { name: 'STAN', value: 10, change: 0.5, color: '#D61E6B' }, { name: 'Piráti', value: 8.5, change: 0.3, color: '#7D7D84' }, { name: 'Stačilo!', value: 5.5, change: -0.4, color: '#9E203E' }, { name: 'Motoristé sobě', value: 4, change: -0.2, color: '#3B96DC' }];
-  p.slides.push(q, k, g);
-  p.caption = { intro: 'Ukázkový úvod popisku. Dvě až pět vět, ověřená čísla, tykání.', source: 'Název zdroje', date: '1. října 2026', photo: '', tags: 'politika cesko pruzkum' };
+  const e = newSlide('stack'); e.subtitle = 'Ukázková data, nahraď vlastními';
+  const f = newSlide('compare'); f.subtitle = 'Ukázková data, září vs červen';
+  p.slides.push(q, k, g, e, f);
+  p.caption = { intro: 'Ukázkový úvod popisku. Dvě až pět vět, ověřená čísla, tykání.', source: 'Název zdroje', date: '1. října 2026', photo: '', tags: 'politika cesko pruzkum', short: false };
   return p;
 }
 const cur = () => state.posts.find(p => p.id === state.currentId);
 const curSlide = () => { const p = cur(); return p ? p.slides[Math.min(state.slideIdx, p.slides.length - 1)] : null; };
+function postTitle(p) {
+  if (p.title && p.title.trim()) return p.title.trim();
+  const c = p.slides.find(s => s.type === 'cover' && s.headline) || p.slides[0];
+  const t = c ? String(c.headline || c.text || c.title || c.title1 || '').replace(/[\[\]]/g, '').replace(/\s+/g, ' ').trim() : '';
+  return t ? (t.length > 44 ? t.slice(0, 42).trim() + '…' : t) : 'Bez názvu';
+}
 
 /* =========================================================
    TEXTOVÝ MOTOR (sazba jako v Pythonu)
    ========================================================= */
 function tokenize(text, baseColor) {
-  // [fráze] → CYAN. Číslo se lepí k předchozímu slovu, aby nezačínalo řádek. NBSP drží slova u sebe.
+  // [fráze] → CYAN. Číslo se lepí k předchozímu slovu, aby nezačínalo řádek. Vlnovka (~) drží slova u sebe.
   const toks = []; let col = baseColor; let buf = ''; let tokCol = baseColor;
   const flush = () => {
     if (!buf) return;
-    const wd = buf; buf = '';
+    const wd = buf.replace(/~/g, ' '); buf = '';
     const isNum = /^\d+[.,:)%]?$/.test(wd) || wd === '%';
     if (toks.length && isNum && toks[toks.length - 1].c === tokCol) toks[toks.length - 1].t += ' ' + wd;
     else toks.push({ t: wd, c: tokCol });
   };
-  for (const ch of text) {
+  for (const ch of String(text || '')) {
     if (ch === '[') { flush(); col = CYAN; }
     else if (ch === ']') { col = baseColor; }
     else if (ch === ' ' || ch === '\t') flush();
@@ -336,14 +454,17 @@ function fixOrphans(ctx, lines, maxw) {
   return lines;
 }
 function wrapText(ctx, text, baseColor, maxw) {
-  // podporuje ruční zalomení Enterem
   const out = [];
   String(text || '').split('\n').forEach(par => {
     const toks = tokenize(par, baseColor);
     if (!toks.length) { out.push([]); return; }
     wrapTokens(ctx, toks, maxw).forEach(l => out.push(l));
   });
+  while (out.length > 1 && !out[out.length - 1].length) out.pop();
   return out;
+}
+function hasOrphan(lines) {
+  return lines.slice(0, -1).some(l => l.length && l[l.length - 1].t.length === 1 && ONE_LETTER.has(l[l.length - 1].t));
 }
 function fitText(ctx, text, baseColor, maxw, weight, start, min, availH, leadK, step = 2) {
   let best = null;
@@ -354,9 +475,8 @@ function fitText(ctx, text, baseColor, maxw, weight, start, min, availH, leadK, 
     const ok = lines.length * lead <= availH;
     const lastOk = lines.length === 1 || lines[lines.length - 1].length !== 1;
     const noOver = lines.every(l => lineWidth(ctx, l) <= maxw + 0.5);
-    const noOrphan = lines.slice(0, -1).every(l => !l.length || !(l[l.length - 1].t.length === 1 && ONE_LETTER.has(l[l.length - 1].t)));
-    if (ok && lastOk && noOver && noOrphan) return { size: s, lines, lead };
-    if (ok && !best) best = { size: s, lines, lead };
+    if (ok && lastOk && noOver && !hasOrphan(lines)) return { size: s, lines, lead };
+    if (ok && noOver && !best) best = { size: s, lines, lead };
   }
   if (best) return best;
   ctx.font = F(weight, min);
@@ -385,7 +505,7 @@ function checkLines(ctx, lines, maxw, warnings, what) {
    KRESLICÍ POMOCNÍCI
    ========================================================= */
 function rrect(ctx, x, y, w, h, r) {
-  r = Math.min(r, w / 2, h / 2);
+  r = Math.max(0, Math.min(r, w / 2, h / 2));
   ctx.beginPath();
   ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
   ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
@@ -400,36 +520,61 @@ function arrows(ctx, fromBottom, align) {
   const t = '›››'; const x = align === 'right' ? W - LEFT_X - tw(ctx, t) : LEFT_X;
   ctx.fillText(t, x, H - fromBottom);
 }
+function dim(hex, k) {
+  const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return '#566276';
+  const n = parseInt(m[1], 16); const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return `rgb(${Math.round(r * k)},${Math.round(g * k)},${Math.round(b * k)})`;
+}
 const smooth = t => t * t * (3 - 2 * t);
-function getImg(src) {
-  if (!src) return null;
-  let im = imgCache.get(src);
-  if (!im) {
-    im = new Image(); im.decoding = 'async';
-    im.onload = () => { im._ok = true; scheduleRender(); scheduleThumbs(); };
-    im.src = src; imgCache.set(src, im);
+const imgCache = new Map();  // id -> {img, ok}
+let lastGeom = null;
+function getImg(photo) {
+  if (!photo || !photo.id) return null;
+  let e = imgCache.get(photo.id);
+  if (!e) {
+    e = { img: new Image(), ok: false }; e.img.decoding = 'async';
+    e.img.onload = () => { e.ok = true; scheduleRender(); scheduleThumbs(); paintPhotoPreviews(); };
+    imgCache.set(photo.id, e);
+    photoGet(photo.id).then(src => { if (src) e.img.src = src; });
   }
-  return im._ok ? im : null;
+  return e.ok ? e.img : null;
 }
 function drawPhoto(ctx, photo, maxH, crop, gs, ge, warnings) {
-  if (!photo) return 0;
-  const img = getImg(photo.src);
+  if (!photo) { lastGeom = null; return 0; }
+  const img = getImg(photo);
   const zoom = photo.zoom || 1, cxf = photo.cx == null ? 0.5 : photo.cx;
-  if (!img) { ctx.fillStyle = '#0B1736'; ctx.fillRect(0, 0, W, Math.min(maxH, 500)); return Math.min(maxH, 500); }
+  if (!img) { ctx.fillStyle = '#0B1736'; ctx.fillRect(0, 0, W, Math.min(maxH, 500)); lastGeom = null; return Math.min(maxH, 500); }
   const scale = (W * zoom) / img.naturalWidth;
   const sh = img.naturalHeight * scale;
   const h = Math.round(Math.min(maxH, sh));
   const srcW = img.naturalWidth / zoom, srcX = (img.naturalWidth - srcW) * cxf;
   const srcH = h / scale, srcY = (img.naturalHeight - srcH) * crop;
   ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, W, h);
+  lastGeom = { h, sh, zoom, scale };
   const y0 = gs * h, y1 = Math.min(ge, 1) * h;
   if (y1 - y0 < 40) warnings.push('Přechod fotky je kratší než 40 px, bude vidět hrana');
   const g = ctx.createLinearGradient(0, y0, 0, y1);
   for (let i = 0; i <= 24; i++) { const t = i / 24; g.addColorStop(t, `rgba(7,15,40,${smooth(t).toFixed(4)})`); }
   ctx.fillStyle = g; ctx.fillRect(0, y0 - 1, W, y1 - y0 + 2);
   ctx.fillStyle = NAVY; ctx.fillRect(0, y1, W, h - y1 + 2);
-  if (img.naturalWidth < 600) warnings.push('Předloha fotky je užší než 600 px, bude měkká');
+  if (photo.w && photo.w < 600) warnings.push('Předloha fotky je užší než 600 px, bude měkká');
+  if (sh < maxH - 1) warnings.push('Fotka je nižší než hlavička, přibliž ji nebo sniž výšku hlavičky');
   return h;
+}
+function titleBlock(ctx, s, wn) {
+  let y = 96;
+  ctx.font = F(BOLD, 58); ctx.textBaseline = 'top';
+  const l1 = wrapText(ctx, s.title1, WHITE, MAXW); y = drawLines(ctx, LEFT_X, y, l1, 70, BOLD, 58);
+  const l2 = wrapText(ctx, s.title2, CYAN, MAXW); y = drawLines(ctx, LEFT_X, y, l2, 70, BOLD, 58);
+  checkLines(ctx, l1.concat(l2), MAXW, wn, 'Nadpis');
+  if (s.subtitle) { ctx.font = F(SEMI, 25); const sl = wrapText(ctx, s.subtitle, MUTED, MAXW); y = drawLines(ctx, LEFT_X, y + 14, sl, 34, SEMI, 25); }
+  return y;
+}
+function fmtNum(v) { v = +v; return Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.', ','); }
+function fmtPct(v) { if (v == null || v === '' || isNaN(v)) return ''; return fmtNum(v) + ' %'; }
+function fmtChange(c) {
+  if (c == null || c === '' || isNaN(c) || Math.abs(c) < 0.05) return { t: '—', col: MUTED };
+  return c > 0 ? { t: '+' + fmtNum(Math.abs(c)), col: GREEN } : { t: '−' + fmtNum(Math.abs(c)), col: RED };
 }
 
 /* =========================================================
@@ -451,7 +596,6 @@ function renderCover(ctx, s, wn) {
   if (end > H - reserve + 20) wn.push('Nadpis zasahuje do spodní zóny, zkrať ho nebo fotku');
   if (fit.size < 60) wn.push(`Nadpis jen ${fit.size} px, manuál cílí 60 až 74`);
   if (s.arrows) arrows(ctx, 280, 'left');
-  return fit;
 }
 function renderQuote(ctx, s, wn) {
   const ph = drawPhoto(ctx, s.photo, s.maxH, s.crop, s.gs, s.ge, wn);
@@ -461,7 +605,8 @@ function renderQuote(ctx, s, wn) {
   const qy = y + 44;
   const reserve = (s.arrows ? 300 : 120) + 48 + 86;
   const avail = H - reserve - qy;
-  const text = '„' + String(s.text || '').trim() + '“';
+  const raw = String(s.text || '').trim().replace(/^["„“]+|["“]+$/g, '');
+  const text = '„' + raw + '“';
   const fit = fitText(ctx, text, WHITE, MAXW, BOLD, 70, 44, avail, 1.22);
   const end = drawLines(ctx, LEFT_X, qy, fit.lines, fit.lead, BOLD, fit.size);
   checkLines(ctx, fit.lines, MAXW, wn, 'Citát');
@@ -470,6 +615,8 @@ function renderQuote(ctx, s, wn) {
   ctx.font = F(BOLD, 38); ctx.fillStyle = WHITE; ctx.textBaseline = 'top'; ctx.fillText(s.name || '', LEFT_X + 28, ay - 2);
   ctx.font = F(REG, 28); ctx.fillStyle = MUTED; ctx.fillText(s.role || '', LEFT_X + 28, ay + 50);
   if (ay + 86 > H - (s.arrows ? 300 : 110)) wn.push('Citát je dlouhý, zkrať fotku nebo text');
+  const surname = String(s.name || '').trim().split(' ').pop().toLowerCase();
+  if (s.label && surname.length > 3 && s.label.toLowerCase().includes(surname.slice(0, -1))) wn.push('Popisek u čárky nemá opakovat jméno mluvčího');
   if (s.arrows) arrows(ctx, 280, 'left');
 }
 function renderCards(ctx, s, wn) {
@@ -509,22 +656,8 @@ function renderCards(ctx, s, wn) {
   if (cy - gap > bottom + 4) wn.push('Karty přetékají do spodní zóny');
   if (s.arrows) arrows(ctx, 280, 'left');
 }
-function fmtPct(v) {
-  if (v == null || isNaN(v)) return '';
-  return (Number.isInteger(v) ? String(v) : v.toFixed(1).replace('.', ',')) + ' %';
-}
-function fmtChange(c) {
-  if (c == null || c === '' || isNaN(c) || Math.abs(c) < 0.05) return { t: '—', col: MUTED };
-  const a = Math.abs(c); const n = Number.isInteger(a) ? String(a) : a.toFixed(1).replace('.', ',');
-  return c > 0 ? { t: '+' + n, col: GREEN } : { t: '−' + n, col: RED };
-}
 function renderChart(ctx, s, wn) {
-  let y = 96;
-  ctx.font = F(BOLD, 58); ctx.textBaseline = 'top';
-  const l1 = wrapText(ctx, s.title1, WHITE, MAXW); y = drawLines(ctx, LEFT_X, y, l1, 70, BOLD, 58);
-  const l2 = wrapText(ctx, s.title2, CYAN, MAXW); y = drawLines(ctx, LEFT_X, y, l2, 70, BOLD, 58);
-  checkLines(ctx, l1.concat(l2), MAXW, wn, 'Nadpis');
-  if (s.subtitle) { ctx.font = F(SEMI, 25); const sl = wrapText(ctx, s.subtitle, MUTED, MAXW); y = drawLines(ctx, LEFT_X, y + 14, sl, 34, SEMI, 25); }
+  const y = titleBlock(ctx, s, wn);
   const rows = (s.rows || []).filter(r => r.name);
   if (!rows.length) { if (s.arrows) arrows(ctx, 180, 'right'); return; }
   const top = y + 56;
@@ -559,25 +692,106 @@ function renderChart(ctx, s, wn) {
     const bw = (v / maxVal) * barMax;
     if (bw > 0.5) { rrect(ctx, barX, ry, bw, barH, barH / 2); ctx.fillStyle = r.color || '#566276'; ctx.fill(); }
     ctx.font = F(BOLD, 32); ctx.fillStyle = WHITE; ctx.textAlign = 'right';
-    ctx.fillText(fmtPct(+r.value), valR, ry + barH / 2);
+    ctx.fillText(fmtPct(r.value), valR, ry + barH / 2);
     if (s.changes) { const c = fmtChange(r.change === '' ? null : +r.change); ctx.font = F(BOLD, 27); ctx.fillStyle = c.col; ctx.fillText(c.t, right, ry + barH / 2); }
   });
   ctx.textAlign = 'left'; ctx.textBaseline = 'top';
   if (s.arrows) arrows(ctx, 180, 'right');
 }
-function renderSlide(ctx, s) {
+function parseVals(str, n) {
+  const a = String(str || '').split(/[,;\s]+/).filter(Boolean).map(x => parseFloat(String(x).replace(',', '.')));
+  const out = []; for (let i = 0; i < n; i++) out.push(isNaN(a[i]) ? 0 : Math.max(0, a[i]));
+  return out;
+}
+function renderStack(ctx, s, wn) {
+  let y = titleBlock(ctx, s, wn) + 44;
+  const segs = (s.segs || []).filter(g => g.name).slice(0, 7);
+  if (segs.length > 6 && !segs.some(g => /ostatn/i.test(g.name))) wn.push('Sluč malé strany do „ostatní“, víc než 6 barev je nečitelných');
+  ctx.font = F(SEMI, 24); ctx.textBaseline = 'middle'; ctx.textAlign = 'left';
+  let lx = LEFT_X, ly = y + 12; const rowH = 40;
+  segs.forEach(g => {
+    const w = 30 + tw(ctx, g.name) + 34;
+    if (lx + w - 34 > W - LEFT_X) { lx = LEFT_X; ly += rowH; }
+    ctx.beginPath(); ctx.arc(lx + 9, ly, 9, 0, Math.PI * 2); ctx.fillStyle = g.color || '#566276'; ctx.fill();
+    ctx.fillStyle = MUTED_LIGHT; ctx.fillText(g.name, lx + 30, ly);
+    lx += w;
+  });
+  y = ly + 48;
+  const rows = (s.rows || []).filter(r => r.label);
+  const bottomLimit = H - (s.arrows ? 300 : 110);
+  const barH = 54, labelH = 46;
+  let pitch = barH + labelH + 30;
+  if (rows.length && y + rows.length * pitch > bottomLimit) { pitch = Math.floor((bottomLimit - y) / rows.length); wn.push('Hodně řádků, řádky jsou natěsno'); }
+  rows.forEach(r => {
+    ctx.font = F(SEMI, 32); ctx.fillStyle = WHITE; ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+    ctx.fillText(r.label, LEFT_X, y);
+    const vals = parseVals(r.values, segs.length);
+    const sum = vals.reduce((a, b) => a + b, 0);
+    if (sum > 0 && Math.abs(sum - 100) > 3) wn.push(`${r.label}: součet ${fmtNum(Math.round(sum * 10) / 10)} %, ne 100`);
+    const by = y + labelH;
+    if (sum > 0) {
+      ctx.save(); rrect(ctx, LEFT_X, by, MAXW, barH, barH / 2); ctx.clip();
+      let x = LEFT_X;
+      vals.forEach((v, i) => {
+        const w = (v / sum) * MAXW;
+        ctx.fillStyle = segs[i].color || '#566276'; ctx.fillRect(x, by, Math.ceil(w) + 1, barH);
+        if (w > 44 && v > 0) { ctx.font = F(BOLD, 22); ctx.fillStyle = WHITE; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(fmtNum(v), x + w / 2, by + barH / 2); }
+        x += w;
+      });
+      ctx.restore();
+    }
+    y += pitch;
+  });
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  if (s.arrows) arrows(ctx, 180, 'right');
+}
+function renderCompare(ctx, s, wn) {
+  const y = titleBlock(ctx, s, wn);
+  const rows = (s.rows || []).filter(r => r.name);
+  if (!rows.length) { if (s.arrows) arrows(ctx, 180, 'right'); return; }
+  const top = y + 56;
+  const bottomLimit = H - (s.arrows ? 300 : 110);
+  const thin = 16, thick = 44, inner = 6;
+  let pitch = thin + inner + thick + 30;
+  if (top + rows.length * pitch > bottomLimit) { pitch = Math.floor((bottomLimit - top) / rows.length); wn.push('Hodně řádků, pruhy jsou natěsno'); }
+  ctx.font = F(SEMI, 31);
+  const nameW = Math.max(...rows.map(r => tw(ctx, r.name)));
+  const NAME_R = LEFT_X + nameW, barX = NAME_R + 26;
+  ctx.font = F(BOLD, 32); const valW = tw(ctx, '88,8 %');
+  const right = W - LEFT_X;
+  const barMax = right - valW - 40 - barX;
+  const maxVal = Math.max(...rows.map(r => Math.max(+r.value || 0, +r.old || 0)), 0.0001);
+  const rowsBottom = top + (rows.length - 1) * pitch + thin + inner + thick;
+  if (s.threshold && maxVal > 5) {
+    const tx = barX + (5 / maxVal) * barMax;
+    ctx.fillStyle = GOLD; ctx.fillRect(Math.round(tx) - 1, top - 14, 3, rowsBottom - top + 24);
+    ctx.font = F(SEMI, 22); ctx.textBaseline = 'top'; ctx.textAlign = 'left'; ctx.fillText('5 %', tx - tw(ctx, '5 %') / 2, rowsBottom + 16);
+  }
+  rows.forEach((r, i) => {
+    const ry = top + i * pitch;
+    const ov = Math.max(0, +r.old || 0), nv = Math.max(0, +r.value || 0);
+    const ow = (ov / maxVal) * barMax, nw = (nv / maxVal) * barMax;
+    if (ow > 0.5) { rrect(ctx, barX, ry, ow, thin, thin / 2); ctx.fillStyle = dim(r.color, 0.46); ctx.fill(); }
+    const ty = ry + thin + inner;
+    if (nw > 0.5) { rrect(ctx, barX, ty, nw, thick, thick / 2); ctx.fillStyle = r.color || '#566276'; ctx.fill(); }
+    ctx.font = F(SEMI, 31); ctx.fillStyle = WHITE; ctx.textBaseline = 'middle'; ctx.textAlign = 'right';
+    ctx.fillText(r.name, NAME_R, ty + thick / 2);
+    ctx.font = F(BOLD, 32); ctx.fillText(fmtPct(nv), right, ty + thick / 2);
+    ctx.font = F(SEMI, 22); ctx.fillStyle = MUTED; ctx.fillText(fmtPct(ov), right, ry + thin / 2);
+  });
+  ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+  if (s.arrows) arrows(ctx, 180, 'right');
+}
+const RENDERERS = { cover: renderCover, quote: renderQuote, cards: renderCards, chart: renderChart, stack: renderStack, compare: renderCompare };
+function renderSlide(ctx, s, post) {
   const wn = [];
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.fillStyle = NAVY; ctx.fillRect(0, 0, W, H);
   ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-  try {
-    if (s.type === 'cover') renderCover(ctx, s, wn);
-    else if (s.type === 'quote') renderQuote(ctx, s, wn);
-    else if (s.type === 'cards') renderCards(ctx, s, wn);
-    else if (s.type === 'chart') renderChart(ctx, s, wn);
-  } catch (e) { wn.push('Chyba vykreslení: ' + e.message); }
+  try { (RENDERERS[s.type] || (() => {}))(ctx, s, wn); }
+  catch (e) { wn.push('Chyba vykreslení: ' + e.message); }
   watermark(ctx);
-  const p = cur();
+  const p = post === undefined ? cur() : post;
   if (p) {
     const idx = p.slides.indexOf(s);
     if (s.arrows && idx > 0) wn.push('Šipky patří jen na první slide');
@@ -597,8 +811,9 @@ async function ensureFonts() {
     const probe = 'ěščřžýáíéůú Matěj Jankovič 5 %';
     await Promise.all([document.fonts.load(F(BOLD, 60), probe), document.fonts.load(F(SEMI, 30), probe), document.fonts.load(F(REG, 28), probe)]);
     await document.fonts.ready;
-  } catch (e) { /* fallback font */ }
+  } catch (e) { /* náhradní font */ }
   fontsReady = true;
+  iconCache = {};
   scheduleRender(); scheduleThumbs();
   if (!$('scr-home').hidden) renderHome();
 }
@@ -606,50 +821,52 @@ async function ensureFonts() {
 /* =========================================================
    VYKRESLENÍ NÁHLEDU + MINIATUR
    ========================================================= */
-const cv = document.getElementById('cv');
+const $ = id => document.getElementById(id);
+const cv = $('cv');
 const mainCtx = cv.getContext('2d');
-let rafR = 0, thT = 0;
+let rafR = 0, thT = 0, previewGeom = null, hintShown = false;
 function scheduleRender() { if (!rafR) rafR = requestAnimationFrame(() => { rafR = 0; renderPreview(); }); }
 function renderPreview() {
-  const s = curSlide(); if (!s) return;
-  const wn = renderSlide(mainCtx, s);
-  const p = cur();
-  const ch = document.getElementById('checks');
-  ch.innerHTML = `<span class="chip" id="pager">${p.slides.indexOf(s) + 1} / ${p.slides.length}</span>` + (wn.length ? wn.slice(0, 4).map(w => `<span class="chip w"><i></i>${esc(w)}</span>`).join('') : '<span class="chip ok"><i></i>Kontrola v pořádku</span>');
+  const s = curSlide(); const p = cur(); if (!s || !p) return;
+  const wn = renderSlide(mainCtx, s, p);
+  previewGeom = lastGeom;
+  const grab = !!(s.photo && previewGeom);
+  $('cvw').classList.toggle('grab', grab);
+  if (grab && !hintShown) { hintShown = true; $('cvw').classList.add('hinting'); setTimeout(() => $('cvw').classList.remove('hinting'), 3200); }
+  const ch = $('checks');
+  ch.innerHTML = `<span class="chip">${p.slides.indexOf(s) + 1} / ${p.slides.length} · ${TYPE_NAME[s.type]}</span>` +
+    (wn.length ? wn.slice(0, 3).map(w => `<span class="chip w"><i></i>${esc(w)}</span>`).join('') + (wn.length > 3 ? `<span class="chip w">+${wn.length - 3}</span>` : '')
+      : '<span class="chip ok"><i></i>Kontrola v pořádku</span>');
 }
 const off = document.createElement('canvas'); off.width = W; off.height = H; const offCtx = off.getContext('2d');
-function slideThumb(s, w, h, q = 0.8) {
-  renderSlide(offCtx, s);
+function slideThumb(s, w, h, q = 0.8, post) {
+  renderSlide(offCtx, s, post);
   const t = document.createElement('canvas'); t.width = w; t.height = h;
   t.getContext('2d').drawImage(off, 0, 0, w, h);
   return t.toDataURL('image/jpeg', q);
 }
-function scheduleThumbs() { clearTimeout(thT); thT = setTimeout(renderThumbs, 260); }
+function scheduleThumbs() { clearTimeout(thT); thT = setTimeout(renderThumbs, 280); }
 function renderThumbs() {
-  const p = cur(); if (!p || document.getElementById('scr-edit').hidden) return;
-  const strip = document.getElementById('strip');
-  const btns = strip.querySelectorAll('.th-btn');
+  const p = cur(); if (!p || $('scr-edit').hidden) return;
+  const btns = $('strip').querySelectorAll('.th-btn');
   p.slides.forEach((s, i) => {
     const b = btns[i]; if (!b) return;
-    const d = slideThumb(s, 96, 120, 0.7);
+    const d = slideThumb(s, 92, 115, 0.7, p);
     const im = b.querySelector('img'); if (im.src !== d) im.src = d;
   });
-  p.thumb = slideThumb(p.slides[0], 108, 135, 0.75);
+  p.thumb = slideThumb(p.slides[0], 112, 140, 0.75, p);
   save();
 }
 
 /* =========================================================
    UI: POMOCNÍCI
    ========================================================= */
-const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 let toastT = 0;
-function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2600); }
-function openSheet(title, html) { $('sheet-title').textContent = title; $('sheet-body').innerHTML = html; $('sheet').classList.add('on'); $('scrim').classList.add('on'); }
+function toast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 2800); }
+function openSheet(title, html) { $('sheet-title').textContent = title; const b = $('sheet-body'); b.innerHTML = html; b.onclick = null; b.oninput = null; b.scrollTop = 0; $('sheet').classList.add('on'); $('scrim').classList.add('on'); }
 function closeSheet() { $('sheet').classList.remove('on'); $('scrim').classList.remove('on'); }
 $('scrim').onclick = closeSheet; $('sheet-close').onclick = closeSheet;
-const TYPE_NAME = { cover: 'Cover', quote: 'Citát', cards: 'Karty', chart: 'Graf' };
-const TYPE_K = { cover: 'A', quote: 'B', cards: 'C', chart: 'D' };
 const fmtDate = ts => new Date(ts).toLocaleDateString('cs-CZ', { day: 'numeric', month: 'numeric', year: 'numeric' });
 function plural(n, a, b, c) { return n === 1 ? a : (n >= 2 && n <= 4 ? b : c); }
 
@@ -665,13 +882,13 @@ function renderHome() {
   const list = $('post-list');
   const posts = state.posts.slice().sort((a, b) => b.updated - a.updated);
   $('home-sub').textContent = `@matejjankovic · ${posts.length} ${plural(posts.length, 'příspěvek', 'příspěvky', 'příspěvků')}`;
-  if (!posts.length) { list.innerHTML = '<div class="empty">Zatím žádný příspěvek. Začni tlačítkem dole.</div>'; return; }
-  if (fontsReady) { let dirty = false; posts.forEach(p => { if (!p.thumb && p.slides.length) { p.thumb = slideThumb(p.slides[0], 108, 135, 0.75); dirty = true; } }); if (dirty) save(); }
+  if (!posts.length) { list.innerHTML = '<div class="empty">Zatím žádný příspěvek.<br>Začni tlačítkem dole, nebo obnov zálohu z nabídky vlevo.</div>'; return; }
+  if (fontsReady) { let dirty = false; posts.forEach(p => { if (!p.thumb && p.slides.length) { p.thumb = slideThumb(p.slides[0], 112, 140, 0.75, p); dirty = true; } }); if (dirty) save(); }
   list.innerHTML = posts.map(p => `
-    <div class="row">
-      <button class="row" style="padding:0;border:0;flex:1;min-width:0" data-open="${p.id}">
+    <div class="post glass">
+      <button class="post" style="padding:0;flex:1;min-width:0" data-open="${p.id}">
         <div class="th">${p.thumb ? `<img src="${p.thumb}" alt="">` : ''}</div>
-        <div class="m"><div class="n">${esc(p.title || 'Bez názvu')}</div>
+        <div class="m"><div class="n">${esc(postTitle(p))}</div>
         <div class="d">${p.slides.length} ${plural(p.slides.length, 'slide', 'slidy', 'slidů')} · ${fmtDate(p.updated)}</div></div>
       </button>
       <button class="more" data-more="${p.id}" aria-label="Možnosti"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
@@ -681,23 +898,59 @@ $('post-list').addEventListener('click', e => {
   const o = e.target.closest('[data-open]'); if (o) return openPost(o.dataset.open);
   const m = e.target.closest('[data-more]'); if (m) return postMenu(m.dataset.more);
 });
+function deletePost(id) {
+  const p = state.posts.find(x => x.id === id); if (!p) return;
+  const ids = p.slides.map(s => s.photo && s.photo.id).filter(Boolean);
+  state.posts = state.posts.filter(x => x.id !== id);
+  ids.forEach(photoRelease); save();
+}
 function postMenu(id) {
   const p = state.posts.find(x => x.id === id); if (!p) return;
-  openSheet(p.title || 'Bez názvu', `
+  openSheet(postTitle(p), `
     <button class="opt" data-act="dup"><div class="t">Duplikovat</div></button>
     <button class="opt d" data-act="del"><div><div class="t">Smazat příspěvek</div><div class="s">Nelze vrátit</div></div></button>`);
   $('sheet-body').onclick = e => {
     const b = e.target.closest('[data-act]'); if (!b) return;
     if (b.dataset.act === 'dup') {
-      const c = JSON.parse(JSON.stringify(p)); c.id = uid(); c.title = p.title + ' (kopie)'; c.created = c.updated = Date.now();
+      const c = JSON.parse(JSON.stringify(p)); c.id = uid(); c.title = postTitle(p) + ' (kopie)'; c.created = c.updated = Date.now();
       c.slides.forEach(s => s.id = uid()); state.posts.push(c); save(); renderHome(); closeSheet(); toast('Zduplikováno');
     } else if (b.dataset.act === 'del') {
-      if (b.dataset.sure) { state.posts = state.posts.filter(x => x.id !== id); save(); renderHome(); closeSheet(); toast('Smazáno'); }
+      if (b.dataset.sure) { deletePost(id); renderHome(); closeSheet(); toast('Smazáno'); }
       else { b.dataset.sure = '1'; b.querySelector('.t').textContent = 'Opravdu smazat?'; b.querySelector('.s').textContent = 'Klepni ještě jednou pro potvrzení'; }
     }
   };
 }
-$('btn-new').onclick = () => { const p = newPost(''); state.posts.push(p); save(); openPost(p.id); setTimeout(() => $('post-title').focus(), 50); };
+$('btn-new').onclick = () => { const p = newPost(''); state.posts.push(p); save(); openPost(p.id); setTimeout(() => $('post-title').focus(), 80); };
+$('btn-menu').onclick = () => {
+  openSheet('Záloha', `
+    <button class="opt" data-act="backup"><div><div class="t">Uložit zálohu (JSON)</div><div class="s">Všechny příspěvky i s fotkami</div></div></button>
+    <button class="opt" data-act="restore"><div><div class="t">Obnovit ze zálohy</div><div class="s">Přidá příspěvky ze souboru k těm stávajícím</div></div></button>
+    <div class="note" style="padding-top:12px">Koncepty žijí jen v tomhle prohlížeči. Na jiný telefon je přeneseš zálohou.</div>`);
+  $('sheet-body').onclick = async e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    if (b.dataset.act === 'restore') { $('json-in').value = ''; $('json-in').click(); closeSheet(); return; }
+    b.disabled = true;
+    try {
+      const photos = {};
+      for (const p of state.posts) for (const s of p.slides) if (s.photo && s.photo.id && !photos[s.photo.id]) photos[s.photo.id] = await photoGet(s.photo.id);
+      const data = JSON.stringify({ app: 'mj-studio', version: 2, exported: new Date().toISOString(), posts: state.posts, photos });
+      await saveFile(`studio-zaloha-${new Date().toISOString().slice(0, 10)}.json`, new Blob([data], { type: 'application/json' }));
+      toast('Záloha uložena'); closeSheet();
+    } catch (err) { toast(err && err.code === 'declined' ? 'Ukládání zrušeno' : 'Zálohu se nepodařilo uložit'); }
+    b.disabled = false;
+  };
+};
+$('json-in').addEventListener('change', async e => {
+  const file = e.target.files && e.target.files[0]; if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || data.app !== 'mj-studio' || !Array.isArray(data.posts)) throw new Error('bad');
+    for (const [id, src] of Object.entries(data.photos || {})) if (src) await photoPut(id, src);
+    let n = 0;
+    data.posts.forEach(p => { if (!p || !Array.isArray(p.slides)) return; const i = state.posts.findIndex(x => x.id === p.id); if (i >= 0) state.posts[i] = p; else state.posts.push(p); n++; });
+    normalize(); save(); renderHome(); toast(`Obnoveno: ${n} ${plural(n, 'příspěvek', 'příspěvky', 'příspěvků')}`);
+  } catch (err) { toast('Soubor není záloha z této aplikace.'); }
+});
 
 /* =========================================================
    UI: EDITOR
@@ -711,84 +964,123 @@ function openPost(id) {
 $('btn-back').onclick = showHome;
 $('post-title').addEventListener('input', e => { const p = cur(); p.title = e.target.value; p.updated = Date.now(); save(); });
 function touch() { const p = cur(); if (p) p.updated = Date.now(); save(); scheduleRender(); scheduleThumbs(); }
-
+function normalizeArrows(p) {
+  if (p.slides.length === 1) p.slides[0].arrows = false;
+  else if (p.slides.length === 2 && !p.slides[0].arrows && !p.slides[1].arrows) p.slides[0].arrows = true;
+}
 function renderStrip() {
   const p = cur();
   $('strip').innerHTML = p.slides.map((s, i) => `
     <button class="th-btn ${i === state.slideIdx ? 'on' : ''}" data-i="${i}" aria-label="Slide ${i + 1}"><img alt=""><span class="k">${TYPE_K[s.type]}</span></button>`).join('')
-    + `<button class="th-add" id="th-add" aria-label="Přidat slide"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>`;
+    + `<button class="th-add" id="th-add" aria-label="Přidat slide"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+       <span class="sep"></span>
+       <button class="grid-btn" id="th-grid" aria-label="Přehled všech slidů"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></button>`;
   $('strip').querySelectorAll('.th-btn').forEach(b => b.onclick = () => selectSlide(+b.dataset.i));
   $('th-add').onclick = addSlideMenu;
+  $('th-grid').onclick = overviewSheet;
 }
 function selectSlide(i) {
   state.slideIdx = i;
-  $('strip').querySelectorAll('.th-btn').forEach((b, k) => b.classList.toggle('on', k === i));
-  $('strip').querySelectorAll('.th-btn')[i]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
+  const btns = $('strip').querySelectorAll('.th-btn');
+  btns.forEach((b, k) => b.classList.toggle('on', k === i));
+  if (btns[i]) btns[i].scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
   renderPanel(); scheduleRender();
   $('panel').scrollTop = 0;
 }
 function addSlideMenu() {
   const T = [
-    ['cover', 'Cover', 'Nadpis + fotka s přechodem, šipky'],
-    ['quote', 'Citát', 'Fotka mluvčího, citát, jméno a role'],
-    ['cards', 'Karty', 'Nadpis sekce a 2 až 4 informační karty'],
-    ['chart', 'Graf', 'Horizontální pilulky, hodnoty, změny, 5 % hranice'],
+    ['cover', 'Nadpis + fotka s přechodem, šipky'],
+    ['quote', 'Fotka mluvčího, citát, jméno a role'],
+    ['cards', 'Nadpis sekce a 2 až 4 informační karty'],
+    ['chart', 'Horizontální pilulky, hodnoty, změny, hranice 5 %'],
+    ['stack', 'Segmentace podle pohlaví, věku, vzdělání'],
+    ['compare', 'Dva pruhy na stranu, starší a aktuální období'],
   ];
-  openSheet('Nový slide', T.map(([k, t, s]) => `<button class="opt" data-type="${k}"><div class="ic"><img alt="" src="${typeIcon(k)}" style="width:100%;height:100%;display:block"></div><div><div class="t">${t}</div><div class="s">${s}</div></div></button>`).join(''));
+  openSheet('Nový slide', T.map(([k, s]) => `<button class="opt" data-type="${k}"><div class="ic"><img alt="" src="${typeIcon(k)}"></div><div><div class="t">${TYPE_NAME[k]} <span class="hint">· typ ${TYPE_K[k]}</span></div><div class="s">${s}</div></div></button>`).join(''));
   $('sheet-body').onclick = e => {
     const b = e.target.closest('[data-type]'); if (!b) return;
     const p = cur(); const s = newSlide(b.dataset.type);
     p.slides.splice(state.slideIdx + 1, 0, s); state.slideIdx++;
+    normalizeArrows(p);
     closeSheet(); renderStrip(); renderPanel(); touch();
   };
 }
-const iconCache = {};
+let iconCache = {};
 function typeIcon(k) {
   if (iconCache[k]) return iconCache[k];
   const s = newSlide(k); if (k === 'cover') s.arrows = true;
-  const save0 = state.currentId; state.currentId = null;
-  const d = slideThumb(s, 80, 100, 0.6);
-  state.currentId = save0; iconCache[k] = d; return d;
+  const d = slideThumb(s, 84, 105, 0.6, null);
+  iconCache[k] = d; return d;
+}
+function overviewSheet() {
+  const p = cur();
+  const items = p.slides.map(s => { const wn = renderSlide(offCtx, s, p); const t = document.createElement('canvas'); t.width = 216; t.height = 270; t.getContext('2d').drawImage(off, 0, 0, 216, 270); return { d: t.toDataURL('image/jpeg', 0.78), wn }; });
+  openSheet('Přehled', `<div class="gridall">${items.map((it, i) => `<button data-i="${i}" class="${i === state.slideIdx ? 'on' : ''}"><img alt="" src="${it.d}"><span class="n">${i + 1}</span>${it.wn.length ? '<span class="wb"></span>' : ''}</button>`).join('')}</div>
+    <div class="note">${items.some(it => it.wn.length) ? 'Žlutá tečka = slide má upozornění z kontroly.' : 'Všechny slidy prošly kontrolou.'}</div>`);
+  $('sheet-body').onclick = e => { const b = e.target.closest('[data-i]'); if (!b) return; closeSheet(); selectSlide(+b.dataset.i); };
 }
 
 /* ---- Pole editoru ---- */
+const fid = f => 'f-' + f.replace(/\./g, '-');
 function fText(label, f, val, ph = '', hint = '') {
-  return `<div class="f"><label>${esc(label)}${hint ? `<span class="hint">${esc(hint)}</span>` : ''}</label><input class="in" id="f-${f.replace(/\./g, '-')}" data-f="${f}" value="${esc(val)}" placeholder="${esc(ph)}" autocomplete="off"></div>`;
+  return `<div class="f">${label || hint ? `<label for="${fid(f)}">${esc(label)}${hint ? `<span class="hint">${esc(hint)}</span>` : ''}</label>` : ''}<input class="in" id="${fid(f)}" data-f="${f}" value="${esc(val)}" placeholder="${esc(ph)}" autocomplete="off"></div>`;
 }
-function fArea(label, f, val, hint = '', plain = false) {
-  return `<div class="f"><label>${esc(label)}${hint ? `<span class="hint">${esc(hint)}</span>` : ''}</label><textarea class="in ${plain ? 'plain' : ''}" id="f-${f.replace(/\./g, '-')}" data-f="${f}" rows="3">${esc(val)}</textarea></div>`;
+function fArea(label, f, val, hint = '', plain = false, rows = 3) {
+  return `<div class="f">${label || hint ? `<label for="${fid(f)}">${esc(label)}${hint ? `<span class="hint">${esc(hint)}</span>` : ''}</label>` : ''}<textarea class="in ${plain ? 'plain' : ''}" id="${fid(f)}" data-f="${f}" rows="${rows}">${esc(val)}</textarea></div>`;
 }
 function fRange(label, f, val, min, max, step, unit = '') {
-  const id = 'f-' + f.replace(/\./g, '-');
-  return `<div class="f"><label for="${id}">${esc(label)}<output for="${id}">${fmtOut(val, unit)}</output></label><input type="range" id="${id}" data-f="${f}" data-unit="${unit}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
+  return `<div class="f"><label for="${fid(f)}">${esc(label)}<output for="${fid(f)}">${fmtOut(val, unit)}</output></label><input type="range" id="${fid(f)}" data-f="${f}" data-unit="${unit}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
 }
 function fmtOut(v, unit) { if (unit === '%') return Math.round(v * 100) + ' %'; if (unit === 'x') return (+v).toFixed(2) + '×'; if (unit === 'auto' && +v === 0) return 'auto'; return v + (unit === 'auto' ? ' px' : unit); }
 function fSwitch(label, sub, f, on) {
   return `<div class="sw"><div><div class="t">${esc(label)}</div>${sub ? `<div class="s">${esc(sub)}</div>` : ''}</div><button class="tg" role="switch" aria-checked="${on ? 'true' : 'false'}" data-f="${f}" aria-label="${esc(label)}"></button></div>`;
 }
+function fNum(label, f, val, ph = '', dis = false) {
+  return `<div class="f"><label for="${fid(f)}">${esc(label)}</label><input class="in" type="number" inputmode="decimal" step="0.1" id="${fid(f)}" data-f="${f}" value="${val == null ? '' : val}" placeholder="${esc(ph)}" ${dis ? 'disabled' : ''}></div>`;
+}
+function colorField(f, color) {
+  const opts = PARTIES.map(([n, c]) => `<option value="${c}">${esc(n)}</option>`).join('');
+  return `<div class="f"><label>Barva</label><div class="inline"><select class="in" data-f="${f}" data-sel="1" data-col="${esc(color || '')}"><option value="">Vlastní</option>${opts}</select>
+    <input type="color" class="in" style="width:54px;padding:4px;flex:none;height:46px" data-f="${f}" value="${esc(color || '#566276')}" aria-label="Vlastní barva"></div></div>`;
+}
+function rowTools(act, i, n) {
+  const ic = p => `<svg viewBox="0 0 24 24"><path d="${p}"/></svg>`;
+  return `<div class="mini">
+    <button data-act="${act}-up" data-i="${i}" aria-label="Nahoru" ${i === 0 ? 'disabled' : ''}>${ic('M12 19V5M5 12l7-7 7 7')}</button>
+    <button data-act="${act}-down" data-i="${i}" aria-label="Dolů" ${i === n - 1 ? 'disabled' : ''}>${ic('M12 5v14M5 12l7 7 7-7')}</button>
+    <button data-act="${act}-rm" data-i="${i}" aria-label="Odebrat">${ic('M6 6l12 12M18 6L6 18')}</button></div>`;
+}
 function photoBlock(s, maxMin, maxMax) {
   const has = !!s.photo;
   return `<div class="sec"><h3>Fotka</h3>${has ? '<button class="lnk" data-act="photo-rm">Odebrat</button>' : ''}</div>
   <div class="photo-box">
-    <div class="pv">${has ? `<img src="${s.photo.src}" alt="">` : '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 8"/></svg>'}</div>
+    <div class="pv">${has ? `<canvas class="pv-c" width="152" height="152"></canvas>` : '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16l-5-5-9 8"/></svg>'}</div>
     <div class="acts"><button class="btn sm" data-act="photo-add">${has ? 'Vyměnit fotku' : 'Nahrát z telefonu'}</button>
-    <div class="note" style="padding:0">${has ? `${s.photo.w} × ${s.photo.h} px` : 'Fotka se škáluje na šířku 1080, poměr stran se nemění.'}</div></div>
+    <div class="note" style="padding:0">${has ? `${s.photo.w} × ${s.photo.h} px · výřez tahem na náhledu` : 'Škáluje se na šířku 1080, poměr stran se nemění.'}</div></div>
   </div>
   ${has ? fRange('Výška hlavičky', 'maxH', s.maxH, maxMin, maxMax, 2, ' px') + fRange('Výřez svisle', 'crop', s.crop, 0, 1, 0.01, '%')
-    + fRange('Začátek přechodu', 'gs', s.gs, 0.3, 0.95, 0.01, '%') + fRange('Konec přechodu', 'ge', s.ge, 0.6, 1, 0.01, '%')
-    + `<div class="grid2">${fRange('Přiblížení', 'photo.zoom', s.photo.zoom || 1, 1, 2.2, 0.01, 'x')}${fRange('Střed vodorovně', 'photo.cx', s.photo.cx == null ? 0.5 : s.photo.cx, 0, 1, 0.01, '%')}</div>` : ''}`;
+    + `<div class="grid2">${fRange('Začátek přechodu', 'gs', s.gs, 0.3, 0.95, 0.01, '%')}${fRange('Konec přechodu', 'ge', s.ge, 0.6, 1, 0.01, '%')}</div>`
+    + `<div class="grid2">${fRange('Přiblížení', 'photo.zoom', s.photo.zoom || 1, 1, 2.5, 0.01, 'x')}${fRange('Střed vodorovně', 'photo.cx', s.photo.cx == null ? 0.5 : s.photo.cx, 0, 1, 0.01, '%')}</div>` : ''}`;
+}
+function paintPhotoPreviews() {
+  const s = curSlide(); if (!s || !s.photo) return;
+  const c = $('panel').querySelector('.pv-c'); if (!c) return;
+  const img = getImg(s.photo); if (!img) return;
+  const x = c.getContext('2d'); const sc = Math.max(152 / img.naturalWidth, 152 / img.naturalHeight);
+  const w = img.naturalWidth * sc, h = img.naturalHeight * sc;
+  x.drawImage(img, (152 - w) / 2, (152 - h) / 2, w, h);
 }
 function renderPanel() {
   const p = cur(); const s = curSlide(); if (!s) return;
   const idx = p.slides.indexOf(s);
   let h = '';
   if (s.type === 'cover') {
-    h += `<div class="sec"><h3>Nadpis</h3><span class="hint" style="color:var(--muted);font-size:12px">[závorky] = cyan, Enter = ruční zalomení</span></div>`;
+    h += `<div class="sec"><h3>Nadpis</h3><span class="hint">[závorky] = cyan · Enter = zalomení · ~ drží slova</span></div>`;
     h += fArea('', 'headline', s.headline);
     h += fRange('Velikost písma', 'size', s.size, 0, 80, 2, 'auto');
     h += photoBlock(s, 440, 760);
   } else if (s.type === 'quote') {
-    h += `<div class="sec"><h3>Citát</h3><span class="hint" style="color:var(--muted);font-size:12px">[závorky] = cyan, uvozovky doplní aplikace</span></div>`;
+    h += `<div class="sec"><h3>Citát</h3><span class="hint">[závorky] = cyan · uvozovky doplní aplikace</span></div>`;
     h += fArea('', 'text', s.text);
     h += fText('Popisek u čárky', 'label', s.label, 'volitelné, např. K ČLÁNKU 5', 'bez jména mluvčího');
     h += `<div class="grid2">${fText('Jméno', 'name', s.name)}${fText('Role', 'role', s.role)}</div>`;
@@ -796,51 +1088,59 @@ function renderPanel() {
     h += photoBlock(s, 300, 720);
   } else if (s.type === 'cards') {
     h += `<div class="sec"><h3>Nadpis sekce</h3></div>` + fText('', 'title', s.title);
-    h += `<div class="sec"><h3>Karty</h3><span class="hint" style="color:var(--muted);font-size:12px">${s.items.length} z 4</span></div>`;
+    h += `<div class="sec"><h3>Karty</h3><span class="hint">${s.items.length} z 4</span></div>`;
     s.items.forEach((it, i) => {
-      h += `<div class="card-ed"><div class="hd"><b>Karta ${i + 1}</b><div class="mini">
-        <button data-act="card-up" data-i="${i}" aria-label="Nahoru" ${i === 0 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-        <button data-act="card-down" data-i="${i}" aria-label="Dolů" ${i === s.items.length - 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
-        <button data-act="card-rm" data-i="${i}" aria-label="Odebrat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
-        ${fText('Titulek', `items.${i}.title`, it.title)}${fArea('Text', `items.${i}.body`, it.body, '', true)}</div>`;
+      h += `<div class="card-ed"><div class="hd"><b>Karta ${i + 1}</b>${rowTools('card', i, s.items.length)}</div>
+        ${fText('Titulek', `items.${i}.title`, it.title)}${fArea('Text', `items.${i}.body`, it.body, '', true, 2)}</div>`;
     });
     if (s.items.length < 4) h += `<button class="add-line" data-act="card-add">Přidat kartu</button>`;
     h += photoBlock(s, 200, 420);
-  } else if (s.type === 'chart') {
+  } else if (s.type === 'chart' || s.type === 'compare') {
+    const cmp = s.type === 'compare';
     h += `<div class="sec"><h3>Nadpis</h3></div><div class="grid2">${fText('Řádek 1', 'title1', s.title1)}${fText('Řádek 2 (cyan)', 'title2', s.title2)}</div>`;
-    h += fText('Podnadpis', 'subtitle', s.subtitle, 'Agentura, sběr, datum', 'sem patří zdroj');
-    h += `<div class="sec"><h3>Řádky</h3><span class="hint" style="color:var(--muted);font-size:12px">${s.rows.length} z 14</span></div>`;
-    const opts = PARTIES.map(([n, c]) => `<option value="${c}">${esc(n)}</option>`).join('');
+    h += fText('Podnadpis', 'subtitle', s.subtitle, cmp ? 'Agentura, září vs červen' : 'Agentura, sběr, datum', 'sem patří zdroj');
+    h += `<div class="sec"><h3>Řádky</h3><span class="hint">${s.rows.length} z 14</span></div>`;
     s.rows.forEach((r, i) => {
-      const known = PARTIES.some(([, c]) => c.toLowerCase() === (r.color || '').toLowerCase());
-      h += `<div class="card-ed"><div class="hd"><b><span class="cs" style="background:${esc(r.color)}"></span>Řádek ${i + 1}</b><div class="mini">
-        <button data-act="row-up" data-i="${i}" aria-label="Nahoru" ${i === 0 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
-        <button data-act="row-down" data-i="${i}" aria-label="Dolů" ${i === s.rows.length - 1 ? 'disabled' : ''}><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button>
-        <button data-act="row-rm" data-i="${i}" aria-label="Odebrat"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div></div>
+      h += `<div class="card-ed"><div class="hd"><b><span class="cs" style="background:${esc(r.color)}"></span>Řádek ${i + 1}</b>${rowTools('row', i, s.rows.length)}</div>
         <div class="grid3">${fText('Strana', `rows.${i}.name`, r.name)}
-          <div class="f"><label>Hodnota %</label><input class="in" type="number" inputmode="decimal" step="0.1" min="0" data-f="rows.${i}.value" value="${r.value}"></div>
-          <div class="f"><label>Změna</label><input class="in" type="number" inputmode="decimal" step="0.1" data-f="rows.${i}.change" value="${r.change == null ? '' : r.change}" placeholder="—" ${s.changes ? '' : 'disabled'}></div></div>
-        <div class="f"><label>Barva</label><div class="inline"><select class="in" data-f="rows.${i}.color" data-sel="1"><option value="${known ? '' : esc(r.color)}" ${known ? '' : 'selected'}>Vlastní</option>${opts}</select>
-          <input type="color" class="in" style="width:52px;padding:4px;flex:none" data-f="rows.${i}.color" value="${esc(r.color || '#566276')}" aria-label="Vlastní barva"></div></div></div>`;
+          ${cmp ? fNum('Dříve %', `rows.${i}.old`, r.old) + fNum('Nyní %', `rows.${i}.value`, r.value)
+                : fNum('Hodnota %', `rows.${i}.value`, r.value) + fNum('Změna', `rows.${i}.change`, r.change, '—', !s.changes)}</div>
+        ${colorField(`rows.${i}.color`, r.color)}</div>`;
     });
     if (s.rows.length < 14) h += `<button class="add-line" data-act="row-add">Přidat řádek</button>`;
     h += `<div class="sec"><h3>Nastavení grafu</h3></div>`;
-    h += fSwitch('Sloupec změn', 'zelená +, červená −, pomlčka beze změny', 'changes', s.changes);
+    if (!cmp) h += fSwitch('Sloupec změn', 'zelená +, červená −, pomlčka beze změny', 'changes', s.changes);
     h += fSwitch('Hranice 5 %', 'zlatá svislá čára', 'threshold', s.threshold);
-    h += fRange('Výška pilulky', 'barH', s.barH, 40, 60, 2, ' px');
+    if (!cmp) h += fRange('Výška pilulky', 'barH', s.barH, 40, 60, 2, ' px');
+  } else if (s.type === 'stack') {
+    h += `<div class="sec"><h3>Nadpis</h3></div><div class="grid2">${fText('Řádek 1', 'title1', s.title1)}${fText('Řádek 2 (cyan)', 'title2', s.title2)}</div>`;
+    h += fText('Podnadpis', 'subtitle', s.subtitle, 'Agentura, sběr, datum', 'sem patří zdroj');
+    h += `<div class="sec"><h3>Segmenty (legenda)</h3><span class="hint">${s.segs.length} z 7 · malé strany sluč do „ostatní“</span></div>`;
+    s.segs.forEach((g, i) => {
+      h += `<div class="card-ed"><div class="hd"><b><span class="cs" style="background:${esc(g.color)}"></span>Segment ${i + 1}</b>${rowTools('seg', i, s.segs.length)}</div>
+        ${fText('Název', `segs.${i}.name`, g.name)}${colorField(`segs.${i}.color`, g.color)}</div>`;
+    });
+    if (s.segs.length < 7) h += `<button class="add-line" data-act="seg-add">Přidat segment</button>`;
+    h += `<div class="sec"><h3>Řádky</h3><span class="hint">hodnoty v pořadí segmentů, oddělené čárkou</span></div>`;
+    s.rows.forEach((r, i) => {
+      h += `<div class="card-ed"><div class="hd"><b>Řádek ${i + 1}${i === 0 ? ' <span class="hint" style="margin-left:6px">první bývá Celkem</span>' : ''}</b>${rowTools('srow', i, s.rows.length)}</div>
+        <div class="grid2" style="grid-template-columns:1fr 1.6fr">${fText('Popisek', `rows.${i}.label`, r.label)}${fText('Hodnoty %', `rows.${i}.values`, r.values, '30, 20, 11, 12, 27')}</div></div>`;
+    });
+    if (s.rows.length < 8) h += `<button class="add-line" data-act="srow-add">Přidat řádek</button>`;
   }
-  h += `<div class="sec"><h3>Slide</h3><span class="hint" style="color:var(--muted);font-size:12px">${TYPE_NAME[s.type]} · typ ${TYPE_K[s.type]}</span></div>`;
-  h += fSwitch('Šipky ›››', s.type === 'chart' ? 'jen na prvním slidu, u grafů vpravo' : 'jen na prvním slidu', 'arrows', s.arrows);
+  h += `<div class="sec"><h3>Slide</h3><span class="hint">${TYPE_NAME[s.type]} · typ ${TYPE_K[s.type]}</span></div>`;
+  h += fSwitch('Šipky ›››', ['chart', 'stack', 'compare'].includes(s.type) ? 'jen na prvním slidu, u grafů vpravo' : 'jen na prvním slidu', 'arrows', s.arrows);
   h += `<div class="tools">
-    <button class="btn sm" data-act="s-left" ${idx === 0 ? 'disabled' : ''}>◂ Posunout</button>
-    <button class="btn sm" data-act="s-right" ${idx === p.slides.length - 1 ? 'disabled' : ''}>Posunout ▸</button>
+    <button class="btn sm" data-act="s-left" ${idx === 0 ? 'disabled' : ''}>◂ Dřív</button>
+    <button class="btn sm" data-act="s-right" ${idx === p.slides.length - 1 ? 'disabled' : ''}>Později ▸</button>
     <button class="btn sm" data-act="s-dup">Duplikovat</button>
     <button class="btn sm d" data-act="s-del" ${p.slides.length === 1 ? 'disabled' : ''}>Smazat</button></div>`;
   $('panel').innerHTML = h;
   $('panel').querySelectorAll('select[data-sel]').forEach(sel => {
-    const s2 = curSlide(); const i = +sel.dataset.f.split('.')[1]; const col = (s2.rows[i].color || '').toLowerCase();
-    const o = Array.from(sel.options).find(o => o.value.toLowerCase() === col); if (o) sel.value = o.value;
+    const col = (sel.dataset.col || '').toLowerCase();
+    const o = Array.from(sel.options).find(o => o.value && o.value.toLowerCase() === col); sel.value = o ? o.value : '';
   });
+  paintPhotoPreviews();
 }
 
 /* ---- Změny hodnot ---- */
@@ -857,9 +1157,9 @@ $('panel').addEventListener('input', e => {
   else if (el.type === 'number') v = el.value === '' ? '' : parseFloat(el.value);
   else if (el.tagName === 'SELECT') { if (!el.value) return; v = el.value; const c = el.parentElement.querySelector('input[type=color]'); if (c) c.value = v; }
   else v = el.value;
-  if (el.type === 'color') { const sel = el.parentElement.querySelector('select'); if (sel) { const o = Array.from(sel.options).find(o => o.value.toLowerCase() === v.toLowerCase()); sel.value = o ? o.value : ''; } }
+  if (el.type === 'color') { const sel = el.parentElement.querySelector('select'); if (sel) { const o = Array.from(sel.options).find(o => o.value && o.value.toLowerCase() === v.toLowerCase()); sel.value = o ? o.value : ''; } }
   setPath(s, f, v);
-  if (f.startsWith('rows.') && f.endsWith('.color')) { const i = +f.split('.')[1]; const sw = $('panel').querySelectorAll('.card-ed .cs')[i]; if (sw) sw.style.background = v; }
+  if (f.endsWith('.color')) { const card = el.closest('.card-ed'); const sw = card && card.querySelector('.cs'); if (sw) sw.style.background = v; }
   touch();
 });
 $('panel').addEventListener('click', e => {
@@ -873,21 +1173,29 @@ $('panel').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const a = b.dataset.act, i = +b.dataset.i, idx = p.slides.indexOf(s);
   const swap = (arr, x, y) => { [arr[x], arr[y]] = [arr[y], arr[x]]; };
+  const focusLast = sel => setTimeout(() => { const els = $('panel').querySelectorAll(sel); if (els.length) els[els.length - 1].focus(); }, 30);
+  const lists = {
+    card: ['items', () => ({ title: '', body: '' }), '[data-f$=".title"]'],
+    row: ['rows', () => (s.type === 'compare' ? { name: '', old: '', value: '', color: '#566276' } : { name: '', value: '', change: '', color: '#566276' }), '[data-f$=".name"]'],
+    seg: ['segs', () => ({ name: '', color: '#566276' }), '[data-f$=".name"]'],
+    srow: ['rows', () => ({ label: '', values: '' }), '[data-f$=".label"]'],
+  };
+  const m = /^(card|row|seg|srow)-(add|rm|up|down)$/.exec(a);
+  if (m) {
+    const [key, mk, sel] = lists[m[1]]; const arr = s[key];
+    if (m[2] === 'add') { arr.push(mk()); renderPanel(); touch(); focusLast(sel); }
+    else if (m[2] === 'rm') { arr.splice(i, 1); renderPanel(); touch(); }
+    else if (m[2] === 'up' && i > 0) { swap(arr, i, i - 1); renderPanel(); touch(); }
+    else if (m[2] === 'down' && i < arr.length - 1) { swap(arr, i, i + 1); renderPanel(); touch(); }
+    return;
+  }
   if (a === 'photo-add') { $('file-in').value = ''; $('file-in').click(); }
-  else if (a === 'photo-rm') { s.photo = null; renderPanel(); touch(); }
-  else if (a === 'card-add') { s.items.push({ title: '', body: '' }); renderPanel(); touch(); setTimeout(() => $(`f-items-${s.items.length - 1}-title`)?.focus(), 30); }
-  else if (a === 'card-rm') { s.items.splice(i, 1); renderPanel(); touch(); }
-  else if (a === 'card-up') { swap(s.items, i, i - 1); renderPanel(); touch(); }
-  else if (a === 'card-down') { swap(s.items, i, i + 1); renderPanel(); touch(); }
-  else if (a === 'row-add') { s.rows.push({ name: '', value: 0, change: '', color: '#566276' }); renderPanel(); touch(); setTimeout(() => $('panel').querySelector(`[data-f="rows.${s.rows.length - 1}.name"]`)?.focus(), 30); }
-  else if (a === 'row-rm') { s.rows.splice(i, 1); renderPanel(); touch(); }
-  else if (a === 'row-up') { swap(s.rows, i, i - 1); renderPanel(); touch(); }
-  else if (a === 'row-down') { swap(s.rows, i, i + 1); renderPanel(); touch(); }
+  else if (a === 'photo-rm') { const id = s.photo && s.photo.id; s.photo = null; photoRelease(id); renderPanel(); touch(); }
   else if (a === 's-left' && idx > 0) { swap(p.slides, idx, idx - 1); state.slideIdx = idx - 1; renderStrip(); renderPanel(); touch(); }
   else if (a === 's-right' && idx < p.slides.length - 1) { swap(p.slides, idx, idx + 1); state.slideIdx = idx + 1; renderStrip(); renderPanel(); touch(); }
   else if (a === 's-dup') { const c = JSON.parse(JSON.stringify(s)); c.id = uid(); c.arrows = false; p.slides.splice(idx + 1, 0, c); state.slideIdx = idx + 1; renderStrip(); renderPanel(); touch(); }
   else if (a === 's-del') {
-    if (b.dataset.sure) { p.slides.splice(idx, 1); state.slideIdx = Math.max(0, idx - 1); renderStrip(); renderPanel(); touch(); }
+    if (b.dataset.sure) { const id = s.photo && s.photo.id; p.slides.splice(idx, 1); photoRelease(id); state.slideIdx = Math.max(0, idx - 1); normalizeArrows(p); renderStrip(); renderPanel(); touch(); }
     else { b.dataset.sure = '1'; b.textContent = 'Opravdu smazat?'; setTimeout(() => { if (b.isConnected) { delete b.dataset.sure; b.textContent = 'Smazat'; } }, 2500); }
   }
 });
@@ -898,24 +1206,77 @@ $('file-in').addEventListener('change', async e => {
   try {
     const url = URL.createObjectURL(file);
     const img = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = url; });
-    const MAXW_SRC = 1620;
+    const MAXW_SRC = 1800;
     const sc = Math.min(1, MAXW_SRC / img.naturalWidth);
     const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
     c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
     URL.revokeObjectURL(url);
-    const s = curSlide();
-    s.photo = { src: c.toDataURL('image/jpeg', 0.86), w: img.naturalWidth, h: img.naturalHeight, zoom: 1, cx: 0.5 };
+    const s = curSlide(); const old = s.photo && s.photo.id;
+    const id = uid();
+    await photoPut(id, c.toDataURL('image/jpeg', 0.88));
+    s.photo = { id, w: img.naturalWidth, h: img.naturalHeight, zoom: 1, cx: 0.5 };
+    photoRelease(old);
     if (img.naturalWidth < 600) toast('Fotka je užší než 600 px, na slidu bude měkká.');
     renderPanel(); touch();
-  } catch (err) { toast('Fotku se nepodařilo načíst.'); }
+  } catch (err) { toast('Fotku se nepodařilo načíst. Zkus JPG nebo PNG.'); }
 });
+
+/* ---- Gesta na náhledu: tah = výřez, dva prsty = přiblížení ---- */
+(() => {
+  const el = $('cvw'); const pts = new Map(); let start = null;
+  const sync = () => {
+    const s = curSlide(); if (!s || !s.photo) return;
+    [['crop', s.crop], ['photo.cx', s.photo.cx], ['photo.zoom', s.photo.zoom || 1]].forEach(([f, v]) => {
+      const r = $('panel').querySelector(`[data-f="${f}"]`); if (!r) return; r.value = v;
+      const o = r.parentElement.querySelector('output'); if (o) o.textContent = fmtOut(v, r.dataset.unit);
+    });
+  };
+  const snapshot = () => { const s = curSlide(); return { crop: s.crop, cx: s.photo.cx == null ? 0.5 : s.photo.cx, zoom: s.photo.zoom || 1, pts: new Map(pts), geom: previewGeom || (start && start.geom), k: W / el.getBoundingClientRect().width }; };
+  el.addEventListener('pointerdown', e => {
+    const s = curSlide(); if (!s || !s.photo || !previewGeom) return;
+    el.setPointerCapture(e.pointerId); pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    start = snapshot(); e.preventDefault();
+  });
+  el.addEventListener('pointermove', e => {
+    if (!start || !pts.has(e.pointerId)) return;
+    pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    const s = curSlide(); if (!s || !s.photo || !start.geom) return;
+    const g = start.geom, k = start.k;
+    if (pts.size >= 2 && start.pts.size >= 2) {
+      const [a0, b0] = Array.from(start.pts.values()), [a1, b1] = Array.from(pts.values());
+      const d0 = Math.hypot(a0.x - b0.x, a0.y - b0.y) || 1, d1 = Math.hypot(a1.x - b1.x, a1.y - b1.y);
+      s.photo.zoom = Math.round(Math.min(2.5, Math.max(1, start.zoom * d1 / d0)) * 100) / 100;
+    } else {
+      const p0 = start.pts.get(e.pointerId); if (!p0) return;
+      const dx = (e.clientX - p0.x) * k, dy = (e.clientY - p0.y) * k;
+      const slackY = g.sh - g.h; if (slackY > 1) s.crop = Math.round(Math.min(1, Math.max(0, start.crop - dy / slackY)) * 1000) / 1000;
+      const slackX = W * g.zoom - W; if (slackX > 1) s.photo.cx = Math.round(Math.min(1, Math.max(0, start.cx - dx / slackX)) * 1000) / 1000;
+    }
+    scheduleRender();
+  });
+  const end = e => {
+    if (!pts.has(e.pointerId)) return;
+    pts.delete(e.pointerId);
+    if (!pts.size) { start = null; sync(); touch(); }
+    else if (start) start = snapshot();
+  };
+  el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end);
+  el.style.touchAction = 'none';
+})();
 
 /* =========================================================
    EXPORT + POPISEK
    ========================================================= */
 function slug(t) { return String(t || 'post').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'post'; }
-function slideBlob(s) { renderSlide(offCtx, s); return new Promise(r => off.toBlob(r, 'image/png')); }
-let dlCap = undefined;
+function slideBlob(s, p) { renderSlide(offCtx, s, p); return new Promise(r => off.toBlob(r, 'image/png')); }
+function contactBlob(p) {
+  const n = p.slides.length, cols = Math.min(3, n), rows = Math.ceil(n / cols), cw = 432, chh = 540, pad = 24;
+  const c = document.createElement('canvas'); c.width = cols * cw + (cols + 1) * pad; c.height = rows * chh + (rows + 1) * pad;
+  const x = c.getContext('2d'); x.fillStyle = '#0B1430'; x.fillRect(0, 0, c.width, c.height);
+  p.slides.forEach((s, i) => { renderSlide(offCtx, s, p); x.drawImage(off, pad + (i % cols) * (cw + pad), pad + Math.floor(i / cols) * (chh + pad), cw, chh); });
+  return new Promise(r => c.toBlob(r, 'image/png'));
+}
+let dlCap;
 async function getDownloads() {
   if (dlCap !== undefined) return dlCap;
   try { dlCap = window.claude && window.claude.use ? await window.claude.use('downloads') : null; } catch (e) { dlCap = null; }
@@ -930,63 +1291,79 @@ async function saveFile(filename, blob) {
 }
 function buildCaption(p) {
   const c = p.caption || {};
-  const tags = String(c.tags || '').split(/[\s,#]+/).filter(Boolean).map(t => '#' + t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9_]/g, ''));
-  const lines = [];
-  lines.push((c.intro || '').trim());
-  lines.push('', 'Zajímá mě tvůj názor, napiš mi ho do komentářů!', '', '👆 Nezapomeň mě sledovat pro tvůj větší přehled a buď o krok napřed!', '');
-  lines.push('Zdroj: ' + [c.source, c.date].filter(Boolean).join(' · '));
+  const tags = String(c.tags || '').split(/[\s,#]+/).filter(Boolean).map(t => '#' + t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9_]/g, '')).filter(t => t.length > 1);
+  const src = 'Zdroj: ' + [c.source, c.date].filter(Boolean).join(' · ');
+  const lines = [(c.intro || '').trim()];
+  if (!c.short) lines.push('', 'Zajímá mě tvůj názor, napiš mi ho do komentářů!', '', '👆 Nezapomeň mě sledovat pro tvůj větší přehled a buď o krok napřed!');
+  lines.push('', src);
   if (c.photo) lines.push('Foto: ' + c.photo);
   lines.push('', tags.slice(0, 5).join(' '));
-  return { text: lines.join('\n'), tagCount: tags.length };
+  const wn = [];
+  if (/\b(Vás|Vám|Vaše|myslíte|sledujte|napište|víte)\b/i.test(c.intro || '')) wn.push('Popisek má tykat');
+  if (tags.length > 5) wn.push('Max 5 hashtagů, zbytek se odřízne');
+  if (!c.source) wn.push('Chybí zdroj');
+  return { text: lines.join('\n'), tagCount: tags.length, wn };
+}
+function postWarnings(p) {
+  return p.slides.map((s, i) => ({ i, wn: renderSlide(offCtx, s, p) })).filter(x => x.wn.length);
 }
 function exportSheet() {
-  const p = cur(); const n = p.slides.length; const cap = buildCaption(p);
+  const p = cur(); const n = p.slides.length;
+  const pw = postWarnings(p);
   openSheet('Export', `
-    <div class="stack" style="padding-top:4px">
+    ${pw.length ? `<div class="sec" style="padding-top:4px"><h3>Kontrola před odesláním</h3><span class="hint">${pw.reduce((a, x) => a + x.wn.length, 0)} upozornění</span></div>
+      <div class="wlist">${pw.map(x => x.wn.map(w => `<div><b>${x.i + 1}</b><span>${esc(w)}</span></div>`).join('')).join('')}</div>` :
+      `<div class="chip ok" style="margin:4px 0 10px"><i></i>Všech ${n} ${plural(n, 'slide prošel', 'slidy prošly', 'slidů prošlo')} kontrolou</div>`}
+    <div class="stack">
       <button class="btn p" data-x="one">Uložit tento slide (PNG)</button>
       <button class="btn" data-x="all" ${n < 2 ? 'disabled' : ''}>Uložit všech ${n} slidů po jednom</button>
       <button class="btn" data-x="zip" ${n < 2 ? 'disabled' : ''}>Uložit vše jako ZIP</button>
+      <button class="btn" data-x="contact" ${n < 2 ? 'disabled' : ''}>Kontaktní list (PNG)</button>
     </div>
     <div class="note">PNG 1080 × 1350 px, watermark na každém slidu. Na iPhonu se otevře sdílení, odkud jde rovnou do Fotek.</div>
-    <div class="sec"><h3>Popisek</h3><span class="hint" style="color:${cap.tagCount > 5 ? 'var(--warn)' : 'var(--muted)'};font-size:12px">${cap.tagCount > 5 ? 'max 5 hashtagů, zbytek se odřízne' : 'tykání, zdroj, max 5 hashtagů'}</span></div>
-    ${fArea('Faktický úvod (2 až 5 vět)', 'cap.intro', p.caption.intro, '', true)}
+    <div class="sec"><h3>Popisek</h3><span class="hint" id="cap-hint"></span></div>
+    ${fArea('Faktický úvod (2 až 5 vět, tykání)', 'cap.intro', p.caption.intro, '', true, 4)}
     <div class="grid2">${fText('Zdroj', 'cap.source', p.caption.source, 'ČTK')}${fText('Datum', 'cap.date', p.caption.date, '1. října 2026')}</div>
     ${fText('Foto (volitelné)', 'cap.photo', p.caption.photo, 'ČTK, Profimedia')}
-    ${fText('Hashtagy', 'cap.tags', p.caption.tags, 'politika cesko eu', 'bez diakritiky, oddělené mezerou')}
-    <div class="cap" id="cap-out">${esc(cap.text)}</div>
+    ${fText('Hashtagy', 'cap.tags', p.caption.tags, 'politika cesko eu', 'bez diakritiky, max 5')}
+    ${fSwitch('Kratší verze', 'jen úvod, zdroj a hashtagy', 'cap.short', !!p.caption.short)}
+    <div class="cap" id="cap-out"></div>
     <button class="btn" data-x="copy" style="width:100%">Kopírovat popisek</button>`);
   const body = $('sheet-body');
-  body.addEventListener('input', e => {
+  const refresh = () => { const c2 = buildCaption(p); $('cap-out').textContent = c2.text; const hnt = $('cap-hint'); hnt.textContent = c2.wn.length ? c2.wn.join(' · ') : 'podle šablony z manuálu'; hnt.style.color = c2.wn.length ? 'var(--warn)' : ''; };
+  refresh();
+  body.oninput = e => {
     const f = e.target.dataset.f; if (!f || !f.startsWith('cap.')) return;
-    p.caption[f.slice(4)] = e.target.value; p.updated = Date.now(); save();
-    const c2 = buildCaption(p); $('cap-out').textContent = c2.text;
-  });
+    p.caption[f.slice(4)] = e.target.value; p.updated = Date.now(); save(); refresh();
+  };
   body.onclick = async e => {
+    const tg = e.target.closest('.tg');
+    if (tg) { const on = tg.getAttribute('aria-checked') !== 'true'; tg.setAttribute('aria-checked', on); p.caption.short = on; save(); refresh(); return; }
     const b = e.target.closest('[data-x]'); if (!b) return;
-    const x = b.dataset.x; const base = slug(p.title);
+    const x = b.dataset.x; const base = slug(postTitle(p)); const label = b.textContent;
+    const reset = () => { b.disabled = false; b.textContent = label; };
     try {
       if (x === 'copy') {
         const t = buildCaption(p).text;
         try { await navigator.clipboard.writeText(t); toast('Popisek zkopírován'); }
         catch (err) { const r = document.createRange(); r.selectNodeContents($('cap-out')); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast('Označeno, zkopíruj ručně'); }
-      } else if (x === 'one') {
-        const s = curSlide(); const i = p.slides.indexOf(s);
-        b.disabled = true; await saveFile(`${base}-${String(i + 1).padStart(2, '0')}.png`, await slideBlob(s)); b.disabled = false; toast('Slide uložen');
-      } else if (x === 'all') {
-        b.disabled = true;
-        for (let i = 0; i < p.slides.length; i++) { b.textContent = `Ukládám ${i + 1} / ${p.slides.length}…`; await saveFile(`${base}-${String(i + 1).padStart(2, '0')}.png`, await slideBlob(p.slides[i])); }
-        b.textContent = `Uložit všech ${p.slides.length} slidů po jednom`; b.disabled = false; toast('Všechny slidy uloženy');
-      } else if (x === 'zip') {
-        if (typeof JSZip === 'undefined') { toast('ZIP knihovna se nenačetla, ulož slidy po jednom.'); return; }
-        b.disabled = true; b.textContent = 'Balím…';
-        const z = new JSZip();
-        for (let i = 0; i < p.slides.length; i++) z.file(`${base}-${String(i + 1).padStart(2, '0')}.png`, await slideBlob(p.slides[i]));
-        z.file('popisek.txt', buildCaption(p).text);
-        const blob = await z.generateAsync({ type: 'blob' });
-        await saveFile(`${base}.zip`, blob); b.textContent = 'Uložit vše jako ZIP'; b.disabled = false; toast('ZIP uložen');
+        return;
       }
+      b.disabled = true;
+      if (x === 'one') { const s = curSlide(); const i = p.slides.indexOf(s); await saveFile(`${base}-${String(i + 1).padStart(2, '0')}.png`, await slideBlob(s, p)); toast('Slide uložen'); }
+      else if (x === 'all') { for (let i = 0; i < n; i++) { b.textContent = `Ukládám ${i + 1} / ${n}…`; await saveFile(`${base}-${String(i + 1).padStart(2, '0')}.png`, await slideBlob(p.slides[i], p)); } toast('Všechny slidy uloženy'); }
+      else if (x === 'contact') { b.textContent = 'Skládám…'; await saveFile(`${base}-kontakt.png`, await contactBlob(p)); toast('Kontaktní list uložen'); }
+      else if (x === 'zip') {
+        if (typeof JSZip === 'undefined') { toast('ZIP knihovna se nenačetla, ulož slidy po jednom.'); reset(); return; }
+        b.textContent = 'Balím…';
+        const z = new JSZip();
+        for (let i = 0; i < n; i++) z.file(`${base}-${String(i + 1).padStart(2, '0')}.png`, await slideBlob(p.slides[i], p));
+        z.file('popisek.txt', buildCaption(p).text);
+        await saveFile(`${base}.zip`, await z.generateAsync({ type: 'blob' })); toast('ZIP uložen');
+      }
+      reset();
     } catch (err) {
-      b.disabled = false; if (x === 'all') b.textContent = `Uložit všech ${p.slides.length} slidů po jednom`; if (x === 'zip') b.textContent = 'Uložit vše jako ZIP';
+      reset();
       const code = err && err.code;
       if (code === 'declined') toast('Ukládání zrušeno');
       else if (code === 'rate_limited') toast('Počkej chvíli a zkus to znovu');
@@ -1001,7 +1378,7 @@ $('btn-export').onclick = exportSheet;
    ========================================================= */
 load();
 renderHome();
-if (state.currentId && cur()) openPost(state.currentId); else { state.currentId = null; }
+if (state.currentId && cur()) openPost(state.currentId); else state.currentId = null;
 ensureFonts();
 window.addEventListener('resize', scheduleRender);
 </script>
