@@ -1,0 +1,1344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="color-scheme" content="light">
+<title>Plush Octopus</title>
+<style>
+  :root {
+    --ink: #3b2727;
+    --muted: #8c7069;
+    --coral: #ee6c5a;
+    --line: rgba(59, 39, 39, .2);
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, "Times New Roman", serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --pad: clamp(16px, 3.2vw, 40px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overflow: hidden; background: #cfd5cf; color: var(--ink);
+    font-family: var(--sans); -webkit-font-smoothing: antialiased; -webkit-tap-highlight-color: transparent; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none;
+    outline: none; -webkit-user-select: none; user-select: none; }
+
+  .ui { position: fixed; inset: 0; pointer-events: none; padding: var(--pad); padding-bottom: max(var(--pad), env(safe-area-inset-bottom));
+    display: grid; grid-template-rows: auto 1fr auto; -webkit-user-select: none; user-select: none; }
+  .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; }
+  .kicker { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--muted);
+    display: flex; align-items: center; gap: 12px; }
+  .kicker::after { content: ""; width: clamp(28px, 6vw, 72px); height: 1px; background: var(--line); }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(46px, 8.6vw, 124px); line-height: .88;
+    letter-spacing: -.03em; margin-top: 14px; }
+  h1 em { display: block; font-style: italic; color: var(--coral); letter-spacing: -.035em; padding-left: .06em; }
+  .dek { font-family: var(--serif); font-style: italic; font-size: clamp(14px, 1.5vw, 18px); line-height: 1.45;
+    color: #6c524c; max-width: 25ch; margin-top: clamp(12px, 2vw, 22px); }
+  .meta { text-align: right; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted);
+    line-height: 1.9; white-space: nowrap; }
+  .meta b { color: var(--ink); font-weight: 600; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #5bbf8a; margin-right: 8px;
+    box-shadow: 0 0 0 3px rgba(91, 191, 138, .22); vertical-align: 1px; }
+  .anatomy { list-style: none; margin-top: 18px; }
+  .anatomy li { display: flex; justify-content: flex-end; gap: 10px; }
+  .anatomy span { color: var(--coral); font-variant-numeric: tabular-nums; }
+
+  .bottom { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+  .hints { list-style: none; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); line-height: 2; }
+  .hints li { display: flex; gap: 14px; align-items: baseline; }
+  .hints i { font-style: normal; color: var(--ink); min-width: 9.5ch; font-weight: 600; }
+  .controls { display: flex; gap: 10px; align-items: center; pointer-events: auto; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 3px; background: rgba(255, 250, 245, .55);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  button { font: inherit; font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink); cursor: pointer;
+    background: transparent; border: 0; border-radius: 999px; padding: 10px 16px; transition: background .2s, color .2s, transform .15s; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: #fff4ec; }
+  .seg button:not([aria-pressed="true"]):hover { background: rgba(59, 39, 39, .07); }
+  button.ghost { border: 1px solid var(--line); background: rgba(255, 250, 245, .55); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+  button.ghost:hover { background: var(--ink); color: #fff4ec; }
+  button:active { transform: scale(.96); }
+  button:focus-visible { outline: 2px solid var(--coral); outline-offset: 2px; }
+
+  #poker { position: fixed; left: 0; top: 0; width: 56px; height: 56px; margin: -28px 0 0 -28px; border-radius: 50%;
+    border: 1.5px solid rgba(238, 108, 90, .85); background: rgba(238, 108, 90, .1); pointer-events: none; opacity: 0;
+    transition: opacity .2s, transform .15s; will-change: transform; }
+  #poker.on { opacity: 1; }
+  #poker.down { background: rgba(238, 108, 90, .24); }
+
+  #nogpu { position: fixed; inset: 0; display: none; place-items: center; padding: 24px; background: #dfe3dc; z-index: 5; }
+  #nogpu .card { max-width: 460px; border: 1px solid var(--line); padding: 36px; background: rgba(255, 250, 245, .7); }
+  #nogpu h2 { font-family: var(--serif); font-weight: 400; font-size: 34px; letter-spacing: -.02em; margin-bottom: 14px; }
+  #nogpu h2 em { color: var(--coral); }
+  #nogpu p { font-family: var(--serif); line-height: 1.55; color: #6c524c; }
+  #nogpu code { font-size: 12px; display: block; margin-top: 16px; color: var(--muted); word-break: break-word; }
+
+  @media (max-width: 720px) {
+    .anatomy, .hints li:nth-child(n+3) { display: none; }
+    .meta .fps-line { display: none; }
+    .bottom { align-items: stretch; flex-direction: column-reverse; }
+    .controls { justify-content: space-between; }
+    .hints { line-height: 1.8; }
+  }
+  @media (prefers-reduced-motion: reduce) { button, #poker { transition: none; } }
+</style>
+</head>
+<body>
+<canvas id="gfx" tabindex="0" aria-label="Interactive 3D plush octopus. Drag the body or tentacles to pull, stretch and throw. Drag the backdrop to orbit."></canvas>
+<div id="poker"></div>
+
+<div class="ui">
+  <div class="top">
+    <div>
+      <div class="kicker">Soft-body study &middot; N&ordm; 08</div>
+      <h1>Plush<em>Octopus</em></h1>
+      <p class="dek">Eight floppy arms, one stuffed heart. Pull, squish and throw &mdash; then watch it settle.</p>
+    </div>
+    <div class="meta">
+      <div><span class="dot"></span><b>WebGPU</b></div>
+      <div class="fps-line"><span id="fps">&mdash;</span> fps</div>
+      <ul class="anatomy">
+        <li>Mantle <span>01</span></li>
+        <li>Arms &times; 8 <span>02</span></li>
+        <li>Glass eyes <span>03</span></li>
+        <li>Embroidery <span>04</span></li>
+      </ul>
+    </div>
+  </div>
+  <div></div>
+  <div class="bottom">
+    <ul class="hints">
+      <li><i>Drag toy</i> Pull, stretch &amp; throw</li>
+      <li><i>Tap toy</i> Make it hop</li>
+      <li><i>Drag backdrop</i> Orbit</li>
+      <li><i>Scroll / pinch</i> Zoom</li>
+    </ul>
+    <div class="controls">
+      <div class="seg" role="group" aria-label="Interaction mode">
+        <button id="mPull" aria-pressed="true">Pull</button>
+        <button id="mSquish" aria-pressed="false">Squish</button>
+      </div>
+      <button id="reset" class="ghost" title="Drop it again (R)">Drop again</button>
+    </div>
+  </div>
+</div>
+
+<div id="nogpu"><div class="card">
+  <h2>Plush <em>Octopus</em></h2>
+  <p>This piece is rendered natively with WebGPU, and your browser or device doesn't expose it yet. Try a recent Chrome, Edge or Safari on a machine with WebGPU enabled.</p>
+  <code id="nogpuWhy"></code>
+</div></div>
+
+<script type="module">
+'use strict';
+/* =====================================================================
+   PLUSH OCTOPUS — native WebGPU + WGSL, no libraries, no assets.
+   • Soft body: position-based dynamics + shape matching (CPU, JS)
+   • Skinning + normals: WGSL compute shaders every frame
+   • Plush fabric, glass eyes, embroidery, contact shadows: WGSL render
+   ===================================================================== */
+
+const TAU = Math.PI * 2, DEG = Math.PI / 180;
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+
+/* ───────────────────────── rest geometry ───────────────────────── */
+const NT = 8, MP = 12, SEGS = MP - 1;          // arms, particles / arm (root is a body particle)
+const TLEN = 1.16, SEGL = TLEN / SEGS;
+const R0 = 0.175, TAPER = 1.4;                  // arm radius profile r(s)=R0*exp(-TAPER*s)
+const BODY = { cy: 0.64, rx: 0.64, ry: 0.62, rz: 0.60 };
+const radiusAt = s => R0 * Math.exp(-TAPER * s);
+
+const EYE_AZ = 30 * DEG, EYE_EL = 6 * DEG, EYE_R = 0.112;
+const EYE_DIR = [Math.sin(EYE_AZ) * Math.cos(EYE_EL), Math.sin(EYE_EL), Math.cos(EYE_AZ) * Math.cos(EYE_EL)];
+const CHEEK_DIR = [Math.sin(50 * DEG) * Math.cos(-12 * DEG), Math.sin(-12 * DEG), Math.cos(50 * DEG) * Math.cos(-12 * DEG)];
+// appliqué spots: [azimuth from face, elevation, angular radius]
+const SPOT_DEF = [[205, 58, .16], [150, 38, .105], [250, 34, .12], [112, 66, .085], [292, 62, .1], [180, 18, .085], [78, 74, .075]];
+const SPOTS = SPOT_DEF.map(([az, el, r]) => {
+  const a = az * DEG, e = el * DEG;
+  return [Math.sin(a) * Math.cos(e), Math.sin(e), Math.cos(a) * Math.cos(e), r];
+});
+const nrm3 = v => { const l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; };
+const KEY = nrm3([-0.50, 0.82, 0.60]), FILL = nrm3([0.85, 0.30, 0.45]), RIM = nrm3([0.25, 0.55, -0.85]);
+
+/* ───────────────────────── soft-body simulation ───────────────────────── */
+// <physics>
+const bodyRest = [], bodyFloor = [], bodyRad = [];
+const bpt = (d, k) => [BODY.rx * d[0] * k, BODY.cy + BODY.ry * d[1] * k, BODY.rz * d[2] * k];
+bodyRest.push([0, BODY.cy, 0]); bodyFloor.push(0.42); bodyRad.push(0.5);                    // 0: core
+const RING_TH = 132 * DEG;
+for (let i = 0; i < NT; i++) {                                                               // 1..8: arm roots
+  const phi = (i + 0.5) * TAU / NT;
+  bodyRest.push(bpt([Math.sin(RING_TH) * Math.sin(phi), Math.cos(RING_TH), Math.sin(RING_TH) * Math.cos(phi)], 0.9));
+  bodyFloor.push(bodyRest[bodyRest.length - 1][1] - 0.05); bodyRad.push(0.26);   // the ring forms a stable, slightly soft base
+}
+{ const nf = 46, ga = Math.PI * (3 - Math.sqrt(5));                                          // upper mantle shell
+  for (let k = 0; k < nf; k++) {
+    const y = 1 - 2 * (k + 0.5) / nf; if (y < -0.31) continue;
+    const r = Math.sqrt(1 - y * y), a = k * ga;
+    bodyRest.push(bpt([Math.cos(a) * r, y, Math.sin(a) * r], 0.97)); bodyFloor.push(0.045); bodyRad.push(0.24);
+  } }
+bodyRest.push(bpt([0, -1, 0], 0.97)); bodyFloor.push(0.04); bodyRad.push(0.22);              // belly pole
+const NBP = bodyRest.length;
+const NP = NBP + NT * SEGS;
+const qbar = [0, 0, 0];
+for (const q of bodyRest) { qbar[0] += q[0] / NBP; qbar[1] += q[1] / NBP; qbar[2] += q[2] / NBP; }
+const qLoc = new Float32Array(NBP * 3);
+bodyRest.forEach((q, k) => { qLoc[k * 3] = q[0] - qbar[0]; qLoc[k * 3 + 1] = q[1] - qbar[1]; qLoc[k * 3 + 2] = q[2] - qbar[2]; });
+const cidx = (i, j) => j === 0 ? 1 + i : NBP + i * SEGS + (j - 1);
+
+const tr = []; for (let j = 0; j < MP; j++) tr.push(radiusAt(j / SEGS));                     // arm particle radii
+
+// rest pose of every arm (lying splayed on the floor, tips curling)
+const restChain = [], restN0 = [];
+for (let i = 0; i < NT; i++) {
+  const phi = (i + 0.5) * TAU / NT, curl = (i % 2 ? 1 : -1) * (1.0 + 0.8 * ((i * 37 % 11) / 11));
+  const pts = [bodyRest[1 + i].slice()];
+  let p = pts[0].slice();
+  for (let j = 1; j <= SEGS; j++) {
+    const s = j / SEGS;
+    const pitch = -55 * DEG * Math.max(0, 1 - j / 3.2) + (10 + 34 * ((i * 5 % 8) / 8)) * DEG * s * s * s * 2.2;
+    const h = phi + curl * Math.pow(s, 1.4);
+    p = [p[0] + SEGL * Math.cos(pitch) * Math.sin(h), p[1] + SEGL * Math.sin(pitch), p[2] + SEGL * Math.cos(pitch) * Math.cos(h)];
+    p[1] = Math.max(p[1], radiusAt(s) + 0.004);
+    pts.push(p.slice());
+  }
+  restChain.push(pts);
+  const T = nrm3([pts[1][0] - pts[0][0], pts[1][1] - pts[0][1], pts[1][2] - pts[0][2]]);
+  const d = T[1]; restN0.push(nrm3([-d * T[0], 1 - d * T[1], -d * T[2]]));                    // "top" of the arm; suckers sit opposite
+}
+
+const X = new Float32Array(NP * 3), V = new Float32Array(NP * 3), P = new Float32Array(NP * 3);
+const invM = new Float32Array(NP), floorY = new Float32Array(NP), pRad = new Float32Array(NP);
+const contact = new Uint8Array(NP);
+for (let k = 0; k < NBP; k++) { invM[k] = k === 0 ? 0.5 : 1; floorY[k] = bodyFloor[k]; pRad[k] = 0.1; }
+for (let i = 0; i < NT; i++) for (let j = 1; j <= SEGS; j++) {
+  const p = cidx(i, j); invM[p] = 1 / (0.32 - 0.2 * (j / SEGS)); floorY[p] = tr[j] * 0.92; pRad[p] = tr[j];
+}
+const goalK = new Float32Array(MP); for (let j = 1; j < MP; j++) goalK[j] = 0.034 * Math.pow(1 - (j - 1) / SEGS, 2);
+
+const rotM = [1, 0, 0, 0, 1, 0, 0, 0, 1];            // row-major body rotation (rest → world)
+const rotQ = [0, 0, 0, 1];                             // warm-start quaternion
+const cm = [0, 0, 0];
+const mulR = (m, v) => [m[0] * v[0] + m[1] * v[1] + m[2] * v[2], m[3] * v[0] + m[4] * v[1] + m[5] * v[2], m[6] * v[0] + m[7] * v[1] + m[8] * v[2]];
+const mulRT = (m, v) => [m[0] * v[0] + m[3] * v[1] + m[6] * v[2], m[1] * v[0] + m[4] * v[1] + m[7] * v[2], m[2] * v[0] + m[5] * v[1] + m[8] * v[2]];
+function quatToMat(q, m) {
+  const x = q[0], y = q[1], z = q[2], w = q[3];
+  m[0] = 1 - 2 * (y * y + z * z); m[1] = 2 * (x * y - z * w); m[2] = 2 * (x * z + y * w);
+  m[3] = 2 * (x * y + z * w); m[4] = 1 - 2 * (x * x + z * z); m[5] = 2 * (y * z - x * w);
+  m[6] = 2 * (x * z - y * w); m[7] = 2 * (y * z + x * w); m[8] = 1 - 2 * (x * x + y * y);
+}
+const qmul = (a, b) => [a[3] * b[0] + b[3] * a[0] + a[1] * b[2] - a[2] * b[1], a[3] * b[1] + b[3] * a[1] + a[2] * b[0] - a[0] * b[2],
+                        a[3] * b[2] + b[3] * a[2] + a[0] * b[1] - a[1] * b[0], a[3] * b[3] - a[0] * b[0] - a[1] * b[1] - a[2] * b[2]];
+function qnorm(q) { const l = Math.hypot(q[0], q[1], q[2], q[3]) || 1; q[0] /= l; q[1] /= l; q[2] /= l; q[3] /= l; return q; }
+
+let WALLK = 0.42, WALLD = 4.4, WALLZN = -2.3, WALLZP = 1.4;       // side walls follow the camera frustum
+const wallX = z => Math.max(0.95, WALLK * (WALLD - z));
+const CEIL = 3.4;
+const DT = 1 / 120, ITER = 5, GRAV = -14;
+const SM_TOTAL = 0.12, SM_K = 1 - Math.pow(1 - SM_TOTAL, 1 / ITER);
+const grabs = new Map();      // pointerId -> {items:[{i,w,wr}], target:[x,y,z]}
+const pokers = new Map();     // pointerId -> {c:[x,y,z], r}
+let simTime = 0, upright = 0.004;
+const waves = [];             // occasional lift-and-curl "hello" of one arm
+let nextWave = 4;
+const A9 = new Float64Array(9), Mtmp = new Float64Array(9);
+
+function shapeMatch(stiff, apply, t) {
+  let cx = 0, cy = 0, cz = 0, sm = 0;
+  for (let k = 0; k < NBP; k++) { const m = 1 / invM[k]; cx += P[k * 3] * m; cy += P[k * 3 + 1] * m; cz += P[k * 3 + 2] * m; sm += m; }
+  cm[0] = cx / sm; cm[1] = cy / sm; cm[2] = cz / sm;
+  A9.fill(0);
+  for (let k = 0; k < NBP; k++) {
+    const m = 1 / invM[k], px = (P[k * 3] - cm[0]) * m, py = (P[k * 3 + 1] - cm[1]) * m, pz = (P[k * 3 + 2] - cm[2]) * m;
+    const qx = qLoc[k * 3], qy = qLoc[k * 3 + 1], qz = qLoc[k * 3 + 2];
+    A9[0] += px * qx; A9[1] += px * qy; A9[2] += px * qz;
+    A9[3] += py * qx; A9[4] += py * qy; A9[5] += py * qz;
+    A9[6] += pz * qx; A9[7] += pz * qy; A9[8] += pz * qz;
+  }
+  for (let it = 0; it < 8; it++) {                                     // Müller 2016 iterative rotation extraction
+    quatToMat(rotQ, Mtmp);
+    let ox = 0, oy = 0, oz = 0, den = 0;
+    for (let c = 0; c < 3; c++) {
+      const rx = Mtmp[c], ry = Mtmp[3 + c], rz = Mtmp[6 + c], ax = A9[c], ay = A9[3 + c], az = A9[6 + c];
+      ox += ry * az - rz * ay; oy += rz * ax - rx * az; oz += rx * ay - ry * ax; den += rx * ax + ry * ay + rz * az;
+    }
+    den = Math.abs(den) + 1e-9; ox /= den; oy /= den; oz /= den;
+    const w = Math.hypot(ox, oy, oz); if (w < 1e-9) break;
+    const s = Math.sin(w / 2) / w;
+    const q = qmul([ox * s, oy * s, oz * s, Math.cos(w / 2)], rotQ);
+    rotQ[0] = q[0]; rotQ[1] = q[1]; rotQ[2] = q[2]; rotQ[3] = q[3]; qnorm(rotQ);
+  }
+  quatToMat(rotQ, rotM);
+  if (!apply) return;
+  // gentle "weighted belly" bias toward upright, plus breathing in the goal shape
+  let gm = rotM;
+  if (upright > 0) {
+    const yaw = Math.atan2(rotM[2], rotM[8]), qy = [0, Math.sin(yaw / 2), 0, Math.cos(yaw / 2)];
+    const sgn = (rotQ[0] * qy[0] + rotQ[1] * qy[1] + rotQ[2] * qy[2] + rotQ[3] * qy[3]) < 0 ? -1 : 1;
+    const qg = qnorm([lerp(rotQ[0], qy[0] * sgn, upright), lerp(rotQ[1], qy[1] * sgn, upright), lerp(rotQ[2], qy[2] * sgn, upright), lerp(rotQ[3], qy[3] * sgn, upright)]);
+    gm = new Array(9); quatToMat(qg, gm);
+  }
+  const br = 0.018 * Math.sin(t * TAU / 3.6), by = 1 + br, bxz = 1 - br * 0.45;
+  for (let k = 0; k < NBP; k++) {
+    const g = mulR(gm, [qLoc[k * 3] * bxz, qLoc[k * 3 + 1] * by, qLoc[k * 3 + 2] * bxz]);
+    P[k * 3] += (cm[0] + g[0] - P[k * 3]) * stiff; P[k * 3 + 1] += (cm[1] + g[1] - P[k * 3 + 1]) * stiff; P[k * 3 + 2] += (cm[2] + g[2] - P[k * 3 + 2]) * stiff;
+  }
+  // arms keep a faint memory of their curl (strong near the base, almost none at the tips)
+  for (let i = 0; i < NT; i++) for (let j = 1; j <= SEGS; j++) {
+    const p = cidx(i, j), q = restChain[i][j];
+    const g = mulR(gm, [q[0] - qbar[0], q[1] - qbar[1], q[2] - qbar[2]]), k = goalK[j] / ITER;
+    P[p * 3] += (cm[0] + g[0] - P[p * 3]) * k; P[p * 3 + 1] += (cm[1] + g[1] - P[p * 3 + 1]) * k; P[p * 3 + 2] += (cm[2] + g[2] - P[p * 3 + 2]) * k;
+  }
+}
+
+function distC(a, b, rest, k, unilateralShort) {
+  const ia = a * 3, ib = b * 3, dx = P[ib] - P[ia], dy = P[ib + 1] - P[ia + 1], dz = P[ib + 2] - P[ia + 2];
+  const len = Math.sqrt(dx * dx + dy * dy + dz * dz); if (len < 1e-9) return;
+  if (unilateralShort && len >= rest) return;
+  const f = (len - rest) / (len * (invM[a] + invM[b])) * k;
+  P[ia] += dx * f * invM[a]; P[ia + 1] += dy * f * invM[a]; P[ia + 2] += dz * f * invM[a];
+  P[ib] -= dx * f * invM[b]; P[ib + 1] -= dy * f * invM[b]; P[ib + 2] -= dz * f * invM[b];
+}
+const coreDist = []; for (let k = 1; k < NBP; k++) coreDist.push(Math.hypot(bodyRest[k][0] - bodyRest[0][0], bodyRest[k][1] - bodyRest[0][1], bodyRest[k][2] - bodyRest[0][2]));
+
+function collide() {
+  // arms vs. the mantle (rigid ellipsoid in the shape-matched frame)
+  const E0 = [0, BODY.cy, 0], off = mulR(rotM, [E0[0] - qbar[0], E0[1] - qbar[1], E0[2] - qbar[2]]);
+  const ec = [cm[0] + off[0], cm[1] + off[1], cm[2] + off[2]];
+  for (let i = 0; i < NT; i++) for (let j = 2; j <= SEGS; j++) {
+    const p = cidx(i, j) * 3, m = tr[j] * 0.8;
+    const l = mulRT(rotM, [P[p] - ec[0], P[p + 1] - ec[1], P[p + 2] - ec[2]]);
+    const ax = BODY.rx + m, ay = BODY.ry + m, az = BODY.rz + m;
+    const f2 = (l[0] / ax) ** 2 + (l[1] / ay) ** 2 + (l[2] / az) ** 2;
+    if (f2 < 1) {
+      const f = Math.sqrt(f2) || 1e-3, w = mulR(rotM, [l[0] / f, l[1] / f, l[2] / f]);
+      P[p] = ec[0] + w[0]; P[p + 1] = ec[1] + w[1]; P[p + 2] = ec[2] + w[2];
+    }
+  }
+  // arm vs. arm
+  for (let a = 0; a < NT; a++) for (let ja = 2; ja <= SEGS; ja++) {
+    const pa = cidx(a, ja), ia = pa * 3;
+    for (let b = a + 1; b < NT; b++) for (let jb = 2; jb <= SEGS; jb++) {
+      const pb = cidx(b, jb), ib = pb * 3, dx = P[ib] - P[ia], dy = P[ib + 1] - P[ia + 1], dz = P[ib + 2] - P[ia + 2];
+      const md = (tr[ja] + tr[jb]) * 0.85, d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 >= md * md || d2 < 1e-12) continue;
+      const d = Math.sqrt(d2), f = (md - d) / d / (invM[pa] + invM[pb]);
+      P[ia] -= dx * f * invM[pa]; P[ia + 1] -= dy * f * invM[pa]; P[ia + 2] -= dz * f * invM[pa];
+      P[ib] += dx * f * invM[pb]; P[ib + 1] += dy * f * invM[pb]; P[ib + 2] += dz * f * invM[pb];
+    }
+    // a self-folding arm shouldn't pass through itself
+    for (let jb = ja + 3; jb <= SEGS; jb++) {
+      const pb = cidx(a, jb), ib = pb * 3, dx = P[ib] - P[ia], dy = P[ib + 1] - P[ia + 1], dz = P[ib + 2] - P[ia + 2];
+      const md = (tr[ja] + tr[jb]) * 0.7, d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 >= md * md || d2 < 1e-12) continue;
+      const d = Math.sqrt(d2), f = (md - d) / d / (invM[pa] + invM[pb]);
+      P[ia] -= dx * f * invM[pa]; P[ia + 1] -= dy * f * invM[pa]; P[ia + 2] -= dz * f * invM[pa];
+      P[ib] += dx * f * invM[pb]; P[ib + 1] += dy * f * invM[pb]; P[ib + 2] += dz * f * invM[pb];
+    }
+  }
+}
+
+function solveFloorWalls() {
+  for (let p = 0; p < NP; p++) {
+    const o = p * 3;
+    if (P[o + 1] < floorY[p]) { P[o + 1] = floorY[p]; contact[p] = 1; }
+    if (P[o + 1] > CEIL) P[o + 1] = CEIL;
+    const wl = wallX(P[o + 2]);
+    if (P[o] > wl) P[o] = wl; else if (P[o] < -wl) P[o] = -wl;
+    if (P[o + 2] > WALLZP) P[o + 2] = WALLZP; else if (P[o + 2] < WALLZN) P[o + 2] = WALLZN;
+  }
+}
+
+function applyGrabs() {
+  for (const g of grabs.values()) {
+    let gx = 0, gy = 0, gz = 0;
+    for (const it of g.items) { gx += P[it.i * 3] * it.wn; gy += P[it.i * 3 + 1] * it.wn; gz += P[it.i * 3 + 2] * it.wn; }
+    let ex = (g.target[0] - gx) * 0.38, ey = (g.target[1] - gy) * 0.38, ez = (g.target[2] - gz) * 0.38;
+    const el = Math.hypot(ex, ey, ez); if (el > 0.09) { const s = 0.09 / el; ex *= s; ey *= s; ez *= s; }
+    for (const it of g.items) { P[it.i * 3] += ex * it.wr; P[it.i * 3 + 1] += ey * it.wr; P[it.i * 3 + 2] += ez * it.wr; }
+  }
+}
+function applyPokers() {
+  for (const pk of pokers.values()) {
+    const c = pk.c;
+    for (let p = 0; p < NP; p++) {
+      const o = p * 3, dx = P[o] - c[0], dy = P[o + 1] - c[1], dz = P[o + 2] - c[2];
+      const md = pk.r + (p < NBP ? 0.05 : pRad[p] * 0.6), d2 = dx * dx + dy * dy + dz * dz;
+      if (d2 >= md * md || d2 < 1e-10) continue;
+      const f = md / Math.sqrt(d2);
+      P[o] = c[0] + dx * f; P[o + 1] = c[1] + dy * f; P[o + 2] = c[2] + dz * f;
+    }
+  }
+}
+
+function step(dt) {
+  const t = simTime += dt;
+  // ambient life: arms ripple and lift, an occasional arm waves hello
+  nextWave -= dt;
+  if (nextWave <= 0) { waves.push({ i: (Math.random() * NT) | 0, t: 0 }); nextWave = 5 + Math.random() * 5; }
+  for (let w = waves.length - 1; w >= 0; w--) { waves[w].t += dt; if (waves[w].t > 1.8) waves.splice(w, 1); }
+  for (let i = 0; i < NT; i++) {
+    const phi = (i + 0.5) * TAU / NT, lx = Math.cos(phi), lz = -Math.sin(phi);
+    for (let j = 1; j <= SEGS; j++) {
+      const p = cidx(i, j) * 3, s = j / SEGS;
+      const lat = 1.5 * Math.sin(1.3 * t - 0.42 * j + 1.9 * i) * Math.min(1, s * 2);
+      const lift = 7.0 * Math.max(0, Math.sin(1.05 * t - 0.7 * j + i * 2.3)) * s * s;
+      V[p] += lx * lat * dt; V[p + 2] += lz * lat * dt; V[p + 1] += lift * dt;
+    }
+  }
+  for (const w of waves) {
+    const env = Math.sin(Math.PI * w.t / 1.8), phi = (w.i + 0.5) * TAU / NT;
+    for (let j = 2; j <= SEGS; j++) {
+      const p = cidx(w.i, j) * 3, s = j / SEGS;
+      V[p + 1] += (30 * env * s * s) * dt; V[p] += Math.cos(phi + 1.6) * Math.sin(9 * w.t - j) * 9 * env * s * dt; V[p + 2] += -Math.sin(phi + 1.6) * Math.sin(9 * w.t - j) * 9 * env * s * dt;
+    }
+  }
+  const sway = 0.5 * Math.sin(t * 0.75), home = grabs.size ? 0 : 0.5;
+  for (let k = 0; k < NBP; k++) {
+    if (bodyRest[k][1] > BODY.cy) V[k * 3] += sway * dt;
+    V[k * 3] -= home * cm[0] * dt; V[k * 3 + 2] -= home * cm[2] * dt;
+  }
+  for (let p = 0; p < NP; p++) {
+    const o = p * 3; contact[p] = 0;
+    V[o + 1] += GRAV * dt;
+    P[o] = X[o] + V[o] * dt; P[o + 1] = X[o + 1] + V[o + 1] * dt; P[o + 2] = X[o + 2] + V[o + 2] * dt;
+  }
+  upright = grabs.size ? 0.0008 : 0.004;
+  for (let it = 0; it < ITER; it++) {
+    for (let k = 1; k < NBP; k++) distC(0, k, coreDist[k - 1], 0.1);
+    for (let i = 0; i < NT; i++) {
+      for (let j = 1; j <= SEGS; j++) distC(cidx(i, j - 1), cidx(i, j), SEGL, 0.8);
+      for (let j = SEGS; j >= 2; j--) distC(cidx(i, j - 1), cidx(i, j), SEGL, 0.8);
+      for (let j = 2; j <= SEGS; j++) distC(cidx(i, j - 2), cidx(i, j), SEGL * 1.9, 0.16, true);
+    }
+    shapeMatch(SM_K, true, t);
+    collide();
+    applyPokers();
+    applyGrabs();
+    solveFloorWalls();
+  }
+  // contact friction, velocity update, damping
+  for (let p = 0; p < NP; p++) {
+    const o = p * 3;
+    if (contact[p]) { const mu = p < NBP ? (pokers.size ? 0.85 : 0.4) : 0.5; P[o] = X[o] + (P[o] - X[o]) * (1 - mu); P[o + 2] = X[o + 2] + (P[o + 2] - X[o + 2]) * (1 - mu); }
+    let vx = (P[o] - X[o]) / dt, vy = (P[o + 1] - X[o + 1]) / dt, vz = (P[o + 2] - X[o + 2]) / dt;
+    X[o] = P[o]; X[o + 1] = P[o + 1]; X[o + 2] = P[o + 2];
+    const d = p < NBP ? 0.9985 : 0.9935;
+    vx *= d; vy *= d; vz *= d;
+    const sp = Math.hypot(vx, vy, vz); if (sp > 22) { const s = 22 / sp; vx *= s; vy *= s; vz *= s; }
+    // soft walls
+    const wl = wallX(X[o + 2]);
+    if ((X[o] >= wl && vx > 0) || (X[o] <= -wl && vx < 0)) vx *= -0.35;
+    if ((X[o + 2] >= WALLZP && vz > 0) || (X[o + 2] <= WALLZN && vz < 0)) vz *= -0.35;
+    if (X[o + 1] >= CEIL && vy > 0) vy *= -0.3;
+    if (contact[p] && vy < 0) vy *= p < NBP ? -0.12 : -0.05;
+    V[o] = vx; V[o + 1] = vy; V[o + 2] = vz;
+  }
+  // internal damping of the stuffing: kill velocity that isn't rigid-body motion
+  let vx = 0, vy = 0, vz = 0, Lx = 0, Ly = 0, Lz = 0, I = 1e-6;
+  for (let k = 0; k < NBP; k++) { vx += V[k * 3]; vy += V[k * 3 + 1]; vz += V[k * 3 + 2]; }
+  vx /= NBP; vy /= NBP; vz /= NBP;
+  for (let k = 0; k < NBP; k++) {
+    const rx = X[k * 3] - cm[0], ry = X[k * 3 + 1] - cm[1], rz = X[k * 3 + 2] - cm[2], ux = V[k * 3] - vx, uy = V[k * 3 + 1] - vy, uz = V[k * 3 + 2] - vz;
+    Lx += ry * uz - rz * uy; Ly += rz * ux - rx * uz; Lz += rx * uy - ry * ux; I += rx * rx + ry * ry + rz * rz;
+  }
+  const wx = Lx / I, wy = Ly / I, wz = Lz / I;
+  for (let k = 0; k < NBP; k++) {
+    const rx = X[k * 3] - cm[0], ry = X[k * 3 + 1] - cm[1], rz = X[k * 3 + 2] - cm[2];
+    const kd = 0.07;
+    V[k * 3] -= kd * (V[k * 3] - (vx + wy * rz - wz * ry)); V[k * 3 + 1] -= kd * (V[k * 3 + 1] - (vy + wz * rx - wx * rz)); V[k * 3 + 2] -= kd * (V[k * 3 + 2] - (vz + wx * ry - wy * rx));
+  }
+}
+
+function resetSim(drop = true, first = false) {
+  const yaw = (Math.random() - 0.5) * (first ? 0.25 : 0.9), tilt = (Math.random() - 0.5) * (first ? 0.12 : 0.35), lift = drop ? 0.55 : 0;
+  const cy = Math.cos(yaw), sy = Math.sin(yaw), ct = Math.cos(tilt), st = Math.sin(tilt);
+  const place = q => {
+    let x = q[0] - qbar[0], y = q[1] - qbar[1], z = q[2] - qbar[2];
+    const y2 = y * ct - z * st, z2 = y * st + z * ct; y = y2; z = z2;
+    const x3 = x * cy + z * sy, z3 = -x * sy + z * cy;
+    return [x3 + qbar[0], y + qbar[1] + lift, z3 + qbar[2]];
+  };
+  for (let k = 0; k < NBP; k++) { const p = place(bodyRest[k]); X.set(p, k * 3); }
+  for (let i = 0; i < NT; i++) for (let j = 1; j <= SEGS; j++) X.set(place(restChain[i][j]), cidx(i, j) * 3);
+  V.fill(0); P.set(X);
+  for (let p = 0; p < NP; p++) { V[p * 3] = (Math.random() - 0.5) * 0.4; V[p * 3 + 2] = (Math.random() - 0.5) * 0.4; }
+  rotQ[0] = 0; rotQ[1] = 0; rotQ[2] = 0; rotQ[3] = 1;
+  grabs.clear(); pokers.clear(); waves.length = 0; nextWave = 6;
+  shapeMatch(SM_K, false, 0);
+}
+// </physics>
+
+/* ───────────────────────── skin binding (static) ───────────────────────── */
+function bindPoint(r) {
+  const ds = bodyRest.map((q, k) => [Math.hypot(r[0] - q[0], r[1] - q[1], r[2] - q[2]), k]).sort((a, b) => a[0] - b[0]);
+  const K = 6, dmax = ds[K][0], idx = [], w = []; let sum = 0;
+  for (let n = 0; n < 8; n++) {
+    if (n < K) { const t = 1 - ds[n][0] / dmax, ww = t * t + 1e-4; idx.push(ds[n][1]); w.push(ww); sum += ww; } else { idx.push(0); w.push(0); }
+  }
+  return { idx, w: w.map(x => x / sum) };
+}
+function skinPoint(bd, r) {
+  const o = [0, 0, 0];
+  for (let n = 0; n < 8; n++) {
+    const k = bd.idx[n], w = bd.w[n]; if (!w) continue;
+    const q = bodyRest[k], d = mulR(rotM, [r[0] - q[0], r[1] - q[1], r[2] - q[2]]);
+    o[0] += w * (X[k * 3] + d[0]); o[1] += w * (X[k * 3 + 1] + d[1]); o[2] += w * (X[k * 3 + 2] + d[2]);
+  }
+  return o;
+}
+const eyeRest = [-1, 1].map(sg => bpt([EYE_DIR[0] * sg, EYE_DIR[1], EYE_DIR[2]], 0.97));
+const eyeBind = eyeRest.map(bindPoint);
+
+/* ───────────────────────── procedural mesh ───────────────────────── */
+const NB_U = 48, NB_V = 32, BW = NB_U + 1, BH = NB_V + 1;
+const TK = 16, TW = TK + 1, NRB = 24, NCAP = 5, TRN = NRB + NCAP, CS = 0.965;
+const NVB = BW * BH, NVT = TW * TRN, NV = NVB + NT * NVT;
+const attrData = new Float32Array(NV * 4), gridData = new Uint32Array(NV * 4);
+const skinIdx = new Uint32Array(NV * 8), skinW = new Float32Array(NV * 8);
+const indices = [];
+{
+  for (let y = 0; y < BH; y++) for (let x = 0; x < BW; x++) {
+    const v = y * BW + x, th = Math.PI * y / NB_V, ph = TAU * x / NB_U;
+    const r = bpt([Math.sin(th) * Math.sin(ph), Math.cos(th), Math.sin(th) * Math.cos(ph)], 1);
+    attrData.set([r[0], r[1], r[2], 0], v * 4);
+    gridData.set([0, BW, BH, 1], v * 4);
+    const b = bindPoint(r); skinIdx.set(b.idx, v * 8); skinW.set(b.w, v * 8);
+  }
+  for (let y = 0; y < NB_V; y++) for (let x = 0; x < NB_U; x++) {
+    const a = y * BW + x, b = a + 1, c = a + BW, d = c + 1; indices.push(a, c, b, b, c, d);
+  }
+  for (let t = 0; t < NT; t++) {
+    const base = NVB + t * NVT;
+    for (let y = 0; y < TRN; y++) {
+      const s = y < NRB ? CS * y / (NRB - 1) : CS + (1 - CS) * Math.sin(Math.PI / 2 * (y - NRB + 1) / NCAP);
+      for (let x = 0; x < TW; x++) {
+        const v = base + y * TW + x;
+        attrData.set([x / TK, s, t, 1], v * 4); gridData.set([base, TW, TRN, 0], v * 4);
+      }
+    }
+    for (let y = 0; y < TRN - 1; y++) for (let x = 0; x < TK; x++) {
+      const a = base + y * TW + x, b = a + 1, c = a + TW, d = c + 1; indices.push(a, c, b, b, c, d);
+    }
+  }
+}
+const indexData = new Uint32Array(indices);
+// unit sphere for the eyes
+const eyeVerts = [], eyeIdx = [];
+{ const U = 28, Vn = 20;
+  for (let y = 0; y <= Vn; y++) for (let x = 0; x <= U; x++) {
+    const th = Math.PI * y / Vn, ph = TAU * x / U; eyeVerts.push(Math.sin(th) * Math.sin(ph), Math.cos(th), Math.sin(th) * Math.cos(ph));
+  }
+  for (let y = 0; y < Vn; y++) for (let x = 0; x < U; x++) { const a = y * (U + 1) + x, b = a + 1, c = a + U + 1, d = c + 1; eyeIdx.push(a, c, b, b, c, d); }
+}
+
+/* ───────────────────────── WGSL ───────────────────────── */
+const f = n => (Number.isInteger(n) ? n.toFixed(1) : String(+n.toFixed(6)));
+const v3 = a => `vec3f(${f(a[0])}, ${f(a[1])}, ${f(a[2])})`;
+const COMMON = /* wgsl */`
+const PI: f32 = 3.14159265359;
+const MP: u32 = ${MP}u;
+const TR0: f32 = ${f(R0)};
+const TAPER: f32 = ${f(TAPER)};
+const TLEN: f32 = ${f(TLEN)};
+const BCY: f32 = ${f(BODY.cy)};
+const BRX: f32 = ${f(BODY.rx)};
+const BRY: f32 = ${f(BODY.ry)};
+const BRZ: f32 = ${f(BODY.rz)};
+const KEY: vec3f = ${v3(KEY)};
+const FILL: vec3f = ${v3(FILL)};
+const RIM: vec3f = ${v3(RIM)};
+
+struct Globals {
+  viewProj: mat4x4f,
+  camPos: vec4f,
+  tm: vec4f,      // time, blink, resX, resY
+  R0: vec4f, R1: vec4f, R2: vec4f,   // body rotation (columns)
+  eye0: vec4f, eye1: vec4f,          // xyz centre, w radius
+  cnt: vec4f,     // nBodySpheres, nSpheres, -, nVerts
+  misc: vec4f,    // pixel size factor
+  poke0: vec4f, poke1: vec4f,        // finger presses: xyz centre, w radius (0 = off)
+};
+@group(0) @binding(0) var<uniform> G: Globals;
+`;
+
+const WGSL_COMPUTE = COMMON + /* wgsl */`
+@group(0) @binding(1) var<storage, read> bodyP: array<vec4f>;
+@group(0) @binding(2) var<storage, read> bodyQ: array<vec4f>;
+@group(0) @binding(3) var<storage, read> chain: array<vec4f>;
+@group(0) @binding(4) var<storage, read> skinIdx: array<vec4u>;
+@group(0) @binding(5) var<storage, read> skinW: array<vec4f>;
+@group(0) @binding(6) var<storage, read> attr: array<vec4f>;
+@group(0) @binding(7) var<storage, read_write> outPos: array<vec4f>;
+
+fn dent(p: vec3f, c: vec4f) -> vec3f {
+  if (c.w <= 0.0) { return p; }
+  let d = p - c.xyz; let l = length(d);
+  if (l > c.w * 2.0) { return p; }
+  let dir = d / max(l, 1e-4);
+  let h = max(0.12 - abs(l - c.w), 0.0) / 0.12;      // smooth max keeps a soft lip around the dent
+  return c.xyz + dir * (max(l, c.w) + h * h * 0.03);
+}
+
+fn contrib(k: u32, w: f32, r: vec3f, R: mat3x3f) -> vec3f {
+  return w * (bodyP[k].xyz + R * (r - bodyQ[k].xyz));
+}
+
+@compute @workgroup_size(64)
+fn skin(@builtin(global_invocation_id) gid: vec3u) {
+  let i = gid.x;
+  if (i >= u32(G.cnt.w)) { return; }
+  let a = attr[i];
+  var pos = vec3f(0.0);
+  if (a.w < 0.5) {
+    // mantle: blend of nearby soft-body particles, each carrying the shape-matched rotation
+    let R = mat3x3f(G.R0.xyz, G.R1.xyz, G.R2.xyz);
+    let ia = skinIdx[2u * i]; let ib = skinIdx[2u * i + 1u];
+    let wa = skinW[2u * i];   let wb = skinW[2u * i + 1u];
+    let r = a.xyz;
+    pos = contrib(ia.x, wa.x, r, R) + contrib(ia.y, wa.y, r, R) + contrib(ia.z, wa.z, r, R) + contrib(ia.w, wa.w, r, R)
+        + contrib(ib.x, wb.x, r, R) + contrib(ib.y, wb.y, r, R) + contrib(ib.z, wb.z, r, R) + contrib(ib.w, wb.w, r, R);
+  } else {
+    // arm: Catmull-Rom tube swept along the particle chain with a transported frame
+    let u = a.x; let s = clamp(a.y, 0.0, 1.0); let t = u32(a.z + 0.5);
+    let fj = s * f32(MP - 1u);
+    let j1 = min(u32(floor(fj)), MP - 2u);
+    let fr = fj - f32(j1);
+    var j0 = 0u; if (j1 > 0u) { j0 = j1 - 1u; }
+    let j2 = j1 + 1u; let j3 = min(j1 + 2u, MP - 1u);
+    let base = t * MP;
+    let c0 = chain[(base + j0) * 3u]; let c1 = chain[(base + j1) * 3u];
+    let c2 = chain[(base + j2) * 3u]; let c3 = chain[(base + j3) * 3u];
+    let f2 = fr * fr; let f3 = f2 * fr;
+    let A = 2.0 * c0.xyz - 5.0 * c1.xyz + 4.0 * c2.xyz - c3.xyz;
+    let B = 3.0 * c1.xyz - c0.xyz - 3.0 * c2.xyz + c3.xyz;
+    let P = 0.5 * (2.0 * c1.xyz + (c2.xyz - c0.xyz) * fr + A * f2 + B * f3);
+    let dP = 0.5 * ((c2.xyz - c0.xyz) + 2.0 * A * fr + 3.0 * B * f2);
+    let T = normalize(dP + vec3f(0.0, 1e-7, 0.0));
+    let n1 = chain[(base + j1) * 3u + 1u].xyz; let n2 = chain[(base + j2) * 3u + 1u].xyz;
+    let N = normalize(mix(n1, n2, fr) - T * dot(mix(n1, n2, fr), T));
+    let Bn = cross(T, N);
+    var cap = 1.0;
+    if (s > CSV) { let q = (s - CSV) / (1.0 - CSV); cap = sqrt(max(0.0, 1.0 - q * q)); }
+    let stretch = mix(c1.w, c2.w, fr);
+    let rr = TR0 * exp(-TAPER * s) * stretch * cap;
+    let ang = 2.0 * PI * u;
+    pos = P + rr * (cos(ang) * N + sin(ang) * Bn);
+  }
+  pos = dent(dent(pos, G.poke0), G.poke1);
+  outPos[i] = vec4f(pos, 1.0);
+}
+
+@group(0) @binding(1) var<storage, read> nPos: array<vec4f>;
+@group(0) @binding(2) var<storage, read> nGrid: array<vec4u>;
+@group(0) @binding(3) var<storage, read_write> nOut: array<vec4f>;
+
+fn PP(b: u32, w: u32, x: u32, y: u32) -> vec3f { return nPos[b + y * w + x].xyz; }
+
+@compute @workgroup_size(64)
+fn normals(@builtin(global_invocation_id) gid: vec3u) {
+  let i = gid.x;
+  if (i >= arrayLength(&nGrid)) { return; }
+  let g = nGrid[i];
+  let b = g.x; let w = g.y; let h = g.z;
+  let l = i - b; let x = l % w; let y = l / w;
+  var xm = x - 1u; if (x == 0u) { xm = w - 2u; }
+  var xp = x + 1u; if (x == w - 1u) { xp = 1u; }
+  let yu = clamp(y, 1u, h - 2u);
+  let pu = PP(b, w, xp, yu) - PP(b, w, xm, yu);
+  var ya = 0u; if (y > 0u) { ya = y - 1u; }
+  var yb = y; if (y < h - 1u) { yb = y + 1u; }
+  let pv = PP(b, w, x, yb) - PP(b, w, x, ya);
+  var n = cross(pu, pv);
+  if (g.w == 1u) { n = -n; }
+  nOut[i] = vec4f(normalize(n + vec3f(0.0, 1e-9, 0.0)), 0.0);
+}
+`.replace(/CSV/g, f(CS));
+
+const WGSL_RENDER = COMMON + /* wgsl */`
+@group(0) @binding(1) var<storage, read> spheres: array<vec4f>;
+
+fn srgb(c: vec3f) -> vec3f { return pow(c, vec3f(2.2)); }
+fn toSrgb(c: vec3f) -> vec3f { return pow(max(c, vec3f(0.0)), vec3f(1.0 / 2.2)); }
+fn aces(x: vec3f) -> vec3f {
+  return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), vec3f(0.0), vec3f(1.0));
+}
+fn hash12(p: vec2f) -> f32 {
+  var q = fract(vec3f(p.x, p.y, p.x) * 0.1031);
+  q += dot(q, q.yzx + 33.33);
+  return fract((q.x + q.y) * q.z);
+}
+fn hash13(p: vec3f) -> f32 {
+  var q = fract(p * 0.1031);
+  q += dot(q, q.zyx + 31.32);
+  return fract((q.x + q.y) * q.z);
+}
+fn vnoise(p: vec3f) -> f32 {
+  let i = floor(p); let f = fract(p); let u = f * f * (3.0 - 2.0 * f);
+  let a = mix(mix(hash13(i), hash13(i + vec3f(1.0, 0.0, 0.0)), u.x), mix(hash13(i + vec3f(0.0, 1.0, 0.0)), hash13(i + vec3f(1.0, 1.0, 0.0)), u.x), u.y);
+  let b = mix(mix(hash13(i + vec3f(0.0, 0.0, 1.0)), hash13(i + vec3f(1.0, 0.0, 1.0)), u.x), mix(hash13(i + vec3f(0.0, 1.0, 1.0)), hash13(i + vec3f(1.0, 1.0, 1.0)), u.x), u.y);
+  return mix(a, b, u.z);
+}
+fn background(uv: vec2f) -> vec3f {
+  let asp = G.tm.z / G.tm.w;
+  let q = (uv - vec2f(0.5, 0.56)) * vec2f(asp, 1.0);
+  let r = length(q);
+  var c = mix(vec3f(0.962, 0.952, 0.925), vec3f(0.766, 0.800, 0.790), smoothstep(0.04, 1.05, r));
+  c = c * mix(vec3f(1.0), vec3f(0.96, 0.97, 0.98), smoothstep(0.55, 1.0, uv.y));
+  return c;
+}
+fn wrapDiff(ndl: f32, w: f32) -> f32 { return clamp((ndl + w) / (1.0 + w), 0.0, 1.0); }
+fn envLight(r: vec3f) -> vec3f {
+  var c = mix(vec3f(0.30, 0.22, 0.21), vec3f(0.78, 0.74, 0.74), smoothstep(-0.4, 0.9, r.y));
+  c += vec3f(1.0, 0.95, 0.90) * 7.0 * smoothstep(0.90, 0.965, dot(r, KEY));
+  c += vec3f(0.80, 0.88, 1.00) * 2.4 * smoothstep(0.88, 0.95, dot(r, FILL));
+  c += vec3f(1.00, 0.90, 0.85) * 3.0 * smoothstep(0.90, 0.96, dot(r, RIM));
+  return c;
+}
+
+// ───────── background (cyclorama paper)
+struct BOut { @builtin(position) pos: vec4f };
+@vertex fn vsBg(@builtin(vertex_index) vi: u32) -> BOut {
+  var c = array<vec2f, 3>(vec2f(-1.0, -1.0), vec2f(3.0, -1.0), vec2f(-1.0, 3.0));
+  var o: BOut; o.pos = vec4f(c[vi], 1.0, 1.0); return o;
+}
+@fragment fn fsBg(inp: BOut) -> @location(0) vec4f {
+  let col = background(inp.pos.xy / G.tm.zw);
+  return vec4f(col + (hash12(inp.pos.xy) - 0.5) / 255.0, 1.0);
+}
+
+// ───────── floor: invisible paper that only receives soft studio shadows
+struct FOut { @builtin(position) pos: vec4f, @location(0) wp: vec3f };
+@vertex fn vsFloor(@builtin(vertex_index) vi: u32) -> FOut {
+  var c = array<vec2f, 6>(vec2f(-1.0, -1.0), vec2f(1.0, -1.0), vec2f(1.0, 1.0), vec2f(-1.0, -1.0), vec2f(1.0, 1.0), vec2f(-1.0, 1.0));
+  let q = c[vi] * 14.0;
+  var o: FOut; o.wp = vec3f(q.x, 0.0, q.y); o.pos = G.viewProj * vec4f(o.wp, 1.0); return o;
+}
+@fragment fn fsFloor(inp: FOut) -> @location(0) vec4f {
+  var col = background(inp.pos.xy / G.tm.zw);
+  let p = inp.wp;
+  var occ = 0.0; var sh = 1.0;
+  if (max(abs(p.x), abs(p.z)) < 4.2) {
+    let n = u32(G.cnt.y);
+    for (var i = 0u; i < n; i++) {
+      let s = spheres[i];
+      let d = s.xyz - p; let l2 = max(dot(d, d), 1e-4); let l = sqrt(l2);
+      occ += clamp(d.y / l, 0.0, 1.0) * min(1.0, (s.w * s.w) / l2) * (1.0 - smoothstep(0.7, 2.2, l));
+      let b = dot(-d, KEY); let c = l2 - s.w * s.w; let h = b * b - c;
+      var sv = 1.0;
+      if (b > 0.0) { if (c < 0.0) { sv = 0.0; } } else { sv = smoothstep(0.0, 1.0, h * 4.5 / b); }
+      sh = min(sh, sv);
+    }
+  }
+  let ao = clamp(occ * 0.42, 0.0, 0.9);
+  col *= mix(vec3f(0.76, 0.68, 0.70), vec3f(1.0), sh);
+  col *= mix(vec3f(1.0), vec3f(0.64, 0.55, 0.57), ao);
+  return vec4f(col + (hash12(inp.pos.xy) - 0.5) / 255.0, 1.0);
+}
+
+// ───────── plush fabric: mantle + arms
+struct VOut { @builtin(position) pos: vec4f, @location(0) wp: vec3f, @location(1) n: vec3f, @location(2) a: vec4f };
+@vertex fn vsFabric(@location(0) p: vec4f, @location(1) n: vec4f, @location(2) a: vec4f) -> VOut {
+  var o: VOut;
+  o.pos = G.viewProj * vec4f(p.xyz, 1.0);
+  o.wp = p.xyz; o.n = n.xyz; o.a = a;
+  return o;
+}
+
+@fragment fn fsFabric(inp: VOut) -> @location(0) vec4f {
+  let V = normalize(G.camPos.xyz - inp.wp);
+  var N = normalize(inp.n);
+  let isT = inp.a.w > 0.5;
+  let pxw = length(G.camPos.xyz - inp.wp) * G.misc.x;
+
+  // surface coordinates (mantle: rest direction; arm: angle / arc / id)
+  let dB = normalize((inp.a.xyz - vec3f(0.0, BCY, 0.0)) / vec3f(BRX, BRY, BRZ) + vec3f(0.0, 1e-6, 0.0));
+  let u = inp.a.x; let s = clamp(inp.a.y, 0.0, 1.0); let tid = inp.a.z;
+  let th = (u - 0.5) * 2.0 * PI;
+  let rr = TR0 * exp(-TAPER * s);
+  let wc = TLEN * (exp(TAPER * s) - 1.0) / (TAPER * TR0);   // arc length in units of local radius
+
+  // fibre / pile
+  let pfB = inp.a.xyz;
+  let pfT = vec3f(rr * cos(th), rr * sin(th), s * TLEN + tid * 3.7);
+  let pf = select(pfB, pfT, isT) * 150.0;
+  let fade = smoothstep(0.013, 0.004, pxw);
+  let n1 = vnoise(pf);
+  let n2 = vnoise(pf * 2.3 + vec3f(11.3, 3.1, 7.7));
+  let gr = vec3f(vnoise(pf + vec3f(4.7, 0.0, 0.0)), vnoise(pf + vec3f(0.0, 4.7, 0.0)), vnoise(pf + vec3f(0.0, 0.0, 4.7))) - vec3f(n1);
+  N = normalize(N + (gr - N * dot(gr, N)) * 0.42 * fade);
+  let fiber = mix(0.5, n1 * 0.62 + n2 * 0.38, fade);
+
+  var alb = srgb(vec3f(0.96, 0.37, 0.34));
+  var thread = 0.0;
+  var threadCol = vec3f(0.0);
+  var crease = 0.0;
+  var socket = 0.0;
+
+  // ───────── mantle details
+  let aaB = pxw / 0.6;
+  let front = smoothstep(0.0, 0.25, dB.z);
+  let eyeR = vec3f(${f(EYE_DIR[0])}, ${f(EYE_DIR[1])}, ${f(EYE_DIR[2])});
+  let eyeL = vec3f(-eyeR.x, eyeR.y, eyeR.z);
+  socket = max(smoothstep(0.30, 0.15, length(dB - eyeR)), smoothstep(0.30, 0.15, length(dB - eyeL)));
+  let chR = vec3f(${f(CHEEK_DIR[0])}, ${f(CHEEK_DIR[1])}, ${f(CHEEK_DIR[2])});
+  let chL = vec3f(-chR.x, chR.y, chR.z);
+  let cheek = max(smoothstep(0.17, 0.02, length(dB - chR)), smoothstep(0.17, 0.02, length(dB - chL)));
+  var albB = mix(alb, srgb(vec3f(1.0, 0.46, 0.50)), 0.75 * cheek);
+  // soft crown highlight tone
+  albB = mix(albB, srgb(vec3f(1.0, 0.56, 0.47)), 0.25 * smoothstep(0.4, 1.0, dB.y));
+
+  // embroidered ω mouth
+  let mx = abs(dB.x);
+  let mc = clamp(mx, 0.0, 0.15);
+  let xi = (mc - 0.075) / 0.075;
+  let fy = -0.30 - 0.055 * (1.0 - xi * xi);
+  let slope = 0.055 * 2.0 * xi / 0.075;
+  let mdy = (dB.y - fy) / sqrt(1.0 + slope * slope);
+  let mdx = max(mx - 0.15, 0.0);
+  let md = sqrt(mdy * mdy + mdx * mdx);
+  let thw = 0.0115;
+  var mouth = (1.0 - smoothstep(thw - aaB, thw + aaB, md)) * front;
+  let satin = 0.5 + 0.5 * sin(dB.x * 520.0 + dB.y * 210.0);
+  let mouthCol = mix(srgb(vec3f(0.30, 0.07, 0.10)), srgb(vec3f(0.55, 0.15, 0.17)), satin * (1.0 - 0.6 * (md / thw)));
+
+  // appliqué spots with running-stitch borders
+  var spotFill = 0.0; var spotStitch = 0.0;
+  var spots = array<vec4f, 7>(${SPOTS.map(s => `vec4f(${f(s[0])}, ${f(s[1])}, ${f(s[2])}, ${f(s[3])})`).join(', ')});
+  for (var k = 0; k < 7; k++) {
+    let sp = spots[k];
+    let sd = length(dB - sp.xyz) - sp.w;
+    spotFill = max(spotFill, 1.0 - smoothstep(-aaB, aaB, sd));
+    let tA = normalize(cross(sp.xyz, vec3f(0.0, 1.0, 0.0)) + vec3f(1e-5));
+    let tB = cross(sp.xyz, tA);
+    let vv = dB - sp.xyz;
+    let ang = atan2(dot(vv, tB), dot(vv, tA));
+    let dash = step(fract(ang / (2.0 * PI) * sp.w * 160.0), 0.62);
+    let ring = (1.0 - smoothstep(0.0075 - aaB, 0.0075 + aaB, abs(sd + 0.02))) * dash;
+    spotStitch = max(spotStitch, ring);
+  }
+  albB = mix(albB, srgb(vec3f(1.0, 0.70, 0.62)), 0.85 * spotFill);
+
+  // two-piece head: a hand-stitched seam runs over the crown down both flanks
+  let az = atan2(dB.x, dB.z);
+  let seamPerp = abs(sin(abs(az) - ${f(90 * DEG)})) * sqrt(dB.x * dB.x + dB.z * dB.z);
+  let polar = acos(clamp(dB.y, -1.0, 1.0));
+  let seamMask = 1.0 - smoothstep(1.85, 2.15, polar);
+  let seamD = seamPerp;
+  crease = (1.0 - smoothstep(0.0, 0.05, seamD)) * seamMask * 0.5;
+  let sDash = step(fract(polar * 14.0), 0.58);
+  let seamThread = (1.0 - smoothstep(0.011 - aaB, 0.011 + aaB, seamD)) * sDash * seamMask;
+  let seamCol = srgb(vec3f(0.80, 0.30, 0.28));
+
+  // ───────── arm details
+  let pxr = pxw / rr;
+  let tipTone = smoothstep(0.3, 1.0, s);
+  var albT = mix(alb, srgb(vec3f(1.0, 0.57, 0.48)), 0.5 * tipTone);
+  let Pc = 1.25; let xr = 0.62; let rho = 0.37;
+  let wa = wc / Pc;
+  let cy1 = (fract(wa) - 0.5) * Pc;
+  let cy2 = (fract(wa + 0.5) - 0.5) * Pc;
+  let sdL = length(vec2f(th + xr, cy1)) - rho;
+  let sdR = length(vec2f(th - xr, cy2)) - rho;
+  let dS = min(sdL, sdR);
+  let lcl = select(vec2f(th - xr, cy2), vec2f(th + xr, cy1), sdL < sdR);
+  let sm = smoothstep(1.7, 2.4, wc) * (1.0 - smoothstep(0.86, 0.93, s));
+  let suckFill = (1.0 - smoothstep(-pxr, pxr, dS)) * sm;
+  let dimple = (1.0 - smoothstep(0.08, 0.2, length(lcl))) * suckFill;
+  let sAng = atan2(lcl.y, lcl.x);
+  let sDashT = step(fract(sAng / (2.0 * PI) * 14.0), 0.62);
+  let sRing = (1.0 - smoothstep(0.035 - pxr, 0.035 + pxr, abs(dS + 0.07))) * sDashT * sm;
+  albT = mix(albT, srgb(vec3f(0.99, 0.68, 0.63)), 0.9 * suckFill);
+  albT = mix(albT, srgb(vec3f(0.96, 0.52, 0.5)), 0.5 * dimple);
+  // back seam along each arm
+  let seamT = PI - abs(th);
+  let tSeam = (1.0 - smoothstep(0.045 - pxr, 0.045 + pxr, seamT)) * step(fract(wc / 0.55), 0.6) * smoothstep(0.8, 1.6, wc);
+  let tCrease = (1.0 - smoothstep(0.0, 0.3, seamT)) * 0.35 * smoothstep(0.8, 1.6, wc);
+
+  // choose
+  alb = select(albB, albT, isT);
+  thread = select(mouth, 0.0, isT);
+  threadCol = mouthCol;
+  var stitchAmt = select(max(spotStitch * 0.85, seamThread * 0.8), max(sRing * 0.85, tSeam * 0.8), isT);
+  let stitchCol = select(mix(srgb(vec3f(1.0, 0.86, 0.80)), seamCol, step(0.001, seamThread)), mix(srgb(vec3f(1.0, 0.92, 0.86)), seamCol, step(0.001, tSeam)), isT);
+  crease = select(crease, tCrease, isT);
+  alb = mix(alb, stitchCol, stitchAmt);
+  alb = mix(alb, threadCol, thread);
+  alb *= 0.9 + 0.2 * fiber;
+  alb *= 1.0 - 0.28 * crease;
+
+  // ───────── occlusion
+  var ao = 1.0;
+  ao *= mix(0.62, 1.0, smoothstep(0.0, 0.55, inp.wp.y)) * mix(mix(0.55, 1.0, N.y * 0.5 + 0.5), 1.0, smoothstep(0.0, 0.7, inp.wp.y));
+  ao *= 1.0 - 0.42 * socket * select(1.0, 0.0, isT);
+  if (isT) {
+    var occ = 0.0;
+    let nb = u32(G.cnt.x);
+    for (var i = 0u; i < nb; i++) {
+      let sp = spheres[i];
+      let d = sp.xyz - inp.wp; let l2 = max(dot(d, d), 1e-4);
+      occ += clamp(dot(N, d) / sqrt(l2), 0.0, 1.0) * min(1.0, (sp.w * sp.w) / l2);
+    }
+    ao *= 1.0 - clamp(occ * 0.22, 0.0, 0.75);
+  }
+
+  // ───────── lighting
+  let nv = clamp(dot(N, V), 0.0, 1.0);
+  let ndlK = dot(N, KEY);
+  let dK = wrapDiff(ndlK, 0.6);
+  let dF = wrapDiff(dot(N, FILL), 0.45);
+  let dR = wrapDiff(dot(N, RIM), 0.35);
+  let kc = vec3f(1.0, 0.93, 0.85) * 1.85;
+  let fc = vec3f(0.74, 0.84, 1.0) * 0.5;
+  let rc = vec3f(1.0, 0.84, 0.80) * 1.05;
+  var col = alb * (kc * dK + fc * dF + rc * dR * 0.45) * mix(0.5, 1.0, ao);
+  let term = smoothstep(-0.4, 0.25, ndlK) * (1.0 - smoothstep(0.2, 0.9, ndlK));
+  col += alb * alb * kc * 0.7 * term * ao;                                    // saturated penumbra, as light scatters through stuffing
+  let hemi = mix(vec3f(0.60, 0.38, 0.34), vec3f(0.96, 0.85, 0.82), N.y * 0.5 + 0.5);
+  col += alb * hemi * 0.42 * ao;
+  // velvet pile: soft fuzzy sheen at grazing angles, broken up by the fibres
+  let rim = pow(1.0 - nv, 2.4);
+  let fuzz = mix(alb * 1.6 + vec3f(0.07, 0.04, 0.04), vec3f(1.0, 0.86, 0.80), 0.4);
+  col += fuzz * rim * (0.35 + 0.65 * fiber) * (kc * 0.17 * (0.25 + dK) + hemi * 0.30 + rc * 0.28 * dR) * ao * (1.0 - 0.7 * thread);
+  // thread has its own satin sheen
+  let hv = normalize(KEY + V);
+  col += vec3f(1.0, 0.8, 0.75) * pow(clamp(dot(N, hv), 0.0, 1.0), 40.0) * 0.18 * max(thread, stitchAmt) * ao;
+  col += vec3f(1.0, 0.90, 0.85) * pow(clamp(dot(N, hv), 0.0, 1.0), 10.0) * 0.035 * fiber;
+
+  var o = toSrgb(aces(col * 1.02));
+  o += (hash12(inp.pos.xy) - 0.5) / 255.0;
+  return vec4f(o, 1.0);
+}
+
+// ───────── glass eyes
+struct EOut { @builtin(position) pos: vec4f, @location(0) wp: vec3f, @location(1) n: vec3f };
+@vertex fn vsEye(@location(0) lp: vec3f, @builtin(instance_index) ii: u32) -> EOut {
+  let e = select(G.eye0, G.eye1, ii == 1u);
+  let S = vec3f(e.w, e.w * G.tm.y, e.w * 0.92);
+  let R = mat3x3f(G.R0.xyz, G.R1.xyz, G.R2.xyz);
+  var o: EOut;
+  let wp = e.xyz + R * (lp * S);
+  o.pos = G.viewProj * vec4f(wp, 1.0);
+  o.wp = wp;
+  o.n = normalize(R * (lp / max(S, vec3f(0.02))));
+  return o;
+}
+@fragment fn fsEye(inp: EOut) -> @location(0) vec4f {
+  let N = normalize(inp.n);
+  let V = normalize(G.camPos.xyz - inp.wp);
+  let R = mat3x3f(G.R0.xyz, G.R1.xyz, G.R2.xyz);
+  let nv = clamp(dot(N, V), 0.0, 1.0);
+  var col = vec3f(0.012, 0.007, 0.011);
+  col += vec3f(0.16, 0.05, 0.07) * pow(1.0 - nv, 2.2) * 0.55;
+  let rf = reflect(-V, N);
+  let fres = 0.05 + 0.95 * pow(1.0 - nv, 5.0);
+  col += envLight(rf) * fres * 0.85;
+  col += vec3f(1.0, 0.97, 0.95) * 0.35 * pow(clamp(dot(rf, KEY), 0.0, 1.0), 90.0);
+  let hA = R * normalize(vec3f(-0.30, 0.44, 0.85));
+  let hB = R * normalize(vec3f(0.31, -0.27, 0.91));
+  col += vec3f(1.0) * 2.2 * smoothstep(0.946, 0.962, dot(N, hA));
+  col += vec3f(1.0) * 1.6 * smoothstep(0.983, 0.990, dot(N, hB));
+  // soft contact shadow where the glass sits in the fabric
+  let rimAo = mix(0.55, 1.0, smoothstep(0.0, 0.5, nv));
+  var o = toSrgb(aces(col * rimAo));
+  o += (hash12(inp.pos.xy) - 0.5) / 255.0;
+  return vec4f(o, 1.0);
+}
+`;
+
+/* ───────────────────────── math ───────────────────────── */
+const m4mul = (a, b) => { const o = new Float32Array(16); for (let c = 0; c < 4; c++) for (let r = 0; r < 4; r++) { let s = 0; for (let k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k]; o[c * 4 + r] = s; } return o; };
+const m4persp = (fovy, asp, n, fa) => { const t = 1 / Math.tan(fovy / 2), o = new Float32Array(16); o[0] = t / asp; o[5] = t; o[10] = fa / (n - fa); o[11] = -1; o[14] = n * fa / (n - fa); return o; };
+const cross3 = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
+const dot3 = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+function m4look(eye, tgt, up) {
+  const z = nrm3([eye[0] - tgt[0], eye[1] - tgt[1], eye[2] - tgt[2]]), x = nrm3(cross3(up, z)), y = cross3(z, x);
+  return new Float32Array([x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0, -dot3(x, eye), -dot3(y, eye), -dot3(z, eye), 1]);
+}
+
+/* ───────────────────────── boot ───────────────────────── */
+const canvas = document.getElementById('gfx');
+const fail = msg => { document.getElementById('nogpu').style.display = 'grid'; document.getElementById('nogpuWhy').textContent = msg || ''; };
+
+async function main() {
+  if (!navigator.gpu) return fail('navigator.gpu is undefined');
+  const adapter = await navigator.gpu.requestAdapter({ powerPreference: 'high-performance' });
+  if (!adapter) return fail('No suitable GPU adapter was found.');
+  const device = await adapter.requestDevice();
+  device.lost.then(info => { console.warn('WebGPU device lost:', info.message); if (info.reason !== 'destroyed') fail('The GPU device was lost — reload the page to continue.'); });
+  device.addEventListener?.('uncapturederror', e => console.error('WebGPU error:', e.error?.message));
+  const ctx = canvas.getContext('webgpu');
+  const format = navigator.gpu.getPreferredCanvasFormat();
+  ctx.configure({ device, format, alphaMode: 'opaque' });
+  const SAMPLES = 4;
+
+  const mkBuf = (size, usage, data) => {
+    const b = device.createBuffer({ size: Math.max(16, (size + 3) & ~3), usage, mappedAtCreation: !!data });
+    if (data) { new data.constructor(b.getMappedRange()).set(data); b.unmap(); }
+    return b;
+  };
+  const S = GPUBufferUsage;
+  const gBuf = mkBuf(256, S.UNIFORM | S.COPY_DST);
+  const bodyPBuf = mkBuf(NBP * 16, S.STORAGE | S.COPY_DST);
+  const bodyQBuf = mkBuf(NBP * 16, S.STORAGE, (() => { const a = new Float32Array(NBP * 4); bodyRest.forEach((q, k) => a.set(q, k * 4)); return a; })());
+  const chainBuf = mkBuf(NT * MP * 3 * 16, S.STORAGE | S.COPY_DST);
+  const skinIdxBuf = mkBuf(skinIdx.byteLength, S.STORAGE, skinIdx);
+  const skinWBuf = mkBuf(skinW.byteLength, S.STORAGE, skinW);
+  const attrBuf = mkBuf(attrData.byteLength, S.STORAGE | S.VERTEX, attrData);
+  const gridBuf = mkBuf(gridData.byteLength, S.STORAGE, gridData);
+  const posBuf = mkBuf(NV * 16, S.STORAGE | S.VERTEX | S.COPY_SRC);
+  const nrmBuf = mkBuf(NV * 16, S.STORAGE | S.VERTEX);
+  const idxBuf = mkBuf(indexData.byteLength, S.INDEX, indexData);
+  const NSPH = NBP + NT * SEGS;
+  const sphBuf = mkBuf(NSPH * 16, S.STORAGE | S.COPY_DST);
+  const eyeVBuf = mkBuf(eyeVerts.length * 4, S.VERTEX, new Float32Array(eyeVerts));
+  const eyeIBuf = mkBuf(eyeIdx.length * 4, S.INDEX, new Uint32Array(eyeIdx));
+
+  // shaders
+  const compMod = device.createShaderModule({ code: WGSL_COMPUTE });
+  const rendMod = device.createShaderModule({ code: WGSL_RENDER });
+  for (const [n, m] of [['compute', compMod], ['render', rendMod]]) {
+    const info = await m.getCompilationInfo();
+    for (const msg of info.messages) console[msg.type === 'error' ? 'error' : 'warn'](`WGSL ${n} ${msg.type} @${msg.lineNum}:${msg.linePos} ${msg.message}`);
+    if (info.messages.some(x => x.type === 'error')) return fail(`Shader compile error (${n}) — see console.`);
+  }
+
+  const ro = t => ({ type: t });
+  const skinBGL = device.createBindGroupLayout({ entries: [
+    { binding: 0, visibility: GPUShaderStage.COMPUTE, buffer: { type: 'uniform' } },
+    ...[1, 2, 3, 4, 5, 6].map(b => ({ binding: b, visibility: GPUShaderStage.COMPUTE, buffer: ro('read-only-storage') })),
+    { binding: 7, visibility: GPUShaderStage.COMPUTE, buffer: ro('storage') }] });
+  const nrmBGL = device.createBindGroupLayout({ entries: [
+    { binding: 1, visibility: GPUShaderStage.COMPUTE, buffer: ro('read-only-storage') },
+    { binding: 2, visibility: GPUShaderStage.COMPUTE, buffer: ro('read-only-storage') },
+    { binding: 3, visibility: GPUShaderStage.COMPUTE, buffer: ro('storage') }] });
+  const rendBGL = device.createBindGroupLayout({ entries: [
+    { binding: 0, visibility: GPUShaderStage.VERTEX | GPUShaderStage.FRAGMENT, buffer: { type: 'uniform' } },
+    { binding: 1, visibility: GPUShaderStage.FRAGMENT, buffer: ro('read-only-storage') }] });
+  const pl = bgl => device.createPipelineLayout({ bindGroupLayouts: [bgl] });
+
+  const skinPipe = device.createComputePipeline({ layout: pl(skinBGL), compute: { module: compMod, entryPoint: 'skin' } });
+  const nrmPipe = device.createComputePipeline({ layout: pl(nrmBGL), compute: { module: compMod, entryPoint: 'normals' } });
+  const skinBG = device.createBindGroup({ layout: skinBGL, entries: [gBuf, bodyPBuf, bodyQBuf, chainBuf, skinIdxBuf, skinWBuf, attrBuf, posBuf].map((b, i) => ({ binding: i, resource: { buffer: b } })) });
+  const nrmBG = device.createBindGroup({ layout: nrmBGL, entries: [posBuf, gridBuf, nrmBuf].map((b, i) => ({ binding: i + 1, resource: { buffer: b } })) });
+  const rendBG = device.createBindGroup({ layout: rendBGL, entries: [{ binding: 0, resource: { buffer: gBuf } }, { binding: 1, resource: { buffer: sphBuf } }] });
+
+  const depthFormat = 'depth24plus';
+  const base = (vs, fs, extra = {}) => device.createRenderPipeline({
+    layout: pl(rendBGL),
+    vertex: { module: rendMod, entryPoint: vs, buffers: extra.buffers || [] },
+    fragment: { module: rendMod, entryPoint: fs, targets: [{ format }] },
+    primitive: { topology: 'triangle-list', cullMode: 'none' },
+    depthStencil: { format: depthFormat, depthWriteEnabled: extra.depthWrite !== false, depthCompare: extra.depthCompare || 'less' },
+    multisample: { count: SAMPLES },
+  });
+  const bgPipe = base('vsBg', 'fsBg', { depthWrite: false, depthCompare: 'always' });
+  const floorPipe = base('vsFloor', 'fsFloor');
+  const fabricPipe = base('vsFabric', 'fsFabric', { buffers: [
+    { arrayStride: 16, attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x4' }] },
+    { arrayStride: 16, attributes: [{ shaderLocation: 1, offset: 0, format: 'float32x4' }] },
+    { arrayStride: 16, attributes: [{ shaderLocation: 2, offset: 0, format: 'float32x4' }] }] });
+  const eyePipe = base('vsEye', 'fsEye', { buffers: [{ arrayStride: 12, attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x3' }] }] });
+
+  // size-dependent targets
+  let msaaTex, depthTex, W = 0, H = 0;
+  function resize() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.max(2, Math.floor(canvas.clientWidth * dpr)), h = Math.max(2, Math.floor(canvas.clientHeight * dpr));
+    if (w === W && h === H) return;
+    W = canvas.width = w; H = canvas.height = h;
+    msaaTex?.destroy(); depthTex?.destroy();
+    msaaTex = device.createTexture({ size: [W, H], sampleCount: SAMPLES, format, usage: GPUTextureUsage.RENDER_ATTACHMENT });
+    depthTex = device.createTexture({ size: [W, H], sampleCount: SAMPLES, format: depthFormat, usage: GPUTextureUsage.RENDER_ATTACHMENT });
+  }
+
+  /* ───────── camera (limited orbit + zoom) ───────── */
+  const FOV = 36 * DEG, CAM_T = [0, 0.36, 0];
+  const cam = { yaw: 0.0, pitch: 0.42, dist: 4.7, tyaw: 0.0, tpitch: 0.42, tdist: 4.7 };
+  const LIM = { yaw: 1.15, pmin: 0.04, pmax: 1.15, dmin: 2.6, dmax: 8.0 };
+  let eye = [0, 1, 5], fwd = [0, 0, -1], rgt = [1, 0, 0], upv = [0, 1, 0], viewProj = new Float32Array(16);
+  function updateCamera(dt, t) {
+    const k = 1 - Math.exp(-dt * 9);
+    cam.yaw += (cam.tyaw - cam.yaw) * k; cam.pitch += (cam.tpitch - cam.pitch) * k; cam.dist += (cam.tdist - cam.dist) * k;
+    const asp = W / H, fit = Math.max(1, 1.05 / asp);
+    WALLK = Math.tan(FOV / 2) * asp * 0.8; WALLD = cam.dist * fit * 0.95;
+    const yaw = cam.yaw + 0.025 * Math.sin(t * 0.21), pitch = cam.pitch + 0.008 * Math.sin(t * 0.17), dist = cam.dist * fit;
+    CAM_T[1] = asp < 1 ? 0.22 : 0.36;
+    eye = [CAM_T[0] + dist * Math.sin(yaw) * Math.cos(pitch), CAM_T[1] + dist * Math.sin(pitch), CAM_T[2] + dist * Math.cos(yaw) * Math.cos(pitch)];
+    const view = m4look(eye, CAM_T, [0, 1, 0]);
+    viewProj = m4mul(m4persp(FOV, asp, 0.1, 60), view);
+    fwd = nrm3([CAM_T[0] - eye[0], CAM_T[1] - eye[1], CAM_T[2] - eye[2]]); rgt = nrm3(cross3(fwd, [0, 1, 0])); upv = cross3(rgt, fwd);
+  }
+  function rayAt(cx, cy) {
+    const r = canvas.getBoundingClientRect(), nx = ((cx - r.left) / r.width) * 2 - 1, ny = 1 - ((cy - r.top) / r.height) * 2;
+    const th = Math.tan(FOV / 2), asp = r.width / r.height;
+    return { o: eye.slice(), d: nrm3([fwd[0] + rgt[0] * nx * th * asp + upv[0] * ny * th, fwd[1] + rgt[1] * nx * th * asp + upv[1] * ny * th, fwd[2] + rgt[2] * nx * th * asp + upv[2] * ny * th]) };
+  }
+
+  /* ───────── picking ───────── */
+  function bodyCentre() { const o = mulR(rotM, [-qbar[0], BODY.cy - qbar[1], -qbar[2]]); return [cm[0] + o[0], cm[1] + o[1], cm[2] + o[2]]; }
+  function pick(ray) {
+    let best = null;
+    {
+      const ec = bodyCentre(), o = mulRT(rotM, [ray.o[0] - ec[0], ray.o[1] - ec[1], ray.o[2] - ec[2]]), d = mulRT(rotM, ray.d);
+      const sc = [1 / (BODY.rx * 1.04), 1 / (BODY.ry * 1.04), 1 / (BODY.rz * 1.04)];
+      const os = [o[0] * sc[0], o[1] * sc[1], o[2] * sc[2]], ds = [d[0] * sc[0], d[1] * sc[1], d[2] * sc[2]];
+      const a = dot3(ds, ds), b = dot3(os, ds), c = dot3(os, os) - 1, disc = b * b - a * c;
+      if (disc > 0) { const t = (-b - Math.sqrt(disc)) / a; if (t > 0) best = { kind: 'body', t }; }
+    }
+    for (let i = 0; i < NT; i++) for (let j = 1; j <= SEGS; j++) {
+      const p = cidx(i, j) * 3, r = tr[j] + 0.045;
+      const ox = ray.o[0] - X[p], oy = ray.o[1] - X[p + 1], oz = ray.o[2] - X[p + 2];
+      const b = ox * ray.d[0] + oy * ray.d[1] + oz * ray.d[2], c = ox * ox + oy * oy + oz * oz - r * r, disc = b * b - c;
+      if (disc > 0) { const t = -b - Math.sqrt(disc); if (t > 0 && (!best || t < best.t - 0.02)) best = { kind: 'arm', t, i, j }; }
+    }
+    return best;
+  }
+  function makeGrab(ray, hit) {
+    const items = [];
+    const H = [ray.o[0] + ray.d[0] * hit.t, ray.o[1] + ray.d[1] * hit.t, ray.o[2] + ray.d[2] * hit.t];
+    if (hit.kind === 'arm') {
+      for (let j = Math.max(1, hit.j - 3); j <= Math.min(SEGS, hit.j + 3); j++) items.push({ i: cidx(hit.i, j), w: Math.exp(-((j - hit.j) ** 2) / (2 * 1.15 * 1.15)) });
+      const p = cidx(hit.i, hit.j) * 3; H[0] = X[p]; H[1] = X[p + 1]; H[2] = X[p + 2];
+    } else {
+      const ds = [];
+      for (let k = 0; k < NBP; k++) ds.push([Math.hypot(X[k * 3] - H[0], X[k * 3 + 1] - H[1], X[k * 3 + 2] - H[2]), k]);
+      ds.sort((a, b) => a[0] - b[0]);
+      for (let n = 0; n < 6; n++) items.push({ i: ds[n][1], w: Math.exp(-(ds[n][0] ** 2) / (2 * 0.3 * 0.3)) });
+    }
+    let sw = 0; for (const it of items) sw += it.w;
+    let g = [0, 0, 0]; for (const it of items) { it.wn = it.w / sw; g[0] += X[it.i * 3] * it.wn; g[1] += X[it.i * 3 + 1] * it.wn; g[2] += X[it.i * 3 + 2] * it.wn; }
+    let sq = 0; for (const it of items) sq += it.wn * it.w; for (const it of items) it.wr = it.w / sq;
+    // drag plane through the grabbed point, facing the camera
+    const t0 = dot3([g[0] - ray.o[0], g[1] - ray.o[1], g[2] - ray.o[2]], fwd) / dot3(ray.d, fwd);
+    const hp = [ray.o[0] + ray.d[0] * t0, ray.o[1] + ray.d[1] * t0, ray.o[2] + ray.d[2] * t0];
+    return { items, plane: g.slice(), off: [g[0] - hp[0], g[1] - hp[1], g[2] - hp[2]], target: g.slice(), kind: hit.kind, hit };
+  }
+  function dragTarget(g, ray) {
+    const t = dot3([g.plane[0] - ray.o[0], g.plane[1] - ray.o[1], g.plane[2] - ray.o[2]], fwd) / dot3(ray.d, fwd);
+    const p = [ray.o[0] + ray.d[0] * t + g.off[0], ray.o[1] + ray.d[1] * t + g.off[1], ray.o[2] + ray.d[2] * t + g.off[2]];
+    p[1] = Math.max(p[1], 0.15); const wl = wallX(p[2]); p[0] = clamp(p[0], -wl, wl); p[2] = clamp(p[2], WALLZN, WALLZP); p[1] = Math.min(p[1], CEIL - 0.1);
+    return p;
+  }
+  function hop(hit) {
+    if (hit.kind === 'body') {
+      for (let k = 0; k < NBP; k++) V[k * 3 + 1] += 4.4 + Math.random() * 0.6;
+      for (let i = 0; i < NT; i++) for (let j = 1; j <= SEGS; j++) { const p = cidx(i, j) * 3; V[p + 1] += 3.2; }
+    } else {
+      for (let j = Math.max(1, hit.j - 2); j <= SEGS; j++) { const p = cidx(hit.i, j) * 3, s = j / SEGS; V[p + 1] += 5 * s + 1; V[p] += (Math.random() - .5) * 5 * s; V[p + 2] += (Math.random() - .5) * 5 * s; }
+    }
+  }
+
+  /* ───────── input ───────── */
+  let mode = 'pull';
+  const poker = document.getElementById('poker');
+  const mPull = document.getElementById('mPull'), mSquish = document.getElementById('mSquish');
+  function setMode(m) {
+    mode = m; mPull.setAttribute('aria-pressed', m === 'pull'); mSquish.setAttribute('aria-pressed', m === 'squish');
+    if (m !== 'squish') poker.classList.remove('on');
+  }
+  mPull.onclick = () => setMode('pull'); mSquish.onclick = () => setMode('squish');
+  document.getElementById('reset').onclick = () => resetSim(true);
+  addEventListener('keydown', e => {
+    if (e.key === 'r' || e.key === 'R') resetSim(true);
+    else if (e.key === '1') setMode('pull'); else if (e.key === '2') setMode('squish');
+    else if (e.key === 'p' || e.key === 'P') capture().then(u => { const a = document.createElement('a'); a.href = u; a.download = 'plush-octopus.png'; a.click(); });
+  });
+  canvas.addEventListener('contextmenu', e => e.preventDefault());
+
+  const ptrs = new Map();   // id -> {kind:'grab'|'squish'|'orbit', x, y, ...}
+  let lastTap = 0;
+  canvas.addEventListener('pointerdown', e => {
+    canvas.setPointerCapture(e.pointerId); canvas.focus({ preventScroll: true });
+    const ray = rayAt(e.clientX, e.clientY);
+    const hit = (e.button === 0 || e.pointerType === 'touch') ? pick(ray) : null;
+    const p = { x: e.clientX, y: e.clientY, sx: e.clientX, sy: e.clientY, t0: performance.now(), moved: 0 };
+    if (hit && mode === 'pull') {
+      p.kind = 'grab'; p.hit = hit; p.g = makeGrab(ray, hit); grabs.set(e.pointerId, p.g);
+    } else if (hit && mode === 'squish') {
+      p.kind = 'squish'; p.depth = hit.t; p.indent = 0; p.ray = ray;
+      // the finger presses along the surface normal, tilted toward the floor so the plush squashes rather than slides
+      const Hh = [ray.o[0] + ray.d[0] * hit.t, ray.o[1] + ray.d[1] * hit.t, ray.o[2] + ray.d[2] * hit.t];
+      if (hit.kind === 'body') {
+        const ec = bodyCentre(), l = mulRT(rotM, [Hh[0] - ec[0], Hh[1] - ec[1], Hh[2] - ec[2]]);
+        const nw = nrm3(mulR(rotM, [l[0] / BODY.rx ** 2, l[1] / BODY.ry ** 2, l[2] / BODY.rz ** 2]));
+        p.push = nrm3([-nw[0] * 0.3, -nw[1] * 0.3 - 0.95, -nw[2] * 0.3]);
+      } else {
+        const q = cidx(hit.i, hit.j) * 3, nw = nrm3([Hh[0] - X[q], Hh[1] - X[q + 1], Hh[2] - X[q + 2]]);
+        p.push = nrm3([-nw[0], -nw[1] - 0.15, -nw[2]]);
+      }
+      pokers.set(e.pointerId, { c: [0, 9, 0], r: 0.3 });
+      poker.classList.add('down');
+    } else {
+      p.kind = 'orbit';
+      // second finger on the backdrop → pinch
+    }
+    ptrs.set(e.pointerId, p);
+    canvas.style.cursor = p.kind === 'orbit' ? 'move' : 'grabbing';
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (mode === 'squish') { poker.style.transform = `translate(${e.clientX}px,${e.clientY}px)`; poker.classList.add('on'); }
+    const p = ptrs.get(e.pointerId);
+    if (!p) {
+      if (e.pointerType === 'mouse') canvas.style.cursor = pick(rayAt(e.clientX, e.clientY)) ? 'grab' : 'default';
+      return;
+    }
+    const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY; p.moved += Math.abs(dx) + Math.abs(dy);
+    if (p.kind === 'grab') p.g.target = dragTarget(p.g, rayAt(e.clientX, e.clientY));
+    else if (p.kind === 'squish') p.ray = rayAt(e.clientX, e.clientY);
+    else {
+      const orb = [...ptrs.values()].filter(q => q.kind === 'orbit');
+      if (orb.length >= 2 && orb.includes(p)) {
+        const o = orb[0] === p ? orb[1] : orb[0], dNew = Math.hypot(p.x - o.x, p.y - o.y), dOld = Math.hypot(p.x - dx - o.x, p.y - dy - o.y);
+        if (dOld > 8) cam.tdist = clamp(cam.tdist * dOld / dNew, LIM.dmin, LIM.dmax);
+      } else {
+        cam.tyaw = clamp(cam.tyaw - dx * 0.006, -LIM.yaw, LIM.yaw);
+        cam.tpitch = clamp(cam.tpitch + dy * 0.005, LIM.pmin, LIM.pmax);
+      }
+    }
+  });
+  const endPtr = e => {
+    const p = ptrs.get(e.pointerId); if (!p) return;
+    ptrs.delete(e.pointerId); grabs.delete(e.pointerId); pokers.delete(e.pointerId);
+    if (!pokers.size) poker.classList.remove('down');
+    if (p.kind === 'grab' && e.type === 'pointerup' && p.moved < 9 && performance.now() - p.t0 < 280) hop(p.hit);
+    if (p.kind === 'orbit' && e.type === 'pointerup' && p.moved < 6) {
+      const now = performance.now();
+      if (now - lastTap < 320) { cam.tyaw = 0; cam.tpitch = 0.42; cam.tdist = 4.7; }
+      lastTap = now;
+    }
+    canvas.style.cursor = 'default';
+  };
+  canvas.addEventListener('pointerup', endPtr); canvas.addEventListener('pointercancel', endPtr);
+  canvas.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') poker.classList.remove('on'); });
+  canvas.addEventListener('pointerenter', e => { if (mode === 'squish') poker.classList.add('on'); });
+  canvas.addEventListener('wheel', e => { e.preventDefault(); cam.tdist = clamp(cam.tdist * Math.exp(e.deltaY * (e.deltaMode ? 0.05 : 0.0012)), LIM.dmin, LIM.dmax); }, { passive: false });
+
+  /* ───────── per-frame data ───────── */
+  const gData = new Float32Array(64);
+  const bodyPData = new Float32Array(NBP * 4);
+  const chainData = new Float32Array(NT * MP * 3 * 4);
+  const sphData = new Float32Array(NSPH * 4);
+  const Tg = new Float64Array(MP * 3);
+  let blink = 1, blinkT = -1, nextBlink = 2.2, dbl = false;
+
+  function packFrame(t, dt) {
+    // blink
+    nextBlink -= dt;
+    if (nextBlink <= 0 && blinkT < 0) { blinkT = 0; }
+    if (blinkT >= 0) {
+      blinkT += dt; const d = 0.2, q = blinkT / d;
+      blink = q >= 1 ? 1 : 1 - 0.93 * Math.sin(Math.PI * q);
+      if (q >= 1) { blinkT = -1; if (!dbl && Math.random() < 0.25) { dbl = true; nextBlink = 0.12; } else { dbl = false; nextBlink = 2.2 + Math.random() * 3.6; } }
+    }
+    // body particles & spheres
+    for (let k = 0; k < NBP; k++) {
+      bodyPData[k * 4] = X[k * 3]; bodyPData[k * 4 + 1] = X[k * 3 + 1]; bodyPData[k * 4 + 2] = X[k * 3 + 2];
+      sphData[k * 4] = X[k * 3]; sphData[k * 4 + 1] = X[k * 3 + 1]; sphData[k * 4 + 2] = X[k * 3 + 2]; sphData[k * 4 + 3] = bodyRad[k];
+    }
+    // arms: positions, transported frames, stretch-based radius
+    const Rm = rotM;
+    for (let i = 0; i < NT; i++) {
+      const c = (j) => cidx(i, j) * 3;
+      for (let j = 0; j < MP; j++) {
+        const a = c(Math.max(j - 1, 0)), b = c(Math.min(j + 1, MP - 1));
+        let tx = X[b] - X[a], ty = X[b + 1] - X[a + 1], tz = X[b + 2] - X[a + 2]; const l = Math.hypot(tx, ty, tz) || 1;
+        Tg[j * 3] = tx / l; Tg[j * 3 + 1] = ty / l; Tg[j * 3 + 2] = tz / l;
+      }
+      let N = mulR(Rm, restN0[i]);
+      for (let j = 0; j < MP; j++) {
+        const T = [Tg[j * 3], Tg[j * 3 + 1], Tg[j * 3 + 2]], d = dot3(N, T);
+        N = nrm3([N[0] - T[0] * d, N[1] - T[1] * d, N[2] - T[2] * d]);
+        const B = cross3(T, N), p = c(j);
+        const lA = j > 0 ? Math.hypot(X[p] - X[c(j - 1)], X[p + 1] - X[c(j - 1) + 1], X[p + 2] - X[c(j - 1) + 2]) : SEGL;
+        const lB = j < MP - 1 ? Math.hypot(X[c(j + 1)] - X[p], X[c(j + 1) + 1] - X[p + 1], X[c(j + 1) + 2] - X[p + 2]) : SEGL;
+        const st = clamp(Math.pow(SEGL / ((lA + lB) * 0.5), 0.6), 0.55, 1.35);
+        const o = (i * MP + j) * 12;
+        chainData[o] = X[p]; chainData[o + 1] = X[p + 1]; chainData[o + 2] = X[p + 2]; chainData[o + 3] = st;
+        chainData[o + 4] = N[0]; chainData[o + 5] = N[1]; chainData[o + 6] = N[2];
+        chainData[o + 8] = B[0]; chainData[o + 9] = B[1]; chainData[o + 10] = B[2];
+        if (j > 0) { const so = (NBP + i * SEGS + j - 1) * 4; sphData[so] = X[p]; sphData[so + 1] = X[p + 1]; sphData[so + 2] = X[p + 2]; sphData[so + 3] = tr[j]; }
+      }
+    }
+    // uniforms
+    const g = gData; g.set(viewProj, 0);
+    g[16] = eye[0]; g[17] = eye[1]; g[18] = eye[2];
+    g[20] = t; g[21] = blink; g[22] = W; g[23] = H;
+    g[24] = Rm[0]; g[25] = Rm[3]; g[26] = Rm[6]; g[28] = Rm[1]; g[29] = Rm[4]; g[30] = Rm[7]; g[32] = Rm[2]; g[33] = Rm[5]; g[34] = Rm[8];
+    const e0 = skinPoint(eyeBind[0], eyeRest[0]), e1 = skinPoint(eyeBind[1], eyeRest[1]);
+    g[36] = e0[0]; g[37] = e0[1]; g[38] = e0[2]; g[39] = EYE_R; g[40] = e1[0]; g[41] = e1[1]; g[42] = e1[2]; g[43] = EYE_R;
+    g[44] = NBP; g[45] = NSPH; g[47] = NV;
+    g[48] = 2 * Math.tan(FOV / 2) / H;
+    g[55] = 0; g[59] = 0; let pi = 0;
+    for (const pk of pokers.values()) { if (pi > 1) break; const o = 52 + pi * 4; g[o] = pk.c[0]; g[o + 1] = pk.c[1]; g[o + 2] = pk.c[2]; g[o + 3] = pk.r; pi++; }
+  }
+
+  function encodeScene(enc, target) {
+    const pass = enc.beginRenderPass({
+      colorAttachments: [{ view: msaaTex.createView(), resolveTarget: target, clearValue: { r: .9, g: .85, b: .82, a: 1 }, loadOp: 'clear', storeOp: 'discard' }],
+      depthStencilAttachment: { view: depthTex.createView(), depthClearValue: 1, depthLoadOp: 'clear', depthStoreOp: 'discard' },
+    });
+    pass.setBindGroup(0, rendBG);
+    pass.setPipeline(bgPipe); pass.draw(3);
+    pass.setPipeline(floorPipe); pass.draw(6);
+    pass.setPipeline(fabricPipe);
+    pass.setVertexBuffer(0, posBuf); pass.setVertexBuffer(1, nrmBuf); pass.setVertexBuffer(2, attrBuf);
+    pass.setIndexBuffer(idxBuf, 'uint32'); pass.drawIndexed(indexData.length);
+    pass.setPipeline(eyePipe); pass.setVertexBuffer(0, eyeVBuf); pass.setIndexBuffer(eyeIBuf, 'uint32'); pass.drawIndexed(eyeIdx.length, 2);
+    pass.end();
+  }
+  // Render the current state to an offscreen texture and hand back a PNG (key "P" saves a still).
+  async function capture() {
+    const tex = device.createTexture({ size: [W, H], format, usage: GPUTextureUsage.RENDER_ATTACHMENT | GPUTextureUsage.COPY_SRC });
+    const bpr = Math.ceil(W * 4 / 256) * 256, buf = device.createBuffer({ size: bpr * H, usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ });
+    const enc = device.createCommandEncoder();
+    encodeScene(enc, tex.createView());
+    enc.copyTextureToBuffer({ texture: tex }, { buffer: buf, bytesPerRow: bpr }, [W, H]);
+    device.queue.submit([enc.finish()]);
+    await buf.mapAsync(GPUMapMode.READ);
+    const src = new Uint8Array(buf.getMappedRange()), img = new ImageData(W, H), bgra = format.startsWith('bgra');
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const i = y * bpr + x * 4, o = (y * W + x) * 4;
+      img.data[o] = bgra ? src[i + 2] : src[i]; img.data[o + 1] = src[i + 1]; img.data[o + 2] = bgra ? src[i] : src[i + 2]; img.data[o + 3] = 255;
+    }
+    buf.unmap(); buf.destroy(); tex.destroy();
+    const cv = document.createElement('canvas'); cv.width = W; cv.height = H; cv.getContext('2d').putImageData(img, 0, 0);
+    return cv.toDataURL('image/png');
+  }
+
+  /* ───────── main loop ───────── */
+  let last = performance.now(), acc = 0, t = 0, frames = 0, fpsT = 0;
+  const fpsEl = document.getElementById('fps');
+  resetSim(true, true);
+  function frame(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now; t += dt;
+    resize(); acc += dt; let n = 0;
+    // squish poker follows the pointer ray, pressing in gradually
+    for (const [id, p] of ptrs) if (p.kind === 'squish') {
+      p.indent += (0.5 - p.indent) * (1 - Math.exp(-dt * 3.2));
+      const k = p.indent - 0.3 * 0.9, pk = pokers.get(id);
+      if (pk) pk.c = [p.ray.o[0] + p.ray.d[0] * p.depth + p.push[0] * k, p.ray.o[1] + p.ray.d[1] * p.depth + p.push[1] * k, p.ray.o[2] + p.ray.d[2] * p.depth + p.push[2] * k];
+    }
+    while (acc >= DT && n < 6) { step(DT); acc -= DT; n++; }
+    if (acc > DT * 2) acc = 0;
+    updateCamera(dt, t);
+    shapeMatch(SM_K, false, simTime);
+    packFrame(t, dt);
+    device.queue.writeBuffer(gBuf, 0, gData);
+    device.queue.writeBuffer(bodyPBuf, 0, bodyPData);
+    device.queue.writeBuffer(chainBuf, 0, chainData);
+    device.queue.writeBuffer(sphBuf, 0, sphData);
+    const enc = device.createCommandEncoder();
+    { const c = enc.beginComputePass(); c.setPipeline(skinPipe); c.setBindGroup(0, skinBG); c.dispatchWorkgroups(Math.ceil(NV / 64)); c.end(); }
+    { const c = enc.beginComputePass(); c.setPipeline(nrmPipe); c.setBindGroup(0, nrmBG); c.dispatchWorkgroups(Math.ceil(NV / 64)); c.end(); }
+    if (!window.__noPresent) encodeScene(enc, ctx.getCurrentTexture().createView());
+    device.queue.submit([enc.finish()]);
+    frames++; fpsT += dt; if (fpsT >= 0.5) { fpsEl.textContent = Math.round(frames / fpsT); frames = 0; fpsT = 0; }
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  const toScreen = q => { const m = viewProj, x = m[0] * q[0] + m[4] * q[1] + m[8] * q[2] + m[12], y = m[1] * q[0] + m[5] * q[1] + m[9] * q[2] + m[13], w = m[3] * q[0] + m[7] * q[1] + m[11] * q[2] + m[15], r = canvas.getBoundingClientRect(); return [r.left + (x / w * 0.5 + 0.5) * r.width, r.top + (0.5 - y / w * 0.5) * r.height]; };
+  window.__octo = { posBuf, NV, pokers, toScreen, capture, device, cam, X, V, grabs, step, resetSim, rotM, NBP, setMode, hop, pick, X, tr, NT, SEGS, cidx };
+}
+main().catch(err => { console.error(err); fail(String(err && err.message || err)); });
+</script>
+</body>
+</html>
