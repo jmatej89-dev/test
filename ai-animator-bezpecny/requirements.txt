@@ -1,0 +1,7 @@
+# Python balíky pre nástroje (inštalácia: python -m pip install -r requirements.txt)
+faster-whisper>=1.1
+numpy>=1.26
+pillow>=10
+soundfile>=0.12
+scipy>=1.11
+piper-tts>=1.3

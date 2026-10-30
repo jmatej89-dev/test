@@ -1,0 +1,11 @@
+# Ukážka AI Animátora: „Prečo lietadlá na mape nelietajú rovno“ (formát: otázka → vysvetlenie, ~25 s)
+# *hviezdičky* = žlté slovo v titulkoch, [hranaté zátvorky] = poznámka pre strih, hlas ich nečíta
+Prečo lietadlá na mape nelietajú rovno?
+Keď letíš z Viedne do Los Angeles, lietadlo zabočí až nad *Grónsko*.
+Vyzerá to ako obchádzka.
+Lenže Zem nie je placka. Je to *guľa*.
+A na guli je najkratšia cesta *oblúk*.
+Keď ho prenesieš na plochú mapu, ohne sa.
+Rovná čiara na mape je v skutočnosti o *tisíc päťsto kilometrov* dlhšia.
+Takže pilot nezatáča. Letí najkratšou cestou.
+Klame *tvoja mapa*.

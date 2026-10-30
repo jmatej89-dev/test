@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python nastroje/hlas.py:*)",
+      "Bash(python nastroje/slova.py:*)",
+      "Bash(python nastroje/render.py:*)",
+      "Bash(python nastroje/zloz.py:*)",
+      "Bash(python nastroje/nahlad.py:*)",
+      "Bash(python nastroje/kontrola.py)",
+      "Bash(python nastroje/make_sfx.py:*)",
+      "Bash(.venv/bin/python nastroje/hlas.py:*)",
+      "Bash(.venv/bin/python nastroje/slova.py:*)",
+      "Bash(.venv/bin/python nastroje/render.py:*)",
+      "Bash(.venv/bin/python nastroje/zloz.py:*)",
+      "Bash(.venv/bin/python nastroje/nahlad.py:*)",
+      "Bash(.venv/bin/python nastroje/kontrola.py)",
+      "Bash(ffprobe:*)"
+    ]
+  }
+}

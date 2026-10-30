@@ -1,0 +1,457 @@
+{
+ "slova": [
+  {
+   "w": "Prečo",
+   "s": 0.0,
+   "e": 0.36,
+   "kluc": false
+  },
+  {
+   "w": "lietadlá",
+   "s": 0.36,
+   "e": 0.84,
+   "kluc": false
+  },
+  {
+   "w": "na",
+   "s": 0.84,
+   "e": 1.04,
+   "kluc": false
+  },
+  {
+   "w": "mape",
+   "s": 1.04,
+   "e": 1.26,
+   "kluc": false
+  },
+  {
+   "w": "nelietajú",
+   "s": 1.26,
+   "e": 1.9,
+   "kluc": false
+  },
+  {
+   "w": "rovno?",
+   "s": 1.9,
+   "e": 2.24,
+   "kluc": false
+  },
+  {
+   "w": "Keď",
+   "s": 2.5,
+   "e": 3.0,
+   "kluc": false
+  },
+  {
+   "w": "letíš",
+   "s": 3.0,
+   "e": 3.34,
+   "kluc": false
+  },
+  {
+   "w": "z",
+   "s": 3.34,
+   "e": 3.48,
+   "kluc": false
+  },
+  {
+   "w": "Viedne",
+   "s": 3.48,
+   "e": 3.76,
+   "kluc": false
+  },
+  {
+   "w": "do",
+   "s": 3.76,
+   "e": 3.92,
+   "kluc": false
+  },
+  {
+   "w": "Los",
+   "s": 3.92,
+   "e": 4.08,
+   "kluc": false
+  },
+  {
+   "w": "Angeles,",
+   "s": 4.08,
+   "e": 4.5,
+   "kluc": false
+  },
+  {
+   "w": "lietadlo",
+   "s": 4.88,
+   "e": 5.4,
+   "kluc": false
+  },
+  {
+   "w": "zabočí",
+   "s": 5.4,
+   "e": 5.86,
+   "kluc": false
+  },
+  {
+   "w": "až",
+   "s": 5.86,
+   "e": 6.12,
+   "kluc": false
+  },
+  {
+   "w": "nad",
+   "s": 6.12,
+   "e": 6.28,
+   "kluc": false
+  },
+  {
+   "w": "Grónsko.",
+   "s": 6.28,
+   "e": 6.82,
+   "kluc": true
+  },
+  {
+   "w": "Vyzerá",
+   "s": 7.44,
+   "e": 7.8,
+   "kluc": false
+  },
+  {
+   "w": "to",
+   "s": 7.8,
+   "e": 7.92,
+   "kluc": false
+  },
+  {
+   "w": "ako",
+   "s": 7.92,
+   "e": 8.1,
+   "kluc": false
+  },
+  {
+   "w": "obchádzka.",
+   "s": 8.1,
+   "e": 8.74,
+   "kluc": false
+  },
+  {
+   "w": "Lenže",
+   "s": 9.14,
+   "e": 9.64,
+   "kluc": false
+  },
+  {
+   "w": "Zem",
+   "s": 9.64,
+   "e": 9.94,
+   "kluc": false
+  },
+  {
+   "w": "nie",
+   "s": 9.94,
+   "e": 10.12,
+   "kluc": false
+  },
+  {
+   "w": "je",
+   "s": 10.12,
+   "e": 10.28,
+   "kluc": false
+  },
+  {
+   "w": "placka.",
+   "s": 10.28,
+   "e": 10.78,
+   "kluc": false
+  },
+  {
+   "w": "Je",
+   "s": 11.04,
+   "e": 11.38,
+   "kluc": false
+  },
+  {
+   "w": "to",
+   "s": 11.38,
+   "e": 11.5,
+   "kluc": false
+  },
+  {
+   "w": "guľa.",
+   "s": 11.5,
+   "e": 11.86,
+   "kluc": true
+  },
+  {
+   "w": "A",
+   "s": 12.08,
+   "e": 12.5,
+   "kluc": false
+  },
+  {
+   "w": "na",
+   "s": 12.5,
+   "e": 12.66,
+   "kluc": false
+  },
+  {
+   "w": "guli",
+   "s": 12.66,
+   "e": 12.9,
+   "kluc": false
+  },
+  {
+   "w": "je",
+   "s": 12.9,
+   "e": 13.0,
+   "kluc": false
+  },
+  {
+   "w": "najkratšia",
+   "s": 13.0,
+   "e": 13.54,
+   "kluc": false
+  },
+  {
+   "w": "cesta",
+   "s": 13.54,
+   "e": 13.86,
+   "kluc": false
+  },
+  {
+   "w": "oblúk.",
+   "s": 13.86,
+   "e": 14.38,
+   "kluc": true
+  },
+  {
+   "w": "Keď",
+   "s": 14.76,
+   "e": 15.06,
+   "kluc": false
+  },
+  {
+   "w": "ho",
+   "s": 15.06,
+   "e": 15.16,
+   "kluc": false
+  },
+  {
+   "w": "prenesieš",
+   "s": 15.16,
+   "e": 15.68,
+   "kluc": false
+  },
+  {
+   "w": "na",
+   "s": 15.68,
+   "e": 15.82,
+   "kluc": false
+  },
+  {
+   "w": "plochú",
+   "s": 15.82,
+   "e": 16.14,
+   "kluc": false
+  },
+  {
+   "w": "mapu,",
+   "s": 16.14,
+   "e": 16.54,
+   "kluc": false
+  },
+  {
+   "w": "ohne",
+   "s": 16.98,
+   "e": 17.26,
+   "kluc": false
+  },
+  {
+   "w": "sa.",
+   "s": 17.26,
+   "e": 17.46,
+   "kluc": false
+  },
+  {
+   "w": "Rovná",
+   "s": 18.06,
+   "e": 18.46,
+   "kluc": false
+  },
+  {
+   "w": "čiara",
+   "s": 18.46,
+   "e": 18.76,
+   "kluc": false
+  },
+  {
+   "w": "na",
+   "s": 18.76,
+   "e": 18.94,
+   "kluc": false
+  },
+  {
+   "w": "mape",
+   "s": 18.94,
+   "e": 19.16,
+   "kluc": false
+  },
+  {
+   "w": "je",
+   "s": 19.16,
+   "e": 19.3,
+   "kluc": false
+  },
+  {
+   "w": "v",
+   "s": 19.3,
+   "e": 19.38,
+   "kluc": false
+  },
+  {
+   "w": "skutočnosti",
+   "s": 19.38,
+   "e": 20.02,
+   "kluc": false
+  },
+  {
+   "w": "o",
+   "s": 20.02,
+   "e": 20.22,
+   "kluc": false
+  },
+  {
+   "w": "tisíc",
+   "s": 20.22,
+   "e": 20.465,
+   "kluc": true
+  },
+  {
+   "w": "päťsto",
+   "s": 20.465,
+   "e": 20.76,
+   "kluc": false
+  },
+  {
+   "w": "kilometrov",
+   "s": 20.76,
+   "e": 21.44,
+   "kluc": true
+  },
+  {
+   "w": "dlhšia.",
+   "s": 21.44,
+   "e": 21.9,
+   "kluc": false
+  },
+  {
+   "w": "Takže",
+   "s": 22.2,
+   "e": 22.7,
+   "kluc": false
+  },
+  {
+   "w": "pilot",
+   "s": 22.7,
+   "e": 23.0,
+   "kluc": false
+  },
+  {
+   "w": "nezatáča.",
+   "s": 23.0,
+   "e": 23.76,
+   "kluc": false
+  },
+  {
+   "w": "Letí",
+   "s": 24.08,
+   "e": 24.56,
+   "kluc": false
+  },
+  {
+   "w": "najkratšou",
+   "s": 24.56,
+   "e": 25.12,
+   "kluc": false
+  },
+  {
+   "w": "cestou.",
+   "s": 25.12,
+   "e": 25.54,
+   "kluc": false
+  },
+  {
+   "w": "Klame",
+   "s": 26.06,
+   "e": 26.44,
+   "kluc": false
+  },
+  {
+   "w": "tvoja",
+   "s": 26.44,
+   "e": 26.74,
+   "kluc": true
+  },
+  {
+   "w": "mapa.",
+   "s": 26.74,
+   "e": 26.98,
+   "kluc": true
+  }
+ ],
+ "vety": [
+  {
+   "text": "Prečo lietadlá na mape nelietajú rovno?",
+   "s": 0.0,
+   "e": 2.24
+  },
+  {
+   "text": "Keď letíš z Viedne do Los Angeles, lietadlo zabočí až nad Grónsko.",
+   "s": 2.5,
+   "e": 6.82
+  },
+  {
+   "text": "Vyzerá to ako obchádzka.",
+   "s": 7.44,
+   "e": 8.74
+  },
+  {
+   "text": "Lenže Zem nie je placka.",
+   "s": 9.14,
+   "e": 10.78
+  },
+  {
+   "text": "Je to guľa.",
+   "s": 11.04,
+   "e": 11.86
+  },
+  {
+   "text": "A na guli je najkratšia cesta oblúk.",
+   "s": 12.08,
+   "e": 14.38
+  },
+  {
+   "text": "Keď ho prenesieš na plochú mapu, ohne sa.",
+   "s": 14.76,
+   "e": 17.46
+  },
+  {
+   "text": "Rovná čiara na mape je v skutočnosti o tisíc päťsto kilometrov dlhšia.",
+   "s": 18.06,
+   "e": 21.9
+  },
+  {
+   "text": "Takže pilot nezatáča.",
+   "s": 22.2,
+   "e": 23.76
+  },
+  {
+   "text": "Letí najkratšou cestou.",
+   "s": 24.08,
+   "e": 25.54
+  },
+  {
+   "text": "Klame tvoja mapa.",
+   "s": 26.06,
+   "e": 26.98
+  }
+ ]
+}
