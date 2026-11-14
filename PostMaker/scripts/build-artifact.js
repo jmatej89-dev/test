@@ -1,4 +1,3 @@
-/* eslint-env node */
 /**
  * Builds the self-contained web page that can be opened straight from the chat (claude.ai artifact).
  *   node scripts/build-artifact.js <expo web export dir> <out dir>
