@@ -1,0 +1,60 @@
+{
+  "expo": {
+    "name": "Post Maker",
+    "slug": "post-maker",
+    "scheme": "postmaker",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#070F28",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "cz.matejjankovic.postmaker",
+      "infoPlist": {
+        "NSPhotoLibraryAddUsageDescription": "Post Maker ukládá hotové slajdy do Fotek.",
+        "NSPhotoLibraryUsageDescription": "Post Maker potřebuje vybrat fotku pro slajd.",
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#070F28",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "package": "cz.matejjankovic.postmaker"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-sharing",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
+          "backgroundColor": "#070F28"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Post Maker potřebuje vybrat fotku pro slajd."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Post Maker ukládá hotové slajdy do Fotek.",
+          "isAccessMediaLocationEnabled": false
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}
