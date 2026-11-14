@@ -25,10 +25,20 @@
       "package": "cz.matejjankovic.postmaker"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "output": "single",
+      "bundler": "metro",
+      "name": "Post Maker",
+      "themeColor": "#070F28",
+      "backgroundColor": "#070F28"
     },
     "plugins": [
-      "expo-router",
+      [
+        "expo-router",
+        {
+          "asyncRoutes": false
+        }
+      ],
       "expo-font",
       "expo-sharing",
       [

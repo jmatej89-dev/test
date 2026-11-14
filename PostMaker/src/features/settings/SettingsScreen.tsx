@@ -1,11 +1,12 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DEFAULT_RISKY_WORDS, WATERMARK } from '../../brand';
 import { useStore } from '../../store/projects';
 import { normalizeHashtag } from '../../text/czech';
 import { Button, Icon, IconButton, Section, Segmented } from '../../ui/controls';
+import { chooseAction } from '../../ui/dialog';
 import { Field } from '../../ui/Field';
 import { TYPE, UI } from '../../ui/theme';
 
@@ -129,10 +130,7 @@ export function SettingsScreen() {
           kind="danger"
           label="Obnovit výchozí nastavení"
           onPress={() =>
-            Alert.alert('Obnovit výchozí nastavení?', undefined, [
-              { text: 'Zrušit', style: 'cancel' },
-              { text: 'Obnovit', style: 'destructive', onPress: () => (reset(), setTags('')) },
-            ])
+            chooseAction('Obnovit výchozí nastavení?', [{ label: 'Obnovit', destructive: true, onPress: () => (reset(), setTags('')) }])
           }
         />
         <Text style={[TYPE.caption, { textAlign: 'center', marginTop: 12 }]}>Vše zůstává jen v tomto telefonu. Žádné účty, žádná analytika.</Text>

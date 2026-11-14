@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Alert, StyleSheet, Switch, Text, View } from 'react-native';
+import { StyleSheet, Switch, Text, View } from 'react-native';
+import { notify } from '../../../ui/dialog';
 import type { PhotoRef } from '../../../model/types';
 import { clipboardHasImage, pastePhotoFromClipboard, pickPhotoFromLibrary } from '../../../store/photos';
 import { Button, Section, Tag } from '../../../ui/controls';
@@ -26,16 +27,16 @@ export function PhotoPanel() {
       const p = await pickPhotoFromLibrary();
       if (p) setPhoto(p);
     } catch (e) {
-      Alert.alert('Fotku se nepodařilo načíst', String((e as Error).message ?? e));
+      notify('Fotku se nepodařilo načíst', String((e as Error).message ?? e));
     }
   };
   const paste = async () => {
     try {
       const p = await pastePhotoFromClipboard();
       if (p) setPhoto(p);
-      else Alert.alert('Ve schránce není obrázek', 'Zkopíruj fotku a zkus to znovu.');
+      else notify('Ve schránce není obrázek', 'Zkopíruj fotku a zkus to znovu.');
     } catch (e) {
-      Alert.alert('Vložení se nepovedlo', String((e as Error).message ?? e));
+      notify('Vložení se nepovedlo', String((e as Error).message ?? e));
     }
   };
 

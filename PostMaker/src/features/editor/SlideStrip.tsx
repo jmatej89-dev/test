@@ -3,7 +3,8 @@
  * long-press and release = menu (Duplikovat / Smazat / Změnit typ).
  */
 import { useState } from 'react';
-import { ActionSheetIOS, Alert, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { chooseAction } from '../../ui/dialog';
 import { GestureDetector, useExclusiveGestures, usePanGesture, useTapGesture } from 'react-native-gesture-handler';
 import { H, W } from '../../brand';
 import type { SlideLayout } from '../../layout/slides';
@@ -33,14 +34,10 @@ type Props = {
 };
 
 function menu(title: string, options: string[], destructive: number, onPick: (i: number) => void) {
-  if (Platform.OS === 'ios') {
-    ActionSheetIOS.showActionSheetWithOptions(
-      { title, options: [...options, 'Zrušit'], cancelButtonIndex: options.length, destructiveButtonIndex: destructive, userInterfaceStyle: 'dark' },
-      (i) => i < options.length && onPick(i),
-    );
-  } else {
-    Alert.alert(title, undefined, [...options.map((o, i) => ({ text: o, onPress: () => onPick(i), style: i === destructive ? ('destructive' as const) : ('default' as const) })), { text: 'Zrušit', style: 'cancel' as const }]);
-  }
+  chooseAction(
+    title,
+    options.map((label, i) => ({ label, destructive: i === destructive, onPress: () => onPick(i) })),
+  );
 }
 
 function Thumb({

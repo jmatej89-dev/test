@@ -2,12 +2,14 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
-import { useEffect } from 'react';
+import { useEffect, type ReactNode } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Platform } from 'react-native';
+import { SafeAreaInsetsContext, SafeAreaProvider } from 'react-native-safe-area-context';
 import { RenderProvider, useRender } from '../render/RenderContext';
 import { useStore } from '../store/projects';
 import { useReduceMotion } from '../ui/a11y';
+import { DialogHost } from '../ui/dialog';
 import { UI } from '../ui/theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -38,14 +40,25 @@ function Gate() {
   );
 }
 
+const ZERO = { top: 0, bottom: 0, left: 0, right: 0 };
+
+function WebInsets({ children }: { children: ReactNode }) {
+  if (Platform.OS !== 'web') return <>{children}</>;
+  return <SafeAreaInsetsContext.Provider value={ZERO}>{children}</SafeAreaInsetsContext.Provider>;
+}
+
 export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: UI.bg }}>
       <SafeAreaProvider>
-        <RenderProvider>
-          <StatusBar style="light" />
-          <Gate />
-        </RenderProvider>
+        {/* On the web page the host already pads the safe areas, so the app must not add them again. */}
+        <WebInsets>
+          <RenderProvider>
+            <StatusBar style="light" />
+            <Gate />
+            <DialogHost />
+          </RenderProvider>
+        </WebInsets>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

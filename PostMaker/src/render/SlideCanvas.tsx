@@ -3,16 +3,28 @@
  * No glass or UI ever overlaps the slide itself (overlays here are opt-in helpers only).
  */
 import { Canvas, Picture, createPicture, useImage, type SkImage } from '@shopify/react-native-skia';
-import { memo, useMemo } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { H, W } from '../brand';
 import { layoutSlide, slideAccessibilityText, type SlideLayout } from '../layout/slides';
 import type { PhotoRef, Slide } from '../model/types';
+import { resolvePhotoUri } from '../store/photos';
 import { drawSlide } from './drawSlide';
 import { useRender } from './RenderContext';
 
 export function usePhotoImage(photo: PhotoRef | null): SkImage | null {
-  const uri = photo && !photo.uri.startsWith('placeholder:') ? photo.uri : null;
+  const raw = photo && !photo.uri.startsWith('placeholder:') ? photo.uri : null;
+  const needsResolve = !!raw && raw.startsWith('idb:');
+  const [resolved, setResolved] = useState<{ raw: string; url: string | null } | null>(null);
+  useEffect(() => {
+    if (!raw || !needsResolve) return;
+    let alive = true;
+    resolvePhotoUri(raw).then((url) => alive && setResolved({ raw, url }));
+    return () => {
+      alive = false;
+    };
+  }, [raw, needsResolve]);
+  const uri = !raw ? null : needsResolve ? (resolved?.raw === raw ? resolved.url : null) : raw;
   return useImage(uri);
 }
 

@@ -58,7 +58,8 @@
     "test": "jest",
     "test:update-golden": "UPDATE_GOLDEN=1 jest src/render",
     "check": "npm run lint && npm run typecheck && npm test",
-    "web": "cp node_modules/canvaskit-wasm/bin/full/canvaskit.wasm public/ && expo start --web"
+    "web": "cp node_modules/canvaskit-wasm/bin/full/canvaskit.wasm public/ && expo start --web",
+    "build:artifact": "expo export --platform web --output-dir dist-web && node scripts/build-artifact.js dist-web dist-artifact"
   },
   "private": true
 }

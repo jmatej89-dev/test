@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import { useEffect, useMemo, useState } from 'react';
-import { Alert, FlatList, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { FlatList, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
 import { scheduleOnRN } from 'react-native-worklets';
@@ -10,6 +10,7 @@ import { SlideCanvas } from '../../render/SlideCanvas';
 import { prunePhotos } from '../../store/photos';
 import { useStore } from '../../store/projects';
 import { Button, Icon, IconButton } from '../../ui/controls';
+import { chooseAction } from '../../ui/dialog';
 import { Glass } from '../../ui/Glass';
 import { haptic } from '../../ui/haptics';
 import { TYPE, UI } from '../../ui/theme';
@@ -131,10 +132,7 @@ export function ProjectsScreen() {
   };
 
   const confirmDelete = (p: Project) =>
-    Alert.alert(`Smazat „${p.name}“?`, 'Tuto akci nelze vrátit.', [
-      { text: 'Zrušit', style: 'cancel' },
-      { text: 'Smazat', style: 'destructive', onPress: () => (haptic.warning(), remove(p.id)) },
-    ]);
+    chooseAction(`Smazat „${p.name}“?`, [{ label: 'Smazat', destructive: true, onPress: () => (haptic.warning(), remove(p.id)) }], 'Tuto akci nelze vrátit.');
 
   return (
     <View style={styles.root}>

@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import * as Clipboard from 'expo-clipboard';
 import type { Slide } from '../../model/types';
 import { SLIDE_TYPE_LABEL } from '../../model/types';
 import { Button, IconButton } from '../../ui/controls';
+import { chooseAction } from '../../ui/dialog';
 import { Field } from '../../ui/Field';
 import { TYPE, UI } from '../../ui/theme';
 import { parsePost } from '../pasteAll';
@@ -42,11 +43,14 @@ export function PasteAllSheet({
       setText('');
       return;
     }
-    Alert.alert('Vložit slajdy', 'Carousel už obsahuje text.', [
-      { text: 'Přidat na konec', onPress: () => (onApply(slides, false), setText('')) },
-      { text: 'Nahradit vše', style: 'destructive', onPress: () => (onApply(slides, true), setText('')) },
-      { text: 'Zrušit', style: 'cancel' },
-    ]);
+    chooseAction(
+      'Vložit slajdy',
+      [
+        { label: 'Přidat na konec', onPress: () => (onApply(slides, false), setText('')) },
+        { label: 'Nahradit vše', destructive: true, onPress: () => (onApply(slides, true), setText('')) },
+      ],
+      'Carousel už obsahuje text.',
+    );
   };
 
   return (

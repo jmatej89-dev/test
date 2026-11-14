@@ -40,3 +40,5 @@ yarn-error.*
 /ios
 /android
 public/canvaskit.wasm
+dist-web/
+dist-artifact/

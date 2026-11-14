@@ -1,8 +1,6 @@
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  ActionSheetIOS,
-  Alert,
   Keyboard,
   Platform,
   Pressable,
@@ -21,6 +19,7 @@ import { useHistoryFlags, useStore } from '../../store/projects';
 import { Icon, IconButton, type IconName } from '../../ui/controls';
 import { Glass } from '../../ui/Glass';
 import { haptic } from '../../ui/haptics';
+import { askText, chooseAction, notify } from '../../ui/dialog';
 import { Sheet, type Detent, type DetentHeights } from '../../ui/Sheet';
 import { TYPE, UI } from '../../ui/theme';
 import { checkProject, type Issue, type Tool } from '../check';
@@ -201,14 +200,7 @@ export function EditorScreen({ id, startWithPaste }: { id: string; startWithPast
       { label: 'Titulní slajd', run: () => make('cover') },
       { label: 'Vložit celý příspěvek…', run: () => setPasteOpen(true) },
     ];
-    if (Platform.OS === 'ios') {
-      ActionSheetIOS.showActionSheetWithOptions(
-        { title: 'Přidat', options: [...opts.map((o) => o.label), 'Zrušit'], cancelButtonIndex: opts.length, userInterfaceStyle: 'dark' },
-        (i) => i < opts.length && opts[i].run(),
-      );
-    } else {
-      Alert.alert('Přidat', undefined, [...opts.map((o) => ({ text: o.label, onPress: o.run })), { text: 'Zrušit', style: 'cancel' as const }]);
-    }
+    chooseAction('Přidat', opts.map((o) => ({ label: o.label, onPress: o.run })));
   };
 
   const jumpTo = (issue: Issue) => {
@@ -222,8 +214,9 @@ export function EditorScreen({ id, startWithPaste }: { id: string; startWithPast
   };
 
   const rename = () => {
-    if (Platform.OS !== 'ios') return;
-    Alert.prompt('Název carouselu', undefined, (t) => t?.trim() && update(id, (p) => ({ ...p, name: t.trim() })), 'plain-text', project.name);
+    askText('Název carouselu', project.name, (t) => {
+      if (t.trim()) update(id, (p) => ({ ...p, name: t.trim() }));
+    });
   };
 
   const panelBody = (() => {
@@ -328,7 +321,7 @@ export function EditorScreen({ id, startWithPaste }: { id: string; startWithPast
               }}
               onDelete={(i) => {
                 if (slideCount <= 1) {
-                  Alert.alert('Carousel musí mít aspoň jeden slajd.');
+                  notify('Carousel musí mít aspoň jeden slajd.');
                   return;
                 }
                 mutateSlides((sl) => sl.filter((_, j) => j !== i));
