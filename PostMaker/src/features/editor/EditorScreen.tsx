@@ -295,10 +295,10 @@ export function EditorScreen({ id, startWithPaste }: { id: string; startWithPast
           />
           {!slide.photo && detent === 'closed' && (
             <Pressable style={styles.emptyHint} onPress={() => openPanel('photo')} accessibilityRole="button" accessibilityLabel="Vyber fotku">
-              <Glass radius={20} interactive style={styles.emptyHintGlass}>
-                <Icon name="image" size={18} />
+              <View style={styles.emptyHintInner}>
+                <Icon name="add-circle-outline" size={30} color={UI.text} />
                 <Text style={styles.emptyHintText}>Vyber fotku</Text>
-              </Glass>
+              </View>
             </Pressable>
           )}
         </View>
@@ -364,7 +364,7 @@ export function EditorScreen({ id, startWithPaste }: { id: string; startWithPast
                   style={({ pressed }) => [styles.tool, on && styles.toolOn, pressed && { opacity: 0.7 }]}
                 >
                   <Icon name={t.icon} size={21} color={on ? UI.onAccent : UI.text} />
-                  <Text style={[styles.toolText, on && { color: UI.onAccent }]} numberOfLines={1}>
+                  <Text style={[styles.toolText, on && { color: UI.onAccent }]} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.8}>
                     {t.label}
                   </Text>
                 </Pressable>
@@ -444,8 +444,9 @@ const styles = StyleSheet.create({
   title: { color: UI.text, fontSize: 17, fontWeight: '600' },
   subtitle: { color: UI.textFaint, fontSize: 13 },
   stageArea: { flex: 1, paddingTop: 6 },
-  emptyHint: { position: 'absolute', alignSelf: 'center', top: '22%' },
-  emptyHintGlass: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16, height: UI.hit },
+  // Sits inside the empty photo area only (no glass over the slide).
+  emptyHint: { position: 'absolute', alignSelf: 'center', top: '14%', minHeight: 88, minWidth: 140, alignItems: 'center', justifyContent: 'center' },
+  emptyHintInner: { alignItems: 'center', gap: 6, opacity: 0.9 },
   emptyHintText: { color: UI.text, fontSize: 16, fontWeight: '600' },
   stripRow: { flexDirection: 'row', alignItems: 'center', position: 'absolute', left: 0, right: 0 },
   captionBtn: {
@@ -461,7 +462,7 @@ const styles = StyleSheet.create({
   captionText: { color: UI.accent, fontSize: 12, fontWeight: '600' },
   toolbarRow: { position: 'absolute', left: 8, right: 8, height: TOOLBAR_H, flexDirection: 'row', gap: 8 },
   toolbar: { flex: 1, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 6 },
-  tool: { flex: 1, height: TOOLBAR_H - 12, borderRadius: 26, alignItems: 'center', justifyContent: 'center', gap: 2 },
+  tool: { flex: 1, height: TOOLBAR_H - 12, borderRadius: 26, alignItems: 'center', justifyContent: 'center', gap: 2, paddingHorizontal: 2 },
   toolOn: { backgroundColor: UI.accent },
   toolText: { color: UI.text, fontSize: 10.5, fontWeight: '600' },
   exportBtn: { width: TOOLBAR_H, height: TOOLBAR_H },

@@ -1,7 +1,7 @@
 {
   "name": "postmaker",
   "version": "1.0.0",
-  "main": "expo-router/entry",
+  "main": "index.js",
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -23,11 +23,13 @@
     "expo-status-bar": "~58.0.5",
     "expo-system-ui": "~58.0.7",
     "react": "19.3.0",
+    "react-dom": "19.3.0",
     "react-native": "0.88.1",
     "react-native-gesture-handler": "~3.3.0",
     "react-native-reanimated": "4.7.1",
     "react-native-safe-area-context": "~5.11.1",
     "react-native-screens": "~4.30.1",
+    "react-native-web": "~0.21.4",
     "react-native-worklets": "0.13.0"
   },
   "devDependencies": {
@@ -55,7 +57,8 @@
     "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:update-golden": "UPDATE_GOLDEN=1 jest src/render",
-    "check": "npm run lint && npm run typecheck && npm test"
+    "check": "npm run lint && npm run typecheck && npm test",
+    "web": "cp node_modules/canvaskit-wasm/bin/full/canvaskit.wasm public/ && expo start --web"
   },
   "private": true
 }

@@ -108,8 +108,10 @@ function drawHeader(canvas: SkCanvas, layout: SlideLayout, photo: PhotoRef | nul
       TileMode.Clamp,
     ),
   );
-  canvas.drawRect(Skia.XYWHRect(0, fadeFrom, W, h - fadeFrom + 1), fade);
   canvas.restore();
+  // Drawn after the clip is released and slightly past the header edge, so the anti-aliased
+  // photo edge at fractional preview scales can never show as a light seam.
+  canvas.drawRect(Skia.XYWHRect(0, fadeFrom, W, h - fadeFrom + 2), fade);
 }
 
 export function buildLineParagraph(line: TextLine, fonts: SkTypefaceFontProvider): SkParagraph {

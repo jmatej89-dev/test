@@ -47,3 +47,17 @@ describe('golden renders', () => {
     expect(diff / (1080 * 1350)).toBeLessThan(TOLERANCE);
   });
 });
+
+describe('export resolution', () => {
+  test('seed slides render at 2160×2700 (scale 2), identical layout to the preview', () => {
+    const { fonts, measurer } = loadNodeFonts();
+    const out = process.env.EXPORT_DIR;
+    if (out) fs.mkdirSync(out, { recursive: true });
+    seedSlides().forEach((slide, i) => {
+      const { image, layout } = renderSlideImage({ slide, watermark: 'Matěj Jankovič', measurer, fonts, image: null, scale: 2 });
+      expect([image.width(), image.height()]).toEqual([2160, 2700]);
+      expect(layout.issues).toEqual([]);
+      if (out) fs.writeFileSync(path.join(out, `ukazka_${i + 1}.png`), image.encodeToBytes());
+    });
+  });
+});

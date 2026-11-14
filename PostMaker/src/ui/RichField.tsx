@@ -75,8 +75,10 @@ export function RichField({ label, value, onChange, placeholder, multiline = tru
         }}
         style={[fieldStyles.input, multiline && styles.multi, big && styles.big]}
         scrollEnabled={false}
+        // Styled children are an iOS/Android feature; the web preview shows plain text.
+        value={Platform.OS === 'web' ? rich.text : undefined}
       >
-        {spans}
+        {Platform.OS === 'web' ? undefined : spans}
       </TextInput>
       {highlight && Platform.OS === 'ios' && (
         <InputAccessoryView nativeID={accessoryId} backgroundColor="transparent">
